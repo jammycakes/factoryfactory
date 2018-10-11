@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
-using Nooshka.Registries;
+using Nooshka.Modules;
 
 namespace Nooshka
 {
     public class Container : IServiceProvider, IDisposable
     {
-        private IList<IRegistry> _registries = new List<IRegistry>();
+        private IList<IModule> _modules = new List<IModule>();
 
         public Container()
         {}
 
         public Container(IServiceCollection services)
         {
-            Register(new ServiceCollectionRegistry(services));
+            AddModule(new ServiceCollectionModule(services));
         }
 
         /* ====== Register ====== */
 
-        public void Register(IRegistry registry)
+        public void AddModule(IModule module)
         {
-            _registries.Add(registry);
+            _modules.Add(module);
         }
 
         /* ====== Resolve ====== */

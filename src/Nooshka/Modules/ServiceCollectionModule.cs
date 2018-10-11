@@ -1,12 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Nooshka.Registries
+namespace Nooshka.Modules
 {
-    public class ServiceCollectionRegistry : IRegistry
+    public class ServiceCollectionModule : IModule
     {
         private readonly IServiceCollection _serviceCollection;
 
-        public ServiceCollectionRegistry(IServiceCollection serviceCollection)
+        public ServiceCollectionModule(IServiceCollection serviceCollection)
         {
             _serviceCollection = serviceCollection;
         }
