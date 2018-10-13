@@ -9,7 +9,6 @@ namespace Nooshka.Tests
     {
         protected override IServiceProvider CreateServiceProvider(IServiceCollection serviceCollection)
         {
-            return new Container(serviceCollection);
-        }
+            return Configuration.CreateContainer(serviceCollection);        }
     }
 }

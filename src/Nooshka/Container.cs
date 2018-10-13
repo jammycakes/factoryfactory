@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Nooshka.Modules;
 
@@ -9,19 +10,9 @@ namespace Nooshka
     {
         private IList<IModule> _modules = new List<IModule>();
 
-        public Container()
-        {}
-
-        public Container(IServiceCollection services)
+        public Container(params IModule[] modules)
         {
-            AddModule(new ServiceCollectionModule(services));
-        }
-
-        /* ====== Register ====== */
-
-        public void AddModule(IModule module)
-        {
-            _modules.Add(module);
+            _modules = new List<IModule>(modules);
         }
 
         /* ====== Resolve ====== */
