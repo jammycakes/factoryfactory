@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Xml;
 using Microsoft.Extensions.DependencyInjection;
 using Nooshka.Impl;
+using Nooshka.Resolution;
 
 namespace Nooshka
 {
@@ -15,16 +16,9 @@ namespace Nooshka
     /// </summary>
     public class Container : IServiceProvider, IServiceScope
     {
-        private IServiceResolver _resolver;
+        private ResolverCache _resolverCache;
 
-        /// <summary>
-        ///  Gets the default <see cref="ILifecycleManager"/> instance which
-        ///  tracks service lifetimes that correspond to the duration of this
-        ///  service.
-        /// </summary>
         public ILifecycleManager LifecycleManager { get; }
-
-        public ICollection<IModule> Modules { get; }
 
         public IServiceProvider ServiceProvider => this;
 
@@ -32,13 +26,12 @@ namespace Nooshka
         {
             Parent = parent;
             Root = parent?.Root ?? this;
-            _resolver = new ServiceResolver(this);
-            LifecycleManager = new LifecycleManager(_resolver);
+            LifecycleManager = new LifecycleManager(this);
         }
 
         public Container(params IModule[] modules) : this(parent: null)
         {
-            Modules = new ReadOnlyCollection<IModule>(modules.ToList());
+            _resolverCache = new ResolverCache(modules);
         }
 
 
@@ -46,8 +39,12 @@ namespace Nooshka
 
         public object GetService(Type serviceType)
         {
-            var request = new ServiceRequest(this, serviceType, null);
-            return _resolver.GetService(request);
+            return GetService(new ServiceRequest(this, serviceType, null));
+        }
+
+        public object GetService(ServiceRequest serviceRequest)
+        {
+            return null;
         }
 
         /* ====== Release ====== */

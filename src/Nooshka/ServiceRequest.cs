@@ -7,7 +7,7 @@ namespace Nooshka
     ///  request to the IOC container itself, or it may be a request for a
     ///  dependency to be injected into another service.
     /// </summary>
-    public struct ServiceRequest
+    public class ServiceRequest
     {
         /// <summary>
         ///  The <see cref="Container"/> instance to which the request was
@@ -17,15 +17,18 @@ namespace Nooshka
         public Container Container { get; }
 
         /// <summary>
-        ///  The type of object that is being requested.
+        ///  The type of object that is being requested. This is not necessarily
+        ///  the required service itself; it may be a Func, Lazy or some kind of
+        ///  collection.
         /// </summary>
         public Type RequestedType { get; }
 
         /// <summary>
-        ///  The type of object into which this service is being injected.
-        ///  For root-level requests, this will be null.
+        ///  The <see cref="ServiceRequest"/> instance for the service into
+        ///  which this service is being injected. For root-level requests,
+        ///  this will be null.
         /// </summary>
-        public Type ReceivingType { get; }
+        public ServiceRequest Receiver { get; }
 
         /// <summary>
         ///  Creates a new instance of the <see cref="ServiceRequest"/> class.
@@ -33,11 +36,11 @@ namespace Nooshka
         /// <param name="container"></param>
         /// <param name="requestedType"></param>
         /// <param name="receivingType"></param>
-        public ServiceRequest(Container container, Type requestedType, Type receivingType)
+        public ServiceRequest(Container container, Type requestedType, ServiceRequest receiver)
         {
             Container = container;
             RequestedType = requestedType;
-            ReceivingType = receivingType;
+            Receiver = receiver;
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Nooshka.Registration;
+using Nooshka.Resolution;
 
 namespace Nooshka
 {

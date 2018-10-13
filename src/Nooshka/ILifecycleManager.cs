@@ -6,6 +6,6 @@ namespace Nooshka
     {
         void Add(IDisposable managedService);
 
-        IServiceResolver ServiceResolver { get; }
+        Container Container { get; }
     }
 }
