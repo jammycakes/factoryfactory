@@ -1,6 +1,6 @@
 using System;
 
-namespace Nooshka
+namespace Nooshka.Registration
 {
     public interface IRegistration
     {

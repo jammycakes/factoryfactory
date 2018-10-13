@@ -2,7 +2,7 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using Nooshka.Lifecycle;
 
-namespace Nooshka
+namespace Nooshka.Registration
 {
     /// <summary>
     ///  Represents a basic service registration in the container.

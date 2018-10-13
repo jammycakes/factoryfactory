@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Nooshka
+namespace Nooshka.Registration
 {
     public class Module : IModule
     {
@@ -51,8 +50,6 @@ namespace Nooshka
             var list = GetServiceRegistrations(registration.ServiceType, true);
             list.Add(registration);
         }
-
-
 
 
         IEnumerable<IRegistration> IModule.GetServiceRegistrations(Type type)
