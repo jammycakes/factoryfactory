@@ -10,11 +10,11 @@ namespace Nooshka
     public struct ServiceRequest
     {
         /// <summary>
-        ///  The <see cref="IServiceResolver"/> instance to which the request was
+        ///  The <see cref="Container"/> instance to which the request was
         ///  originally made. This may or may not be the service resolver that
         ///  ultimately creates and manages the service.
         /// </summary>
-        public IServiceResolver Resolver { get; }
+        public Container Container { get; }
 
         /// <summary>
         ///  The type of object that is being requested.
@@ -30,12 +30,12 @@ namespace Nooshka
         /// <summary>
         ///  Creates a new instance of the <see cref="ServiceRequest"/> class.
         /// </summary>
-        /// <param name="resolver"></param>
+        /// <param name="container"></param>
         /// <param name="requestedType"></param>
         /// <param name="receivingType"></param>
-        public ServiceRequest(IServiceResolver resolver, Type requestedType, Type receivingType)
+        public ServiceRequest(Container container, Type requestedType, Type receivingType)
         {
-            Resolver = resolver;
+            Container = container;
             RequestedType = requestedType;
             ReceivingType = receivingType;
         }

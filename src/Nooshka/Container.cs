@@ -46,7 +46,7 @@ namespace Nooshka
 
         public object GetService(Type serviceType)
         {
-            var request = new ServiceRequest(_resolver, serviceType, null);
+            var request = new ServiceRequest(this, serviceType, null);
             return _resolver.GetService(request);
         }
 
