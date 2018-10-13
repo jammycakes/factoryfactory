@@ -1,11 +1,14 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using Nooshka.Lifecycle;
 using Nooshka.Registration;
 
 namespace Nooshka
 {
     public static class IModuleExtensions
     {
+        /* ====== Add overloads ====== */
+
         public static IImplementation Add(this IModule module, Type serviceType)
         {
             var registration = new RegistrationBuilder(serviceType);
@@ -26,5 +29,21 @@ namespace Nooshka
                 module.Add(new ServiceRegistration(service));
             }
         }
+
+
+        /* ====== Lifecycle overloads ====== */
+
+        private static readonly ILifecycle _singletonLifecycle = new SingletonLifecycle();
+        private static readonly ILifecycle _scopedLifecycle = new ScopedLifecycle();
+        private static readonly ILifecycle _transientLifecycle = new TransientLifecycle();
+
+        public static IOptions Singleton(this IOptions options) =>
+            options.WithLifecycle(_singletonLifecycle);
+
+        public static IOptions Scoped(this IOptions options) =>
+            options.WithLifecycle(_scopedLifecycle);
+
+        public static IOptions Transient(this IOptions options) =>
+            options.WithLifecycle(_transientLifecycle);
     }
 }

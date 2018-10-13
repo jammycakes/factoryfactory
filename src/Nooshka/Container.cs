@@ -22,7 +22,7 @@ namespace Nooshka
         ///  tracks service lifetimes that correspond to the duration of this
         ///  service.
         /// </summary>
-        public ILifecycleManager LifecycleManager { get; } = new LifecycleManager();
+        public ILifecycleManager LifecycleManager { get; }
 
         public ICollection<IModule> Modules { get; }
 
@@ -33,6 +33,7 @@ namespace Nooshka
             Parent = parent;
             Root = parent?.Root ?? this;
             _resolver = new ServiceResolver(this);
+            LifecycleManager = new LifecycleManager(_resolver);
         }
 
         public Container(params IModule[] modules) : this(parent: null)
@@ -64,7 +65,9 @@ namespace Nooshka
 
         public Container CreateChild()
         {
-            return new Container(this);
+            var child = new Container(this);
+            LifecycleManager.Add(child);
+            return child;
         }
     }
 }

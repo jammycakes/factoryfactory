@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Nooshka.Registration;
 
@@ -8,7 +7,7 @@ namespace Nooshka
 {
     public class Configuration
     {
-        private List<IModule> _modules = new List<IModule>();
+        private List<IModule> _modules = new List<IModule>(new[] { new DefaultModule() });
 
         /* ====== Register ====== */
 
@@ -44,6 +43,16 @@ namespace Nooshka
             var module = new Module();
             moduleConfig(module);
             return CreateContainer(module);
+        }
+
+        private class DefaultModule : Module
+        {
+            public DefaultModule()
+            {
+                this.Add<Container>().From(req => req.Container);
+                this.Add<IServiceProvider>().From(req => req.Container);
+                this.Add<IServiceScope>().From(req => req.Container.CreateChild());
+            }
         }
     }
 }

@@ -8,10 +8,17 @@ namespace Nooshka.Impl
     {
         private LinkedList<IDisposable> _services = new LinkedList<IDisposable>();
 
+        public LifecycleManager(IServiceResolver serviceResolver)
+        {
+            ServiceResolver = serviceResolver;
+        }
+
         public void Add(IDisposable managedService)
         {
             _services.AddFirst(managedService);
         }
+
+        public IServiceResolver ServiceResolver { get; }
 
         public void Dispose()
         {
