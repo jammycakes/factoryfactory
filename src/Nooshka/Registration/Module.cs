@@ -45,27 +45,13 @@ namespace Nooshka.Registration
             return result;
         }
 
-        protected void Add(IRegistration registration)
+        public void Add(IRegistration registration)
         {
             var list = GetServiceRegistrations(registration.ServiceType, true);
             list.Add(registration);
         }
 
-        protected IImplementation Add(Type serviceType)
-        {
-            var registration = new RegistrationBuilder(serviceType);
-            Add(registration);
-            return registration;
-        }
-
-        protected IImplementation<TService> Add<TService>()
-        {
-            var registration = new RegistrationBuilder<TService>();
-            Add(registration);
-            return registration;
-        }
-
-        IEnumerable<IRegistration> IModule.GetServiceRegistrations(Type type)
+        IEnumerable<IRegistration> IModule.GetRegistrations(Type type)
         {
             return (GetServiceRegistrations(type, false) ?? Enumerable.Empty<IRegistration>())
                 .AsEnumerable();
