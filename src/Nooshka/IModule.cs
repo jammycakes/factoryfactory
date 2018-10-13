@@ -9,5 +9,7 @@ namespace Nooshka
         void Add(IRegistration registration);
 
         IEnumerable<IRegistration> GetRegistrations(Type type);
+
+        bool IsTypeRegistered(Type type);
     }
 }

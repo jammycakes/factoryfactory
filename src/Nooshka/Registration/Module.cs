@@ -56,5 +56,7 @@ namespace Nooshka.Registration
             return (GetServiceRegistrations(type, false) ?? Enumerable.Empty<IRegistration>())
                 .AsEnumerable();
         }
+
+        public bool IsTypeRegistered(Type type) => _registrations.ContainsKey(type);
     }
 }

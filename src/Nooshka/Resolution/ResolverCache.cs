@@ -31,7 +31,7 @@ namespace Nooshka.Resolution
                             var builders =
                                 from module in _modules
                                 from registration in module.GetRegistrations(type)
-                                select new ResolverBuilder(registration);
+                                select new ResolverBuilder(registration, this);
                             var builtResolvers =
                                 from builder in builders
                                 select builder.Build();
@@ -50,6 +50,9 @@ namespace Nooshka.Resolution
                 _resolverLock.ExitUpgradeableReadLock();
             }
         }
+
+        public bool IsTypeRegistered(Type type)
+            => _modules.Any(m => m.IsTypeRegistered(type));
 
         public void Dispose()
         {

@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using Nooshka.Registration;
 
 namespace Nooshka.Resolution
 {
@@ -9,11 +10,11 @@ namespace Nooshka.Resolution
         private Func<ServiceRequest, object> _getService;
 
         public ExpressionServiceResolver(
-            Expression<Func<ServiceRequest, bool>> _preconditionMetExpression,
+            IRegistration registration,
             Expression<Func<ServiceRequest, object>> _getServiceExpression
         )
         {
-            _preconditionMet = _preconditionMetExpression.Compile();
+            _preconditionMet = registration.Precondition;
             _getService = _getServiceExpression.Compile();
         }
 

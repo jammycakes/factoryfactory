@@ -42,5 +42,10 @@ namespace Nooshka
             RequestedType = requestedType;
             Receiver = receiver;
         }
+
+        public ServiceRequest CreateDependencyRequest(Type dependencyType)
+        {
+            return new ServiceRequest(Container, dependencyType, this);
+        }
     }
 }
