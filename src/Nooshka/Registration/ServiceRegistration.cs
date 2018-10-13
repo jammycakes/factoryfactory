@@ -7,7 +7,7 @@ namespace Nooshka
     /// <summary>
     ///  Represents a basic service registration in the container.
     /// </summary>
-    public class ServiceRegistration
+    public class ServiceRegistration : IRegistration
     {
         /// <summary>
         ///  The type of service being registered.
