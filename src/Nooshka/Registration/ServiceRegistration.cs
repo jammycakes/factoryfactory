@@ -34,24 +34,24 @@ namespace Nooshka.Registration
         /// <summary>
         ///
         /// </summary>
-        public ILifetime Lifetime { get; }
+        public ILifecycle Lifecycle { get; }
 
         /// <summary>
         ///  Registers a service to be resolved as a concrete type.
         /// </summary>
         /// <param name="serviceType"></param>
         /// <param name="implementationType"></param>
-        /// <param name="lifetime"></param>
+        /// <param name="lifecycle"></param>
         /// <param name="precondition"></param>
         public ServiceRegistration(Type serviceType,
             Type implementationType,
-            ILifetime lifetime,
+            ILifecycle lifecycle,
             Func<ServiceRequest, bool> precondition = null)
         {
             ServiceType = serviceType;
             ImplementationType = implementationType;
             ImplementationFactory = null;
-            Lifetime = lifetime;
+            Lifecycle = lifecycle;
             Precondition = precondition ?? (sr => true);
         }
 
@@ -68,7 +68,7 @@ namespace Nooshka.Registration
             ServiceType = serviceType;
             ImplementationFactory = sr => implementation;
             ImplementationType = null;
-            Lifetime = new TransientLifetime();
+            Lifecycle = new TransientLifecycle();
             Precondition = precondition ?? (sr => true);
         }
 
@@ -77,17 +77,17 @@ namespace Nooshka.Registration
         /// </summary>
         /// <param name="serviceType"></param>
         /// <param name="implementationFactory"></param>
-        /// <param name="lifetime"></param>
+        /// <param name="lifecycle"></param>
         /// <param name="precondition"></param>
         public ServiceRegistration(Type serviceType,
             Func<ServiceRequest, object> implementationFactory,
-            ILifetime lifetime,
+            ILifecycle lifecycle,
             Func<ServiceRequest, bool> precondition = null)
         {
             ServiceType = serviceType;
             ImplementationFactory = implementationFactory;
             ImplementationType = null;
-            Lifetime = lifetime;
+            Lifecycle = lifecycle;
             Precondition = precondition ?? (sr => true);
         }
 
@@ -118,13 +118,13 @@ namespace Nooshka.Registration
 
             switch (descriptor.Lifetime) {
                 case ServiceLifetime.Transient:
-                    Lifetime = new TransientLifetime();
+                    Lifecycle = new TransientLifecycle();
                     break;
                 case ServiceLifetime.Scoped:
-                    Lifetime = new ScopedLifetime();
+                    Lifecycle = new ScopedLifecycle();
                     break;
                 case ServiceLifetime.Singleton:
-                    Lifetime = new SingletonLifetime();
+                    Lifecycle = new SingletonLifecycle();
                     break;
             }
 

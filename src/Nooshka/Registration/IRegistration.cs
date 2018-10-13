@@ -28,6 +28,6 @@ namespace Nooshka.Registration
 
         /// <summary>
         /// </summary>
-        ILifetime Lifetime { get; }
+        ILifecycle Lifecycle { get; }
     }
 }

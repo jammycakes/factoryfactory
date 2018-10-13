@@ -18,11 +18,11 @@ namespace Nooshka
         private IServiceResolver _resolver;
 
         /// <summary>
-        ///  Gets the default <see cref="ILifetimeManager"/> instance which
+        ///  Gets the default <see cref="ILifecycleManager"/> instance which
         ///  tracks service lifetimes that correspond to the duration of this
         ///  service.
         /// </summary>
-        public ILifetimeManager LifetimeManager { get; } = new LifetimeManager();
+        public ILifecycleManager LifecycleManager { get; } = new LifecycleManager();
 
         public ICollection<IModule> Modules { get; }
 
@@ -53,7 +53,7 @@ namespace Nooshka
 
         public void Dispose()
         {
-            LifetimeManager.Dispose();
+            LifecycleManager.Dispose();
         }
 
         /* ====== Hierarchy ====== */

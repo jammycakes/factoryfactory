@@ -14,8 +14,8 @@ namespace Nooshka.Registration
 
         public Type ImplementationType { get; private set; }
 
-        public ILifetime Lifetime { get; private set; }
-            = new TransientLifetime();
+        public ILifecycle Lifecycle { get; private set; }
+            = new TransientLifecycle();
 
         public RegistrationBuilder(Type serviceType)
         {
@@ -31,9 +31,9 @@ namespace Nooshka.Registration
             return this;
         }
 
-        public IOptions WithLifetime(ILifetime lifetime)
+        public IOptions WithLifecycle(ILifecycle lifecycle)
         {
-            this.Lifetime = lifetime;
+            this.Lifecycle = lifecycle;
             return this;
         }
 

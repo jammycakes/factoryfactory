@@ -12,10 +12,10 @@ namespace Nooshka.Registration
         IOptions When(Func<ServiceRequest, bool> precondition);
 
         /// <summary>
-        ///  Specifies the registration lifetime.
+        ///  Specifies the registration lifecycle.
         /// </summary>
-        /// <param name="lifetime"></param>
+        /// <param name="lifecycle"></param>
         /// <returns></returns>
-        IOptions WithLifetime(ILifetime lifetime);
+        IOptions WithLifecycle(ILifecycle lifecycle);
     }
 }

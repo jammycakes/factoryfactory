@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Nooshka.Impl
 {
-    public class LifetimeManager : ILifetimeManager
+    public class LifecycleManager : ILifecycleManager
     {
         private LinkedList<IDisposable> _services = new LinkedList<IDisposable>();
 
