@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using Nooshka.Registration.Fluent;
 
 namespace Nooshka.Registration
 {
@@ -51,6 +52,19 @@ namespace Nooshka.Registration
             list.Add(registration);
         }
 
+        protected IImplementation Add(Type serviceType)
+        {
+            var registration = new RegistrationBuilder(serviceType);
+            Add(registration);
+            return registration;
+        }
+
+        protected IImplementation<TService> Add<TService>()
+        {
+            var registration = new RegistrationBuilder<TService>();
+            Add(registration);
+            return registration;
+        }
 
         IEnumerable<IRegistration> IModule.GetServiceRegistrations(Type type)
         {
