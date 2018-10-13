@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using Nooshka.Modules;
 
 namespace Nooshka
 {
@@ -35,7 +34,7 @@ namespace Nooshka
 
         public static Container CreateContainer(IServiceCollection services)
         {
-            return CreateContainer(new ServiceCollectionModule(services));
+            return CreateContainer(new Module(services));
         }
     }
 }
