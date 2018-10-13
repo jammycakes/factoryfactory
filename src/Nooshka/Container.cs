@@ -1,32 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Xml;
 using Microsoft.Extensions.DependencyInjection;
+using Nooshka.Impl;
 using Nooshka.Modules;
 
 namespace Nooshka
 {
-    public class Container : IServiceProvider, IDisposable
+    /// <summary>
+    ///  The core class which is responsible for resolution and management of
+    ///  requested services.
+    /// </summary>
+    public class Container : IServiceProvider, IServiceScope
     {
-        private IList<IModule> _modules = new List<IModule>();
+        private IServiceResolver _resolver;
 
-        public Container(params IModule[] modules)
+        /// <summary>
+        ///  Gets the default <see cref="ILifetimeManager"/> instance which
+        ///  tracks service lifetimes that correspond to the duration of this
+        ///  service.
+        /// </summary>
+        public ILifetimeManager LifetimeManager { get; } = new LifetimeManager();
+
+        public ICollection<IModule> Modules { get; }
+
+        public IServiceProvider ServiceProvider => this;
+
+        private Container(Container parent)
         {
-            _modules = new List<IModule>(modules);
+            Parent = parent;
+            Root = parent?.Root ?? this;
+            _resolver = new ServiceResolver(this);
         }
+
+        public Container(params IModule[] modules) : this(parent: null)
+        {
+            Modules = new ReadOnlyCollection<IModule>(modules.ToList());
+        }
+
 
         /* ====== Resolve ====== */
 
         public object GetService(Type serviceType)
         {
-            throw new NotImplementedException();
+            var request = new ServiceRequest(_resolver, serviceType, null);
+            return _resolver.GetService(request);
         }
 
         /* ====== Release ====== */
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            LifetimeManager.Dispose();
+        }
+
+        /* ====== Hierarchy ====== */
+
+        public Container Parent { get; }
+
+        public Container Root { get; }
+
+        public Container CreateChild()
+        {
+            return new Container(this);
         }
     }
 }
