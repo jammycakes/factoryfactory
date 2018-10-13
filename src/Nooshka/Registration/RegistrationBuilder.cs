@@ -1,6 +1,5 @@
 using System;
 using Nooshka.Lifecycle;
-using Nooshka.Registration.Fluent;
 
 namespace Nooshka.Registration
 {
@@ -24,7 +23,7 @@ namespace Nooshka.Registration
             if (!serviceType.IsAbstract) ImplementationType = serviceType;
         }
 
-        /* ====== IImplementation ====== */
+        /* ====== IOptions ====== */
 
         public IOptions When(Func<ServiceRequest, bool> precondition)
         {
@@ -37,6 +36,8 @@ namespace Nooshka.Registration
             this.Lifetime = lifetime;
             return this;
         }
+
+        /* ====== IImplementation ====== */
 
         public IOptions As(Type implementationType)
         {
@@ -69,6 +70,16 @@ namespace Nooshka.Registration
         public IOptions As<TImplementation>() where TImplementation : TService
         {
             return base.As(typeof(TImplementation));
+        }
+
+        public IOptions With(TService instance)
+        {
+            return base.With(instance);
+        }
+
+        public IOptions From(Func<ServiceRequest, TService> request)
+        {
+            return base.From(req => request(req));
         }
     }
 }
