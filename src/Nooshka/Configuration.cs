@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +37,13 @@ namespace Nooshka
         public static Container CreateContainer(IServiceCollection services)
         {
             return CreateContainer(new Module(services));
+        }
+
+        public static Container CreateContainer(Action<IModule> moduleConfig)
+        {
+            var module = new Module();
+            moduleConfig(module);
+            return CreateContainer(module);
         }
     }
 }
