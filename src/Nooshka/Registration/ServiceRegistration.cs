@@ -116,17 +116,7 @@ namespace Nooshka.Registration
                     ("Invalid descriptor: neither a service nor a service factory has been set.");
             }
 
-            switch (descriptor.Lifetime) {
-                case ServiceLifetime.Transient:
-                    Lifecycle = new TransientLifecycle();
-                    break;
-                case ServiceLifetime.Scoped:
-                    Lifecycle = new ScopedLifecycle();
-                    break;
-                case ServiceLifetime.Singleton:
-                    Lifecycle = new SingletonLifecycle();
-                    break;
-            }
+            Lifecycle = Lifecycle.Get(descriptor.Lifetime);
 
             Precondition = precondition ?? (sr => true);
         }

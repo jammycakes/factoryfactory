@@ -33,17 +33,13 @@ namespace Nooshka
 
         /* ====== Lifecycle overloads ====== */
 
-        private static readonly Lifecycle _singletonLifecycle = new SingletonLifecycle();
-        private static readonly Lifecycle _scopedLifecycle = new ScopedLifecycle();
-        private static readonly Lifecycle _transientLifecycle = new TransientLifecycle();
-
         public static IOptions Singleton(this IOptions options) =>
-            options.WithLifecycle(_singletonLifecycle);
+            options.WithLifecycle(Lifecycle.Singleton);
 
         public static IOptions Scoped(this IOptions options) =>
-            options.WithLifecycle(_scopedLifecycle);
+            options.WithLifecycle(Lifecycle.Scoped);
 
         public static IOptions Transient(this IOptions options) =>
-            options.WithLifecycle(_transientLifecycle);
+            options.WithLifecycle(Lifecycle.Transient);
     }
 }
