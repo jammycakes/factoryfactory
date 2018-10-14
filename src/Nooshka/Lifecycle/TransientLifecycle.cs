@@ -6,5 +6,10 @@ namespace Nooshka.Lifecycle
         {
             return null;
         }
+
+        public Container GetServicingContainer(ServiceRequest request)
+        {
+            return request.Container;
+        }
     }
 }

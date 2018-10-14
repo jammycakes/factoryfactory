@@ -6,5 +6,10 @@ namespace Nooshka.Lifecycle
         {
             return request.Container.Root.LifecycleManager;
         }
+
+        public Container GetServicingContainer(ServiceRequest request)
+        {
+            return request.Container.Root;
+        }
     }
 }
