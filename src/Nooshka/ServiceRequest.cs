@@ -9,9 +9,11 @@ namespace Nooshka
     /// </summary>
     public class ServiceRequest
     {
+        private ServiceRequest _root;
+
         /// <summary>
         ///  The <see cref="Container"/> instance to which the request was
-        ///  originally made. This may or may not be the service resolver that
+        ///  originally made. This may or may not be the container that
         ///  ultimately creates and manages the service.
         /// </summary>
         public Container Container { get; }
@@ -35,17 +37,23 @@ namespace Nooshka
         /// </summary>
         /// <param name="container"></param>
         /// <param name="requestedType"></param>
-        /// <param name="receivingType"></param>
+        /// <param name="receiver"></param>
         public ServiceRequest(Container container, Type requestedType, ServiceRequest receiver)
         {
             Container = container;
             RequestedType = requestedType;
             Receiver = receiver;
+            _root = receiver?._root;
         }
 
         public ServiceRequest CreateDependencyRequest(Type dependencyType)
         {
             return new ServiceRequest(Container, dependencyType, this);
+        }
+
+        public object ResolveDependency(Type dependencyType)
+        {
+            return Container.GetService(CreateDependencyRequest(dependencyType));
         }
     }
 }

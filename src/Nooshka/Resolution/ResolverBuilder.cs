@@ -47,30 +47,18 @@ namespace Nooshka.Resolution
             var req = Expression.Parameter(typeof(ServiceRequest), "serviceRequest");
 
             // Expression for each type looks like this:
-            // (type)req => req.Container.GetService(req.CreateDependencyRequest(type))
+            // (type)req => req.ResolveDependency(type)
 
             Expression GetParameterResolutionExpression(Type type)
             {
-                var dependencyExpression = Expression.Call(
-                    req,
-                    typeof(ServiceRequest).GetMethod(nameof(ServiceRequest.CreateDependencyRequest)),
-                    Expression.Constant(type)
+                return Expression.Convert(
+                    Expression.Call(
+                        req,
+                        typeof(ServiceRequest).GetMethod(nameof(ServiceRequest.ResolveDependency)),
+                        Expression.Constant(type)
+                    ),
+                    type
                 );
-
-                var containerExpression = Expression.Property(
-                    req,
-                    typeof(ServiceRequest).GetProperty(nameof(ServiceRequest.Container))
-                );
-
-                var getServiceExpression = Expression.Call(
-                    containerExpression,
-                    typeof(Container).GetMethod(nameof(Container.GetService), new[] {typeof(ServiceRequest)}),
-                    dependencyExpression
-                );
-
-                var castExpression = Expression.Convert(getServiceExpression, type);
-
-                return castExpression;
             }
 
             var constructorParameterExpressions =
