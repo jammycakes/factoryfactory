@@ -27,9 +27,9 @@ namespace Nooshka.Registration
         Type ImplementationType { get; }
 
         /// <summary>
-        ///  The <see cref="ILifecycle"/> implementation that tells the
+        ///  The <see cref="Nooshka.Lifecycle"/> implementation that tells the
         ///  container where to resolve and when to release dependencies.
         /// </summary>
-        ILifecycle Lifecycle { get; }
+        Lifecycle Lifecycle { get; }
     }
 }

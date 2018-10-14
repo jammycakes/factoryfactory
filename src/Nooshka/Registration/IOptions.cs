@@ -16,6 +16,6 @@ namespace Nooshka.Registration
         /// </summary>
         /// <param name="lifecycle"></param>
         /// <returns></returns>
-        IOptions WithLifecycle(ILifecycle lifecycle);
+        IOptions WithLifecycle(Lifecycle lifecycle);
     }
 }

@@ -1,6 +1,6 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using Nooshka.Lifecycle;
+using Nooshka.Lifecycles;
 using Nooshka.Registration;
 
 namespace Nooshka
@@ -33,9 +33,9 @@ namespace Nooshka
 
         /* ====== Lifecycle overloads ====== */
 
-        private static readonly ILifecycle _singletonLifecycle = new SingletonLifecycle();
-        private static readonly ILifecycle _scopedLifecycle = new ScopedLifecycle();
-        private static readonly ILifecycle _transientLifecycle = new TransientLifecycle();
+        private static readonly Lifecycle _singletonLifecycle = new SingletonLifecycle();
+        private static readonly Lifecycle _scopedLifecycle = new ScopedLifecycle();
+        private static readonly Lifecycle _transientLifecycle = new TransientLifecycle();
 
         public static IOptions Singleton(this IOptions options) =>
             options.WithLifecycle(_singletonLifecycle);

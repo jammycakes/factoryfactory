@@ -1,5 +1,5 @@
 using System;
-using Nooshka.Lifecycle;
+using Nooshka.Lifecycles;
 
 namespace Nooshka.Registration
 {
@@ -14,7 +14,7 @@ namespace Nooshka.Registration
 
         public Type ImplementationType { get; private set; }
 
-        public ILifecycle Lifecycle { get; private set; }
+        public Lifecycle Lifecycle { get; private set; }
             = new TransientLifecycle();
 
         public RegistrationBuilder(Type serviceType)
@@ -31,7 +31,7 @@ namespace Nooshka.Registration
             return this;
         }
 
-        public IOptions WithLifecycle(ILifecycle lifecycle)
+        public IOptions WithLifecycle(Lifecycle lifecycle)
         {
             this.Lifecycle = lifecycle;
             return this;

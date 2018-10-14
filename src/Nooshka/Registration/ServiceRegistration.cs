@@ -1,6 +1,6 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using Nooshka.Lifecycle;
+using Nooshka.Lifecycles;
 
 namespace Nooshka.Registration
 {
@@ -34,7 +34,7 @@ namespace Nooshka.Registration
         /// <summary>
         ///
         /// </summary>
-        public ILifecycle Lifecycle { get; }
+        public Lifecycle Lifecycle { get; }
 
         /// <summary>
         ///  Registers a service to be resolved as a concrete type.
@@ -45,7 +45,7 @@ namespace Nooshka.Registration
         /// <param name="precondition"></param>
         public ServiceRegistration(Type serviceType,
             Type implementationType,
-            ILifecycle lifecycle,
+            Lifecycle lifecycle,
             Func<ServiceRequest, bool> precondition = null)
         {
             ServiceType = serviceType;
@@ -81,7 +81,7 @@ namespace Nooshka.Registration
         /// <param name="precondition"></param>
         public ServiceRegistration(Type serviceType,
             Func<ServiceRequest, object> implementationFactory,
-            ILifecycle lifecycle,
+            Lifecycle lifecycle,
             Func<ServiceRequest, bool> precondition = null)
         {
             ServiceType = serviceType;
