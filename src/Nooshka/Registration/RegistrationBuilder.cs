@@ -5,9 +5,9 @@ namespace Nooshka.Registration
 {
     public class RegistrationBuilder
     {
-        protected Registration State { get; }
+        protected ServiceRegistration State { get; }
 
-        public RegistrationBuilder(Registration state)
+        public RegistrationBuilder(ServiceRegistration state)
         {
             State = state;
         }
@@ -55,7 +55,7 @@ namespace Nooshka.Registration
 
     public class RegistrationBuilder<TService> : RegistrationBuilder
     {
-        public RegistrationBuilder(Registration state)
+        public RegistrationBuilder(ServiceRegistration state)
             : base(state)
         {
         }

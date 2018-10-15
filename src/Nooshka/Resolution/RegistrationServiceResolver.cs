@@ -4,21 +4,21 @@ namespace Nooshka.Resolution
 {
     public class RegistrationServiceResolver : IServiceResolver
     {
-        private readonly Registration.Registration _registration;
+        private readonly Registration.ServiceRegistration _serviceRegistration;
 
-        public RegistrationServiceResolver(Registration.Registration registration)
+        public RegistrationServiceResolver(Registration.ServiceRegistration serviceRegistration)
         {
-            _registration = registration;
+            _serviceRegistration = serviceRegistration;
         }
 
         public bool PreconditionMet(ServiceRequest request)
         {
-            return _registration.Precondition(request);
+            return _serviceRegistration.Precondition(request);
         }
 
         public object GetService(ServiceRequest request)
         {
-            return _registration.ImplementationFactory(request);
+            return _serviceRegistration.ImplementationFactory(request);
         }
     }
 }

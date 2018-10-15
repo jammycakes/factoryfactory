@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Nooshka.Registration
 {
-    public class Registration
+    public class ServiceRegistration
     {
         private bool _locked = false;
 
@@ -16,10 +16,10 @@ namespace Nooshka.Registration
         /* ====== Constructors ====== */
 
         /// <summary>
-        ///  Creates a new default instance of the <see cref="Registration"/>
+        ///  Creates a new default instance of the <see cref="ServiceRegistration"/>
         ///  class.
         /// </summary>
-        public Registration(Type serviceType)
+        public ServiceRegistration(Type serviceType)
         {
             _serviceType = serviceType;
             _locked = false;
@@ -30,7 +30,7 @@ namespace Nooshka.Registration
         ///  <see cref="ServiceDescriptor"/> instance.
         /// </summary>
         /// <param name="serviceDescriptor"></param>
-        public Registration(ServiceDescriptor descriptor,
+        public ServiceRegistration(ServiceDescriptor descriptor,
             Func<ServiceRequest, bool> precondition = null)
         {
             _serviceType = descriptor.ServiceType;

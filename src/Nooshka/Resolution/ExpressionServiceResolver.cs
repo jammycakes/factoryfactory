@@ -10,11 +10,11 @@ namespace Nooshka.Resolution
         private Func<ServiceRequest, object> _getService;
 
         public ExpressionServiceResolver(
-            Registration.Registration registration,
+            Registration.ServiceRegistration serviceRegistration,
             Expression<Func<ServiceRequest, object>> _getServiceExpression
         )
         {
-            _preconditionMet = registration.Precondition;
+            _preconditionMet = serviceRegistration.Precondition;
             _getService = _getServiceExpression.Compile();
         }
 
