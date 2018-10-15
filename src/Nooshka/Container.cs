@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Nooshka.Impl;
 using Nooshka.Resolution;
@@ -39,7 +40,10 @@ namespace Nooshka
 
         public object GetService(ServiceRequest serviceRequest)
         {
-            return null;
+            var resolvers = _resolverCache.GetResolvers(serviceRequest.RequestedType);
+            var resolver = resolvers.LastOrDefault();
+            if (resolver == null) return null;
+            return resolver.GetService(serviceRequest);
         }
 
         /* ====== Release ====== */

@@ -40,11 +40,16 @@ namespace Nooshka.Registration
                 if (create) {
                     result = new List<Registration>();
                     _registrations.Add(type, result);
-
                 }
             }
 
             return result;
+        }
+
+        private void Add(Type registrationType, Registration registration)
+        {
+            var list = GetServiceRegistrations(registrationType, true);
+            list.Add(registration);
         }
 
         public void Add(Registration registration)
@@ -65,14 +70,14 @@ namespace Nooshka.Registration
 
         public RegistrationBuilder Resolve(Type type)
         {
-            var registration = new Registration();
+            var registration = new Registration(type);
             Add(registration);
-            return new RegistrationBuilder(type, registration);
+            return new RegistrationBuilder(registration);
         }
 
         public RegistrationBuilder<TService> Resolve<TService>()
         {
-            var registration = new Registration();
+            var registration = new Registration(typeof(TService));
             Add(registration);
             return new RegistrationBuilder<TService>(registration);
         }

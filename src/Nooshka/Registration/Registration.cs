@@ -19,8 +19,11 @@ namespace Nooshka.Registration
         ///  Creates a new default instance of the <see cref="Registration"/>
         ///  class.
         /// </summary>
-        public Registration()
-        {}
+        public Registration(Type serviceType)
+        {
+            _serviceType = serviceType;
+            _locked = false;
+        }
 
         /// <summary>
         ///  Registers a service to be provided based on a
@@ -30,26 +33,26 @@ namespace Nooshka.Registration
         public Registration(ServiceDescriptor descriptor,
             Func<ServiceRequest, bool> precondition = null)
         {
-            ServiceType = descriptor.ServiceType;
+            _serviceType = descriptor.ServiceType;
             if (descriptor.ImplementationType != null) {
-                ImplementationType = descriptor.ImplementationType;
+                _implementationType = descriptor.ImplementationType;
             }
             else if (descriptor.ImplementationInstance != null) {
                 var instance = descriptor.ImplementationInstance;
-                ImplementationFactory = sr => instance;
+                _implementationFactory = sr => instance;
             }
             else if (descriptor.ImplementationFactory != null) {
                 var factory = descriptor.ImplementationFactory;
-                ImplementationFactory = sr => factory(sr.Container);
+                _implementationFactory = sr => factory(sr.Container);
             }
             else {
                 throw new ConfigurationException
                     ("Invalid descriptor: neither a service nor a service factory has been set.");
             }
 
-            Lifecycle = Lifecycle.Get(descriptor.Lifetime);
-
-            Precondition = precondition ?? (sr => true);
+            _lifecycle = Lifecycle.Get(descriptor.Lifetime);
+            _precondition = precondition ?? (sr => true);
+            _locked = true;
         }
 
         /* ====== Lock on read ====== */
@@ -75,10 +78,7 @@ namespace Nooshka.Registration
         /// <summary>
         ///  The type of service being registered.
         /// </summary>
-        public Type ServiceType {
-            get => Lock(_serviceType);
-            set => _serviceType = AssertUnlocked(value);
-        }
+        public Type ServiceType => _serviceType;
 
         /// <summary>
         ///  The precondition for this service registration to be activated.
