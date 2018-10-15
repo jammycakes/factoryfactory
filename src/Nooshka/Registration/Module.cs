@@ -7,9 +7,9 @@ namespace Nooshka.Registration
 {
     public class Module : IModule
     {
-        private IDictionary<Type, List<IRegistration>> _registrations;
+        private IDictionary<Type, List<Registration>> _registrations;
 
-        public Module(params IRegistration[] registrations)
+        public Module(params Registration[] registrations)
         {
             var registrationsByType =
                 from registration in registrations
@@ -21,22 +21,24 @@ namespace Nooshka.Registration
         }
 
         public Module(IServiceCollection services)
-            : this(services.Select<ServiceDescriptor, IRegistration>
-                (s => new ServiceRegistration(s)).ToArray())
+            : this(services.Select<ServiceDescriptor, Registration>
+                (s => new Registration(s)).ToArray())
         {
         }
 
         protected Module()
         {
-            _registrations = new Dictionary<Type, List<IRegistration>>();
+            _registrations = new Dictionary<Type, List<Registration>>();
         }
 
-        private List<IRegistration> GetServiceRegistrations(Type type, bool create)
+        /* ====== Registration ====== */
+
+        private List<Registration> GetServiceRegistrations(Type type, bool create)
         {
-            List<IRegistration> result = null;
+            List<Registration> result = null;
             if (!_registrations.TryGetValue(type, out result)) {
                 if (create) {
-                    result = new List<IRegistration>();
+                    result = new List<Registration>();
                     _registrations.Add(type, result);
 
                 }
@@ -45,18 +47,45 @@ namespace Nooshka.Registration
             return result;
         }
 
-        public void Add(IRegistration registration)
+        public void Add(Registration registration)
         {
             var list = GetServiceRegistrations(registration.ServiceType, true);
             list.Add(registration);
         }
 
-        IEnumerable<IRegistration> IModule.GetRegistrations(Type type)
+        public void Add(IServiceCollection services)
         {
-            return (GetServiceRegistrations(type, false) ?? Enumerable.Empty<IRegistration>())
+            foreach (var service in services) {
+                Add(new Registration(service));
+            }
+        }
+
+
+        /* ====== Fluent registration ====== */
+
+        public RegistrationBuilder Resolve(Type type)
+        {
+            var registration = new Registration();
+            Add(registration);
+            return new RegistrationBuilder(type, registration);
+        }
+
+        public RegistrationBuilder<TService> Resolve<TService>()
+        {
+            var registration = new Registration();
+            Add(registration);
+            return new RegistrationBuilder<TService>(registration);
+        }
+
+
+        /* ====== Resolution ====== */
+
+        IEnumerable<Registration> IModule.GetRegistrations(Type type)
+        {
+            return (GetServiceRegistrations(type, false) ?? Enumerable.Empty<Registration>())
                 .AsEnumerable();
         }
 
-        public bool IsTypeRegistered(Type type) => _registrations.ContainsKey(type);
+        bool IModule.IsTypeRegistered(Type type) => _registrations.ContainsKey(type);
     }
 }

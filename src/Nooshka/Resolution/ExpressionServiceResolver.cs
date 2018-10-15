@@ -10,7 +10,7 @@ namespace Nooshka.Resolution
         private Func<ServiceRequest, object> _getService;
 
         public ExpressionServiceResolver(
-            IRegistration registration,
+            Registration.Registration registration,
             Expression<Func<ServiceRequest, object>> _getServiceExpression
         )
         {

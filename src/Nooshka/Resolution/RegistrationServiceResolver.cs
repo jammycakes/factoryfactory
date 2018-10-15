@@ -4,9 +4,9 @@ namespace Nooshka.Resolution
 {
     public class RegistrationServiceResolver : IServiceResolver
     {
-        private readonly IRegistration _registration;
+        private readonly Registration.Registration _registration;
 
-        public RegistrationServiceResolver(IRegistration registration)
+        public RegistrationServiceResolver(Registration.Registration registration)
         {
             _registration = registration;
         }

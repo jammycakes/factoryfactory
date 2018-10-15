@@ -1,85 +1,108 @@
 using System;
-using Nooshka.Lifecycles;
+using System.ComponentModel;
 
 namespace Nooshka.Registration
 {
-    public class RegistrationBuilder : IRegistration, IImplementation, IOptions
+    public class RegistrationBuilder
     {
-        public Type ServiceType { get; private set; }
+        protected Registration State { get; }
 
-        public Func<ServiceRequest, bool> Precondition { get; private set; }
-            = sr => true;
-
-        public Func<ServiceRequest, object> ImplementationFactory { get; private set; }
-
-        public Type ImplementationType { get; private set; }
-
-        public Lifecycle Lifecycle { get; private set; }
-            = new TransientLifecycle();
-
-        public RegistrationBuilder(Type serviceType)
+        public RegistrationBuilder(Type serviceType, Registration state)
         {
-            ServiceType = serviceType;
-            if (!serviceType.IsAbstract) ImplementationType = serviceType;
+            State = state;
+            State.ServiceType = serviceType;
         }
 
-        /* ====== IOptions ====== */
-
-        public IOptions When(Func<ServiceRequest, bool> precondition)
+        /// <summary>
+        ///  Specifies the concrete class to provide services for this registration.
+        /// </summary>
+        /// <param name="implementationType">
+        ///  The concrete type to implement this service.
+        /// </param>
+        /// <returns></returns>
+        public RegistrationOptions<object> As(Type implementationType)
         {
-            this.Precondition = precondition;
-            return this;
+            State.ImplementationType = implementationType;
+            State.ImplementationFactory = null;
+            return new RegistrationOptions<object>(State);
         }
 
-        public IOptions WithLifecycle(Lifecycle lifecycle)
+        /// <summary>
+        ///  Specifies an already-created instance to provide services for this
+        ///  registration.
+        /// </summary>
+        /// <param name="implementation">
+        ///  The object that implements this service.
+        /// </param>
+        /// <returns></returns>
+        public RegistrationOptions<object> With(object implementation)
         {
-            this.Lifecycle = lifecycle;
-            return this;
+            return From(req => implementation);
         }
 
-        /* ====== IImplementation ====== */
-
-        public IOptions As(Type implementationType)
+        /// <summary>
+        ///  Specifies a factory method to provide services for this registration.
+        /// </summary>
+        /// <returns>
+        ///  A factory method that creates the requested service.
+        /// </returns>
+        public RegistrationOptions<object> From(Func<ServiceRequest, object> factory)
         {
-            this.ImplementationType = implementationType;
-            this.ImplementationFactory = null;
-            return this;
-        }
-
-        public IOptions With(object instance)
-        {
-            this.ImplementationFactory = req => instance;
-            this.ImplementationType = null;
-            return this;
-        }
-
-        public IOptions From(Func<ServiceRequest, object> request)
-        {
-            this.ImplementationFactory = request;
-            this.ImplementationType = null;
-            return this;
+            State.ImplementationFactory = factory;
+            State.ImplementationType = null;
+            return new RegistrationOptions<object>(State);
         }
     }
 
-
-    public class RegistrationBuilder<TService>: RegistrationBuilder, IImplementation<TService>
+    public class RegistrationBuilder<TService> : RegistrationBuilder
     {
-        public RegistrationBuilder() : base(typeof(TService))
-        { }
-
-        public IOptions As<TImplementation>() where TImplementation : TService
+        public RegistrationBuilder(Registration state)
+            : base(typeof(TService), state)
         {
-            return base.As(typeof(TImplementation));
         }
 
-        public IOptions With(TService instance)
+        /// <summary>
+        ///  Specifies the concrete class to provide services for this registration.
+        /// </summary>
+        /// <returns></returns>
+        /// <typeparam name="TImplementation">
+        ///  The concrete type to implement this service.
+        /// </typeparam>
+        /// <returns></returns>
+        public RegistrationOptions<TService> As<TImplementation>()
+            where TImplementation : TService
         {
-            return base.With(instance);
+            State.ImplementationType = typeof(TImplementation);
+            State.ImplementationFactory = null;
+            return new RegistrationOptions<TService>(State);
         }
 
-        public IOptions From(Func<ServiceRequest, TService> request)
+        /// <summary>
+        ///  Specifies an already-created instance to provide services for this registration.
+        /// </summary>
+        /// <param name="implementation">
+        ///  The object that implements this service.
+        /// </param>
+        /// <returns></returns>
+        public RegistrationOptions<TService> With(TService implementation)
         {
-            return base.From(req => request(req));
+            State.ImplementationFactory = req => implementation;
+            State.ImplementationType = null;
+            return new RegistrationOptions<TService>(State);
+        }
+
+        /// <summary>
+        ///  Specifies a factory method to provide services for this registration.
+        /// </summary>
+        /// <param name="factory">
+        ///  A factory method that creates the requested service.
+        /// </param>
+        /// <returns></returns>
+        public RegistrationOptions<TService> From(Func<ServiceRequest, TService> factory)
+        {
+            State.ImplementationFactory = req => factory(req);
+            State.ImplementationType = null;
+            return new RegistrationOptions<TService>(State);
         }
     }
 }

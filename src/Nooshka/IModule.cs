@@ -6,9 +6,9 @@ namespace Nooshka
 {
     public interface IModule
     {
-        void Add(IRegistration registration);
+        void Add(Registration.Registration registration);
 
-        IEnumerable<IRegistration> GetRegistrations(Type type);
+        IEnumerable<Registration.Registration> GetRegistrations(Type type);
 
         bool IsTypeRegistered(Type type);
     }

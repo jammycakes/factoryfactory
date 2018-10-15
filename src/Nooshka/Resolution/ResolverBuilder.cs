@@ -8,10 +8,10 @@ namespace Nooshka.Resolution
 {
     public class ResolverBuilder
     {
-        private readonly IRegistration _registration;
+        private readonly Registration.Registration _registration;
         private readonly ResolverCache _cache;
 
-        public ResolverBuilder(IRegistration registration, ResolverCache cache)
+        public ResolverBuilder(Registration.Registration registration, ResolverCache cache)
         {
             _registration = registration;
             _cache = cache;
