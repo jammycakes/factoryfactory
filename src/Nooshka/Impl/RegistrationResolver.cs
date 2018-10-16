@@ -7,7 +7,7 @@ namespace Nooshka.Impl
         {
         }
 
-        public override object GetService(ServiceRequest request)
+        protected override object Resolve(ServiceRequest request)
         {
             return Registration.ImplementationFactory(request);
         }

@@ -14,7 +14,7 @@ namespace Nooshka.Impl
             _getService = expression.Compile();
         }
 
-        public override object GetService(ServiceRequest request)
+        protected override object Resolve(ServiceRequest request)
         {
             return _getService(request);
         }

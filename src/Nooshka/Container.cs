@@ -10,7 +10,7 @@ namespace Nooshka
     ///  The core class which is responsible for resolution and management of
     ///  requested services.
     /// </summary>
-    public class Container : IServiceProvider, IServiceScope
+    public class Container : IServiceProvider, IServiceScope, IServiceScopeFactory
     {
         private ResolverCache _resolverCache;
 
@@ -22,7 +22,7 @@ namespace Nooshka
         {
             Parent = parent;
             Root = parent?.Root ?? this;
-            LifecycleManager = new LifecycleManager(this);
+            LifecycleManager = new LifecycleManager();
         }
 
         public Container(params IModule[] modules) : this(parent: null)
@@ -46,35 +46,11 @@ namespace Nooshka
                 select resolver;
         }
 
-        private object ResolveFromServicingContainer
-            (Resolver resolver, ServiceRequest request)
-        {
-            var service = resolver.GetService(request);
-            if (service == null) return null;
-            if (service is IDisposable) {
-                var lifecycle = resolver.Registration.Lifecycle;
-                var lifecycleManager = lifecycle.GetLifecycleManager(request);
-                if (lifecycleManager != null) {
-                    lifecycleManager.Add((IDisposable)service);
-                }
-            }
-
-            return service;
-        }
-
-        private object Resolve(Resolver resolver, ServiceRequest request)
-        {
-            if (!resolver.PreconditionMet(request)) return null;
-            var lifecycle = resolver.Registration.Lifecycle;
-            return lifecycle.GetServicingContainer(request)
-                .ResolveFromServicingContainer(resolver, request);
-        }
-
         public object GetService(ServiceRequest request)
         {
             var resolver = GetResolvers(request).LastOrDefault();
             if (resolver == null) return null;
-            return Resolve(resolver, request);
+            return resolver.GetService(request);
         }
 
         /* ====== Release ====== */
@@ -93,7 +69,7 @@ namespace Nooshka
         public Container CreateChild()
         {
             var child = new Container(this);
-            LifecycleManager.Add(child);
+            LifecycleManager.Track(child);
             return child;
         }
 

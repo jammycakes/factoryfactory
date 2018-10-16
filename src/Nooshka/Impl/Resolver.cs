@@ -1,9 +1,7 @@
+using System;
+
 namespace Nooshka.Impl
 {
-    // TODO: WE NEED TO MAKE SURE WE'RE USING THE CORRECT CONTAINER!
-    // Currently all requests are going to the requesting container, and
-    // lifecycles are not being handled. This needs to be fixed!
-
     public abstract class Resolver
     {
         public Resolver(Registration registration)
@@ -16,6 +14,24 @@ namespace Nooshka.Impl
         public bool PreconditionMet(ServiceRequest request) =>
             Registration.Precondition(request);
 
-        public abstract object GetService(ServiceRequest request);
+        public object GetService(ServiceRequest request)
+        {
+            if (!PreconditionMet(request)) return null;
+            var servicingContainer =
+                Registration.Lifecycle.GetServicingContainer(request);
+            var lifecycleManager = servicingContainer.LifecycleManager;
+            var service = lifecycleManager.GetExisting(Registration);
+            if (service == null) {
+                service = Resolve(request);
+                lifecycleManager.Cache(Registration, service);
+                if (Registration.Lifecycle.IsTracked && service is IDisposable disposable) {
+                    lifecycleManager.Track(disposable);
+                }
+            }
+
+            return service;
+        }
+
+        protected abstract object Resolve(ServiceRequest request);
     }
 }

@@ -32,7 +32,7 @@ namespace Nooshka.Impl
                 orderby info descending
                 select info.constructor;
 
-            return constructors.Single();
+            return constructors.First();
         }
 
         public Expression<Func<ServiceRequest, object>>

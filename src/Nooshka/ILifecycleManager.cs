@@ -1,11 +1,14 @@
 using System;
+using Nooshka.Impl;
 
 namespace Nooshka
 {
     public interface ILifecycleManager : IDisposable
     {
-        void Add(IDisposable managedService);
+        void Cache(Registration registration, object service);
 
-        Container Container { get; }
+        void Track(IDisposable service);
+
+        object GetExisting(Registration registration);
     }
 }

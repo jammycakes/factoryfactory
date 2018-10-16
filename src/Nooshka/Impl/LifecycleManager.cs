@@ -6,18 +6,27 @@ namespace Nooshka.Impl
     public class LifecycleManager : ILifecycleManager
     {
         private LinkedList<IDisposable> _services = new LinkedList<IDisposable>();
+        private IDictionary<Registration, object> _servicesByRegistration
+            = new Dictionary<Registration, object>();
 
-        public LifecycleManager(Container container)
+        public void Cache(Registration registration, object service)
         {
-            Container = container;
+            _servicesByRegistration.Add(registration, service);
         }
 
-        public void Add(IDisposable managedService)
+        public void Track(IDisposable service)
         {
-            _services.AddFirst(managedService);
+            _services.AddFirst(service);
         }
 
-        public Container Container { get; }
+        public object GetExisting(Registration registration)
+        {
+            if (_servicesByRegistration.TryGetValue(registration, out var obj)) {
+                return obj;
+            }
+
+            return null;
+        }
 
         public void Dispose()
         {

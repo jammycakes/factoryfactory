@@ -6,6 +6,7 @@ namespace Nooshka.Impl
     public class Registration
     {
         private bool _locked = false;
+        private readonly object _identity = new object();
 
         private Type _serviceType;
         private Func<ServiceRequest, bool> _precondition = req => true;
@@ -29,7 +30,8 @@ namespace Nooshka.Impl
         ///  Registers a service to be provided based on a
         ///  <see cref="ServiceDescriptor"/> instance.
         /// </summary>
-        /// <param name="serviceDescriptor"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="precondition"></param>
         public Registration(ServiceDescriptor descriptor,
             Func<ServiceRequest, bool> precondition = null)
         {
@@ -114,6 +116,20 @@ namespace Nooshka.Impl
         public Lifecycle Lifecycle {
             get => Lock(_lifecycle);
             set => _lifecycle = AssertUnlocked(value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Registration reg) {
+                return reg._identity == _identity;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return _identity.GetHashCode();
         }
     }
 }
