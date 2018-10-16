@@ -4,9 +4,9 @@ namespace Nooshka.Impl
 {
     public class RegistrationOptions<TService>
     {
-        private readonly ServiceRegistration _state;
+        private readonly Registration _state;
 
-        public RegistrationOptions(ServiceRegistration state)
+        public RegistrationOptions(Registration state)
         {
             _state = state;
         }

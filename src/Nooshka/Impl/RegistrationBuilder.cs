@@ -4,9 +4,9 @@ namespace Nooshka.Impl
 {
     public class RegistrationBuilder
     {
-        protected ServiceRegistration State { get; }
+        protected Registration State { get; }
 
-        public RegistrationBuilder(ServiceRegistration state)
+        public RegistrationBuilder(Registration state)
         {
             State = state;
         }
@@ -54,7 +54,7 @@ namespace Nooshka.Impl
 
     public class RegistrationBuilder<TService> : RegistrationBuilder
     {
-        public RegistrationBuilder(ServiceRegistration state)
+        public RegistrationBuilder(Registration state)
             : base(state)
         {
         }

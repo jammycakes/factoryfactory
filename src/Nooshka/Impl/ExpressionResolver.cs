@@ -8,7 +8,7 @@ namespace Nooshka.Impl
         private Func<ServiceRequest, object> _getService;
 
         public ExpressionResolver
-            (ServiceRegistration registration, Expression<Func<ServiceRequest, object>> expression)
+            (Registration registration, Expression<Func<ServiceRequest, object>> expression)
             : base(registration)
         {
             _getService = expression.Compile();

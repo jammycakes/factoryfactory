@@ -2,7 +2,7 @@ namespace Nooshka.Impl
 {
     public class RegistrationResolver : Resolver
     {
-        public RegistrationResolver(ServiceRegistration registration)
+        public RegistrationResolver(Registration registration)
             : base(registration)
         {
         }

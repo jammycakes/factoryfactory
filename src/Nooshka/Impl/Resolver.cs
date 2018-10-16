@@ -6,12 +6,12 @@ namespace Nooshka.Impl
 
     public abstract class Resolver
     {
-        public Resolver(ServiceRegistration registration)
+        public Resolver(Registration registration)
         {
             Registration = registration;
         }
 
-        public ServiceRegistration Registration { get; }
+        public Registration Registration { get; }
 
         public bool PreconditionMet(ServiceRequest request) =>
             Registration.Precondition(request);
