@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Nooshka.Impl;
@@ -12,7 +13,7 @@ namespace Nooshka
     /// </summary>
     public class Container : IServiceProvider, IServiceScope, IServiceScopeFactory
     {
-        private ResolverCache _resolverCache;
+        private readonly ResolverCache _resolverCache;
 
         public ILifecycleManager LifecycleManager { get; }
 
@@ -23,6 +24,7 @@ namespace Nooshka
             Parent = parent;
             Root = parent?.Root ?? this;
             LifecycleManager = new LifecycleManager();
+            _resolverCache = Root._resolverCache;
         }
 
         public Container(params IModule[] modules) : this(parent: null)
