@@ -49,8 +49,8 @@ namespace Nooshka
             public DefaultModule()
             {
                 Resolve<Container>().From(req => req.Container);
-                this.Resolve<IServiceProvider>().From(req => req.Container);
-                this.Resolve<IServiceScope>().From(req => req.Container.CreateChild());
+                Resolve<IServiceProvider>().From(req => req.Container);
+                Resolve<IServiceScopeFactory>().From(req => req.Container);
             }
         }
     }

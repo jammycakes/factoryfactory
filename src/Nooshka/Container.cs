@@ -96,5 +96,10 @@ namespace Nooshka
             LifecycleManager.Add(child);
             return child;
         }
+
+        IServiceScope IServiceScopeFactory.CreateScope()
+        {
+            return CreateChild();
+        }
     }
 }
