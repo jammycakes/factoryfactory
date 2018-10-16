@@ -6,9 +6,9 @@ namespace Nooshka.Resolution
     // Currently all requests are going to the requesting container, and
     // lifecycles are not being handled. This needs to be fixed!
 
-    public abstract class ServiceResolver
+    public abstract class Resolver
     {
-        public ServiceResolver(ServiceRegistration registration)
+        public Resolver(ServiceRegistration registration)
         {
             Registration = registration;
         }

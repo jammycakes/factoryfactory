@@ -10,19 +10,19 @@ namespace Nooshka.Resolution
         private readonly IList<IModule> _modules;
 
         private ReaderWriterLockSlim _resolverLock = new ReaderWriterLockSlim();
-        private IDictionary<Type, List<ServiceResolver>> _resolvers
-            = new Dictionary<Type, List<ServiceResolver>>();
+        private IDictionary<Type, List<Resolver>> _resolvers
+            = new Dictionary<Type, List<Resolver>>();
 
         public ResolverCache(IEnumerable<IModule> modules)
         {
             _modules = modules.ToList();
         }
 
-        public IEnumerable<ServiceResolver> GetResolvers(Type type)
+        public IEnumerable<Resolver> GetResolvers(Type type)
         {
             _resolverLock.EnterUpgradeableReadLock();
             try {
-                List<ServiceResolver> result;
+                List<Resolver> result;
                 if (!_resolvers.TryGetValue(type, out result)) {
                     _resolverLock.EnterWriteLock();
                     try {

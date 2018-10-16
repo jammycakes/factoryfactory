@@ -4,11 +4,11 @@ using Nooshka.Registration;
 
 namespace Nooshka.Resolution
 {
-    public class ExpressionServiceResolver : ServiceResolver
+    public class ExpressionResolver : Resolver
     {
         private Func<ServiceRequest, object> _getService;
 
-        public ExpressionServiceResolver
+        public ExpressionResolver
             (ServiceRegistration registration, Expression<Func<ServiceRequest, object>> expression)
             : base(registration)
         {

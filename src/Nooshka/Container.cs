@@ -39,7 +39,7 @@ namespace Nooshka
             return GetService(new ServiceRequest(this, serviceType, null));
         }
 
-        private IEnumerable<ServiceResolver> GetResolvers(ServiceRequest serviceRequest)
+        private IEnumerable<Resolver> GetResolvers(ServiceRequest serviceRequest)
         {
             return
                 from resolver in _resolverCache.GetResolvers(serviceRequest.RequestedType)
@@ -48,7 +48,7 @@ namespace Nooshka
         }
 
         private object ResolveFromServicingContainer
-            (ServiceResolver resolver, ServiceRequest request)
+            (Resolver resolver, ServiceRequest request)
         {
             var service = resolver.GetService(request);
             if (service == null) return null;
@@ -63,7 +63,7 @@ namespace Nooshka
             return service;
         }
 
-        private object Resolve(ServiceResolver resolver, ServiceRequest request)
+        private object Resolve(Resolver resolver, ServiceRequest request)
         {
             if (!resolver.PreconditionMet(request)) return null;
             var lifecycle = resolver.Registration.Lifecycle;

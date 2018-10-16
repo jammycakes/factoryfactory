@@ -66,15 +66,15 @@ namespace Nooshka.Resolution
             );
         }
 
-        public ServiceResolver Build()
+        public Resolver Build()
         {
             if (_serviceRegistration.ImplementationFactory != null) {
-                return new RegistrationServiceResolver(_serviceRegistration);
+                return new RegistrationResolver(_serviceRegistration);
             }
             else {
                 var constructor = GetBestConstructor();
                 var expression = CreateServiceResolutionExpression(constructor);
-                return new ExpressionServiceResolver(_serviceRegistration, expression);
+                return new ExpressionResolver(_serviceRegistration, expression);
             }
         }
     }

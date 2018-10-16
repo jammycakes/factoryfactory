@@ -2,9 +2,9 @@ using Nooshka.Registration;
 
 namespace Nooshka.Resolution
 {
-    public class RegistrationServiceResolver : ServiceResolver
+    public class RegistrationResolver : Resolver
     {
-        public RegistrationServiceResolver(ServiceRegistration registration)
+        public RegistrationResolver(ServiceRegistration registration)
             : base(registration)
         {
         }
