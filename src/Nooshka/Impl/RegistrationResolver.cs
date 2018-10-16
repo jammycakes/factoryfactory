@@ -1,6 +1,4 @@
-using Nooshka.Registration;
-
-namespace Nooshka.Resolution
+namespace Nooshka.Impl
 {
     public class RegistrationResolver : Resolver
     {

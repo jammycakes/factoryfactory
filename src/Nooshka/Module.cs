@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using Nooshka.Registration;
+using Nooshka.Impl;
 
 namespace Nooshka
 {
     public class Module : IModule
     {
-        private IDictionary<Type, List<Registration.ServiceRegistration>> _registrations;
+        private IDictionary<Type, List<ServiceRegistration>> _registrations;
 
-        public Module(params Registration.ServiceRegistration[] serviceRegistrations)
+        public Module(params ServiceRegistration[] serviceRegistrations)
         {
             var registrationsByType =
                 from registration in serviceRegistrations
@@ -22,24 +22,24 @@ namespace Nooshka
         }
 
         public Module(IServiceCollection services)
-            : this(services.Select<ServiceDescriptor, Registration.ServiceRegistration>
-                (s => new Registration.ServiceRegistration(s)).ToArray())
+            : this(services.Select<ServiceDescriptor, ServiceRegistration>
+                (s => new ServiceRegistration(s)).ToArray())
         {
         }
 
         protected Module()
         {
-            _registrations = new Dictionary<Type, List<Registration.ServiceRegistration>>();
+            _registrations = new Dictionary<Type, List<ServiceRegistration>>();
         }
 
         /* ====== Registration ====== */
 
-        private List<Registration.ServiceRegistration> GetServiceRegistrations(Type type, bool create)
+        private List<ServiceRegistration> GetServiceRegistrations(Type type, bool create)
         {
-            List<Registration.ServiceRegistration> result = null;
+            List<ServiceRegistration> result = null;
             if (!_registrations.TryGetValue(type, out result)) {
                 if (create) {
-                    result = new List<Registration.ServiceRegistration>();
+                    result = new List<ServiceRegistration>();
                     _registrations.Add(type, result);
                 }
             }
@@ -47,13 +47,13 @@ namespace Nooshka
             return result;
         }
 
-        private void Add(Type registrationType, Registration.ServiceRegistration serviceRegistration)
+        private void Add(Type registrationType, ServiceRegistration serviceRegistration)
         {
             var list = GetServiceRegistrations(registrationType, true);
             list.Add(serviceRegistration);
         }
 
-        public void Add(Registration.ServiceRegistration serviceRegistration)
+        public void Add(ServiceRegistration serviceRegistration)
         {
             var list = GetServiceRegistrations(serviceRegistration.ServiceType, true);
             list.Add(serviceRegistration);
@@ -62,7 +62,7 @@ namespace Nooshka
         public void Add(IServiceCollection services)
         {
             foreach (var service in services) {
-                Add(new Registration.ServiceRegistration(service));
+                Add(new ServiceRegistration(service));
             }
         }
 
@@ -71,14 +71,14 @@ namespace Nooshka
 
         public RegistrationBuilder Resolve(Type type)
         {
-            var registration = new Registration.ServiceRegistration(type);
+            var registration = new ServiceRegistration(type);
             Add(registration);
             return new RegistrationBuilder(registration);
         }
 
         public RegistrationBuilder<TService> Resolve<TService>()
         {
-            var registration = new Registration.ServiceRegistration(typeof(TService));
+            var registration = new ServiceRegistration(typeof(TService));
             Add(registration);
             return new RegistrationBuilder<TService>(registration);
         }
@@ -86,9 +86,9 @@ namespace Nooshka
 
         /* ====== Resolution ====== */
 
-        IEnumerable<Registration.ServiceRegistration> IModule.GetRegistrations(Type type)
+        IEnumerable<ServiceRegistration> IModule.GetRegistrations(Type type)
         {
-            return (GetServiceRegistrations(type, false) ?? Enumerable.Empty<Registration.ServiceRegistration>())
+            return (GetServiceRegistrations(type, false) ?? Enumerable.Empty<ServiceRegistration>())
                 .AsEnumerable();
         }
 

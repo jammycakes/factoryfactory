@@ -1,7 +1,6 @@
 using System;
-using System.ComponentModel;
 
-namespace Nooshka.Registration
+namespace Nooshka.Impl
 {
     public class RegistrationBuilder
     {

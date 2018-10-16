@@ -1,6 +1,4 @@
-using Nooshka.Registration;
-
-namespace Nooshka.Resolution
+namespace Nooshka.Impl
 {
     // TODO: WE NEED TO MAKE SURE WE'RE USING THE CORRECT CONTAINER!
     // Currently all requests are going to the requesting container, and

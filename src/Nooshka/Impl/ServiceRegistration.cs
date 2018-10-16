@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Nooshka.Registration
+namespace Nooshka.Impl
 {
     public class ServiceRegistration
     {

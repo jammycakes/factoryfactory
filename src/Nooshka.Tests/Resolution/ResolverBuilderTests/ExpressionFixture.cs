@@ -1,5 +1,5 @@
 using System.Linq;
-using Nooshka.Resolution;
+using Nooshka.Impl;
 using Xunit;
 
 

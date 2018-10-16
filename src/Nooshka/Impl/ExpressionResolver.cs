@@ -1,8 +1,7 @@
 using System;
 using System.Linq.Expressions;
-using Nooshka.Registration;
 
-namespace Nooshka.Resolution
+namespace Nooshka.Impl
 {
     public class ExpressionResolver : Resolver
     {

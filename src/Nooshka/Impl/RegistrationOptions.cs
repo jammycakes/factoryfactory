@@ -1,6 +1,6 @@
 using System;
 
-namespace Nooshka.Registration
+namespace Nooshka.Impl
 {
     public class RegistrationOptions<TService>
     {

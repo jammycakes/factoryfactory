@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace Nooshka.Resolution
+namespace Nooshka.Impl
 {
     public class ResolverCache : IDisposable
     {

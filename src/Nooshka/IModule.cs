@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Nooshka.Registration;
+using Nooshka.Impl;
 
 namespace Nooshka
 {
     public interface IModule
     {
-        void Add(Registration.ServiceRegistration serviceRegistration);
+        void Add(ServiceRegistration serviceRegistration);
 
-        IEnumerable<Registration.ServiceRegistration> GetRegistrations(Type type);
+        IEnumerable<ServiceRegistration> GetRegistrations(Type type);
 
         bool IsTypeRegistered(Type type);
     }

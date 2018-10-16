@@ -2,16 +2,15 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Nooshka.Registration;
 
-namespace Nooshka.Resolution
+namespace Nooshka.Impl
 {
     public class ResolverBuilder
     {
-        private readonly Registration.ServiceRegistration _serviceRegistration;
+        private readonly ServiceRegistration _serviceRegistration;
         private readonly ResolverCache _cache;
 
-        public ResolverBuilder(Registration.ServiceRegistration serviceRegistration, ResolverCache cache)
+        public ResolverBuilder(ServiceRegistration serviceRegistration, ResolverCache cache)
         {
             _serviceRegistration = serviceRegistration;
             _cache = cache;
