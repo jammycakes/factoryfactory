@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Nooshka.Impl;
@@ -38,12 +39,43 @@ namespace Nooshka
             return GetService(new ServiceRequest(this, serviceType, null));
         }
 
-        public object GetService(ServiceRequest serviceRequest)
+        private IEnumerable<ServiceResolver> GetResolvers(ServiceRequest serviceRequest)
         {
-            var resolvers = _resolverCache.GetResolvers(serviceRequest.RequestedType);
-            var resolver = resolvers.LastOrDefault();
+            return
+                from resolver in _resolverCache.GetResolvers(serviceRequest.RequestedType)
+                where resolver.PreconditionMet(serviceRequest)
+                select resolver;
+        }
+
+        private object ResolveFromServicingContainer
+            (ServiceResolver resolver, ServiceRequest request)
+        {
+            var service = resolver.GetService(request);
+            if (service == null) return null;
+            if (service is IDisposable) {
+                var lifecycle = resolver.Registration.Lifecycle;
+                var lifecycleManager = lifecycle.GetLifecycleManager(request);
+                if (lifecycleManager != null) {
+                    lifecycleManager.Add((IDisposable)service);
+                }
+            }
+
+            return service;
+        }
+
+        private object Resolve(ServiceResolver resolver, ServiceRequest request)
+        {
+            if (!resolver.PreconditionMet(request)) return null;
+            var lifecycle = resolver.Registration.Lifecycle;
+            return lifecycle.GetServicingContainer(request)
+                .ResolveFromServicingContainer(resolver, request);
+        }
+
+        public object GetService(ServiceRequest request)
+        {
+            var resolver = GetResolvers(request).LastOrDefault();
             if (resolver == null) return null;
-            return resolver.GetService(serviceRequest);
+            return Resolve(resolver, request);
         }
 
         /* ====== Release ====== */

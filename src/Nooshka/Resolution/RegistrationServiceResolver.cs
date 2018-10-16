@@ -2,23 +2,16 @@ using Nooshka.Registration;
 
 namespace Nooshka.Resolution
 {
-    public class RegistrationServiceResolver : IServiceResolver
+    public class RegistrationServiceResolver : ServiceResolver
     {
-        private readonly Registration.ServiceRegistration _serviceRegistration;
-
-        public RegistrationServiceResolver(Registration.ServiceRegistration serviceRegistration)
+        public RegistrationServiceResolver(ServiceRegistration registration)
+            : base(registration)
         {
-            _serviceRegistration = serviceRegistration;
         }
 
-        public bool PreconditionMet(ServiceRequest request)
+        public override object GetService(ServiceRequest request)
         {
-            return _serviceRegistration.Precondition(request);
-        }
-
-        public object GetService(ServiceRequest request)
-        {
-            return _serviceRegistration.ImplementationFactory(request);
+            return Registration.ImplementationFactory(request);
         }
     }
 }

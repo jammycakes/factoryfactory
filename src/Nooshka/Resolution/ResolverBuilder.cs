@@ -66,7 +66,7 @@ namespace Nooshka.Resolution
             );
         }
 
-        public IServiceResolver Build()
+        public ServiceResolver Build()
         {
             if (_serviceRegistration.ImplementationFactory != null) {
                 return new RegistrationServiceResolver(_serviceRegistration);

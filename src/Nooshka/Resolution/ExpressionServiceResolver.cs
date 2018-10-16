@@ -4,27 +4,18 @@ using Nooshka.Registration;
 
 namespace Nooshka.Resolution
 {
-    public class ExpressionServiceResolver : IServiceResolver
+    public class ExpressionServiceResolver : ServiceResolver
     {
-        private Func<ServiceRequest, bool> _preconditionMet;
         private Func<ServiceRequest, object> _getService;
 
-        public ExpressionServiceResolver(
-            Registration.ServiceRegistration serviceRegistration,
-            Expression<Func<ServiceRequest, object>> _getServiceExpression
-        )
+        public ExpressionServiceResolver
+            (ServiceRegistration registration, Expression<Func<ServiceRequest, object>> expression)
+            : base(registration)
         {
-            _preconditionMet = serviceRegistration.Precondition;
-            _getService = _getServiceExpression.Compile();
+            _getService = expression.Compile();
         }
 
-
-        public bool PreconditionMet(ServiceRequest request)
-        {
-            return _preconditionMet(request);
-        }
-
-        public object GetService(ServiceRequest request)
+        public override object GetService(ServiceRequest request)
         {
             return _getService(request);
         }
