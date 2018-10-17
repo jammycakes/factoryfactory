@@ -8,16 +8,16 @@ namespace Nooshka.Compilation.Expressions
 {
     public class ExpressionResolverCompiler : IResolverCompiler
     {
-        public IResolver Build(ServiceDefinition definition, Configuration configuration)
+        public IServiceBuilder Build(ServiceDefinition definition, Configuration configuration)
         {
             if (definition.ImplementationFactory != null) {
-                return new RegistrationResolver(definition);
+                return new RegistrationServiceBuilder(definition);
             }
             else {
                 var constructor = configuration.Options.ConstructorSelector
                     .SelectConstructor(definition, configuration);
                 var expression = CreateServiceResolutionExpression(constructor);
-                return new ExpressionResolver(definition, expression);
+                return new ExpressionServiceBuilder(definition, expression);
             }
         }
 

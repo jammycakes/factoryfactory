@@ -3,11 +3,9 @@ using Nooshka.Impl;
 
 namespace Nooshka
 {
-    public interface IServiceCache : IDisposable
+    public interface IServiceCache
     {
         void Store(ServiceDefinition serviceDefinition, object service);
-
-        void Track(IDisposable service);
 
         object Retrieve(ServiceDefinition serviceDefinition);
     }

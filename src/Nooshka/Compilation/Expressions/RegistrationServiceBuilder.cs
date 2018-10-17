@@ -2,9 +2,9 @@ using Nooshka.Impl;
 
 namespace Nooshka.Compilation.Expressions
 {
-    public class RegistrationResolver : ResolverBase
+    public class RegistrationServiceBuilder : ServiceBuilder
     {
-        public RegistrationResolver(ServiceDefinition definition)
+        public RegistrationServiceBuilder(ServiceDefinition definition)
             : base(definition)
         {
         }

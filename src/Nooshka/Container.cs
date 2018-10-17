@@ -16,6 +16,8 @@ namespace Nooshka
 
         public IServiceCache ServiceCache { get; }
 
+        public IServiceTracker ServiceTracker { get; }
+
         public IServiceProvider ServiceProvider => this;
 
         private Container(Container parent)
@@ -23,6 +25,7 @@ namespace Nooshka
             Parent = parent;
             Root = parent?.Root ?? this;
             ServiceCache = new ServiceCache();
+            ServiceTracker = new ServiceTracker();
             _configuration = Root._configuration;
         }
 
@@ -67,7 +70,7 @@ namespace Nooshka
         }
 
 
-        private IEnumerable<IResolver> GetResolvers(ServiceRequest serviceRequest)
+        private IEnumerable<IServiceBuilder> GetResolvers(ServiceRequest serviceRequest)
         {
             return
                 from resolver in _configuration.GetResolvers(serviceRequest.ServiceType)
@@ -80,7 +83,7 @@ namespace Nooshka
 
         public void Dispose()
         {
-            ServiceCache.Dispose();
+            ServiceTracker.Dispose();
         }
 
         /* ====== Hierarchy ====== */
@@ -92,7 +95,7 @@ namespace Nooshka
         public Container CreateChild()
         {
             var child = new Container(this);
-            ServiceCache.Track(child);
+            ServiceTracker.Track(child);
             return child;
         }
 

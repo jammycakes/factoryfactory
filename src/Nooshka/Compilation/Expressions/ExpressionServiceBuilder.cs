@@ -4,11 +4,11 @@ using Nooshka.Impl;
 
 namespace Nooshka.Compilation.Expressions
 {
-    public class ExpressionResolver : ResolverBase
+    public class ExpressionServiceBuilder : ServiceBuilder
     {
         private Func<ServiceRequest, object> _getService;
 
-        public ExpressionResolver
+        public ExpressionServiceBuilder
             (ServiceDefinition definition, Expression<Func<ServiceRequest, object>> expression)
             : base(definition)
         {

@@ -1,6 +1,6 @@
 namespace Nooshka.Impl
 {
-    public interface IResolver
+    public interface IServiceBuilder
     {
         bool PreconditionMet(ServiceRequest request);
         object GetService(ServiceRequest request);

@@ -4,6 +4,6 @@ namespace Nooshka.Compilation
 {
     public interface IResolverCompiler
     {
-        IResolver Build(ServiceDefinition definition, Configuration configuration);
+        IServiceBuilder Build(ServiceDefinition definition, Configuration configuration);
     }
 }
