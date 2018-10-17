@@ -82,15 +82,11 @@ namespace Nooshka
                     _resolverLock.EnterWriteLock();
                     try {
                         if (!_resolvers.TryGetValue(type, out result)) {
-                            var builders =
+                            var builtResolvers =
                                 from module in _modules
                                 from registration in module.GetRegistrations(type)
-                                select new ResolverBuilder(registration, this);
-                            var builtResolvers =
-                                from builder in builders
-                                select builder.Build();
-                            result = builtResolvers.ToList();
-                            _resolvers.Add(type, result);
+                                select Options.ResolverCompiler.Build(registration, this);
+                            _resolvers.Add(type, builtResolvers.ToList());
                         }
                     }
                     finally {

@@ -1,4 +1,5 @@
 using System.Linq;
+using Nooshka.Compilation.Expressions;
 using Nooshka.Impl;
 using Xunit;
 
@@ -10,7 +11,7 @@ namespace Nooshka.Tests.Resolution.ResolverBuilderTests
         [Fact]
         public void CanCreateServiceResolutionExpression()
         {
-            var builder = new ResolverBuilder(null, null);
+            var builder = new ExpressionResolverCompiler();
 
             var expr = builder.CreateServiceResolutionExpression(
                 typeof(Container).GetConstructors()
