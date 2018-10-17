@@ -4,28 +4,28 @@ namespace Nooshka.Impl
 {
     public abstract class ResolverBase : IResolver
     {
-        protected ResolverBase(ServiceDefinition serviceDefinition)
+        protected ResolverBase(ServiceDefinition definition)
         {
-            ServiceDefinition = serviceDefinition;
+            Definition = definition;
         }
 
-        protected ServiceDefinition ServiceDefinition { get; }
+        public ServiceDefinition Definition { get; }
 
         public bool PreconditionMet(ServiceRequest request) =>
-            ServiceDefinition.Precondition(request);
+            Definition.Precondition(request);
 
         public object GetService(ServiceRequest request)
         {
             if (!PreconditionMet(request)) return null;
             var servicingContainer =
-                ServiceDefinition.Lifecycle.GetServicingContainer(request);
-            var lifecycleManager = servicingContainer.ServiceCache;
-            var service = lifecycleManager.Retrieve(ServiceDefinition);
+                Definition.Lifecycle.GetServicingContainer(request);
+            var cache = servicingContainer.ServiceCache;
+            var service = cache.Retrieve(Definition);
             if (service == null) {
                 service = Resolve(request);
-                lifecycleManager.Store(ServiceDefinition, service);
-                if (ServiceDefinition.Lifecycle.IsTracked && service is IDisposable disposable) {
-                    lifecycleManager.Track(disposable);
+                cache.Store(Definition, service);
+                if (Definition.Lifecycle.IsTracked && service is IDisposable disposable) {
+                    cache.Track(disposable);
                 }
             }
 

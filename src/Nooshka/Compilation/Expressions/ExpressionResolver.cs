@@ -9,8 +9,8 @@ namespace Nooshka.Compilation.Expressions
         private Func<ServiceRequest, object> _getService;
 
         public ExpressionResolver
-            (ServiceDefinition serviceDefinition, Expression<Func<ServiceRequest, object>> expression)
-            : base(serviceDefinition)
+            (ServiceDefinition definition, Expression<Func<ServiceRequest, object>> expression)
+            : base(definition)
         {
             _getService = expression.Compile();
         }
