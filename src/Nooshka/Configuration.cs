@@ -15,8 +15,8 @@ namespace Nooshka
     {
         private List<IModule> _modules = new List<IModule>();
         private ReaderWriterLockSlim _resolverLock = new ReaderWriterLockSlim();
-        private IDictionary<Type, List<Resolver>> _resolvers
-            = new Dictionary<Type, List<Resolver>>();
+        private IDictionary<Type, List<IResolver>> _resolvers
+            = new Dictionary<Type, List<IResolver>>();
 
         public ConfigurationOptions Options { get; }
 
@@ -73,11 +73,11 @@ namespace Nooshka
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public IEnumerable<Resolver> GetResolvers(Type type)
+        public IEnumerable<IResolver> GetResolvers(Type type)
         {
             _resolverLock.EnterUpgradeableReadLock();
             try {
-                List<Resolver> result;
+                List<IResolver> result;
                 if (!_resolvers.TryGetValue(type, out result)) {
                     _resolverLock.EnterWriteLock();
                     try {

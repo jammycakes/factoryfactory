@@ -4,7 +4,7 @@ using Nooshka.Impl;
 
 namespace Nooshka.Compilation.Expressions
 {
-    public class ExpressionResolver : Resolver
+    public class ExpressionResolver : ResolverBase
     {
         private Func<ServiceRequest, object> _getService;
 

@@ -8,7 +8,7 @@ namespace Nooshka.Compilation.Expressions
 {
     public class ExpressionResolverCompiler : IResolverCompiler
     {
-        public Resolver Build(ServiceDefinition definition, Configuration configuration)
+        public IResolver Build(ServiceDefinition definition, Configuration configuration)
         {
             if (definition.ImplementationFactory != null) {
                 return new RegistrationResolver(definition);

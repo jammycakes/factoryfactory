@@ -2,14 +2,14 @@ using System;
 
 namespace Nooshka.Impl
 {
-    public abstract class Resolver
+    public abstract class ResolverBase : IResolver
     {
-        public Resolver(ServiceDefinition serviceDefinition)
+        protected ResolverBase(ServiceDefinition serviceDefinition)
         {
             ServiceDefinition = serviceDefinition;
         }
 
-        public ServiceDefinition ServiceDefinition { get; }
+        protected ServiceDefinition ServiceDefinition { get; }
 
         public bool PreconditionMet(ServiceRequest request) =>
             ServiceDefinition.Precondition(request);
