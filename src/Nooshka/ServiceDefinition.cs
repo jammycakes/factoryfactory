@@ -1,9 +1,9 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Nooshka.Impl
+namespace Nooshka
 {
-    public class Registration
+    public class ServiceDefinition
     {
         private bool _locked = false;
         private readonly object _identity = new object();
@@ -17,10 +17,10 @@ namespace Nooshka.Impl
         /* ====== Constructors ====== */
 
         /// <summary>
-        ///  Creates a new default instance of the <see cref="Registration"/>
+        ///  Creates a new default instance of the <see cref="ServiceDefinition"/>
         ///  class.
         /// </summary>
-        public Registration(Type serviceType)
+        public ServiceDefinition(Type serviceType)
         {
             _serviceType = serviceType;
             _locked = false;
@@ -32,7 +32,7 @@ namespace Nooshka.Impl
         /// </summary>
         /// <param name="descriptor"></param>
         /// <param name="precondition"></param>
-        public Registration(ServiceDescriptor descriptor,
+        public ServiceDefinition(ServiceDescriptor descriptor,
             Func<ServiceRequest, bool> precondition = null)
         {
             _serviceType = descriptor.ServiceType;
@@ -120,7 +120,7 @@ namespace Nooshka.Impl
 
         public override bool Equals(object obj)
         {
-            if (obj is Registration reg) {
+            if (obj is ServiceDefinition reg) {
                 return reg._identity == _identity;
             }
 

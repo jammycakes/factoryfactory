@@ -7,12 +7,12 @@ namespace Nooshka.Impl
 {
     public class ResolverBuilder
     {
-        private readonly Registration _registration;
+        private readonly ServiceDefinition _serviceDefinition;
         private readonly ResolverCache _cache;
 
-        public ResolverBuilder(Registration registration, ResolverCache cache)
+        public ResolverBuilder(ServiceDefinition serviceDefinition, ResolverCache cache)
         {
-            _registration = registration;
+            _serviceDefinition = serviceDefinition;
             _cache = cache;
         }
 
@@ -24,7 +24,7 @@ namespace Nooshka.Impl
 
         public ConstructorInfo GetBestConstructor()
         {
-            var constructors = _registration.ImplementationType.GetConstructors();
+            var constructors = _serviceDefinition.ImplementationType.GetConstructors();
             var matchingConstructors =
                 from constructor in constructors
                 let parameters = constructor.GetParameters()
@@ -68,13 +68,13 @@ namespace Nooshka.Impl
 
         public Resolver Build()
         {
-            if (_registration.ImplementationFactory != null) {
-                return new RegistrationResolver(_registration);
+            if (_serviceDefinition.ImplementationFactory != null) {
+                return new RegistrationResolver(_serviceDefinition);
             }
             else {
                 var constructor = GetBestConstructor();
                 var expression = CreateServiceResolutionExpression(constructor);
-                return new ExpressionResolver(_registration, expression);
+                return new ExpressionResolver(_serviceDefinition, expression);
             }
         }
     }

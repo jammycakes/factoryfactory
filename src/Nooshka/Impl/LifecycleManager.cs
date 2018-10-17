@@ -6,12 +6,12 @@ namespace Nooshka.Impl
     public class LifecycleManager : ILifecycleManager
     {
         private LinkedList<IDisposable> _services = new LinkedList<IDisposable>();
-        private IDictionary<Registration, object> _servicesByRegistration
-            = new Dictionary<Registration, object>();
+        private IDictionary<ServiceDefinition, object> _servicesByRegistration
+            = new Dictionary<ServiceDefinition, object>();
 
-        public void Cache(Registration registration, object service)
+        public void Cache(ServiceDefinition serviceDefinition, object service)
         {
-            _servicesByRegistration.Add(registration, service);
+            _servicesByRegistration.Add(serviceDefinition, service);
         }
 
         public void Track(IDisposable service)
@@ -19,9 +19,9 @@ namespace Nooshka.Impl
             _services.AddFirst(service);
         }
 
-        public object GetExisting(Registration registration)
+        public object GetExisting(ServiceDefinition serviceDefinition)
         {
-            if (_servicesByRegistration.TryGetValue(registration, out var obj)) {
+            if (_servicesByRegistration.TryGetValue(serviceDefinition, out var obj)) {
                 return obj;
             }
 

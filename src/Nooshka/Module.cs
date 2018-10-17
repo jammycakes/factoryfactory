@@ -8,12 +8,12 @@ namespace Nooshka
 {
     public class Module : IModule
     {
-        private IDictionary<Type, List<Registration>> _registrations;
+        private IDictionary<Type, List<ServiceDefinition>> _registrations;
 
-        public Module(params Registration[] registrations)
+        public Module(params ServiceDefinition[] serviceDefinitions)
         {
             var registrationsByType =
-                from registration in registrations
+                from registration in serviceDefinitions
                 group registration by registration.ServiceType
                 into byType
                 select byType;
@@ -22,24 +22,24 @@ namespace Nooshka
         }
 
         public Module(IServiceCollection services)
-            : this(services.Select<ServiceDescriptor, Registration>
-                (s => new Registration(s)).ToArray())
+            : this(services.Select<ServiceDescriptor, ServiceDefinition>
+                (s => new ServiceDefinition(s)).ToArray())
         {
         }
 
         protected Module()
         {
-            _registrations = new Dictionary<Type, List<Registration>>();
+            _registrations = new Dictionary<Type, List<ServiceDefinition>>();
         }
 
         /* ====== Registration ====== */
 
-        private List<Registration> GetServiceRegistrations(Type type, bool create)
+        private List<ServiceDefinition> GetServiceRegistrations(Type type, bool create)
         {
-            List<Registration> result = null;
+            List<ServiceDefinition> result = null;
             if (!_registrations.TryGetValue(type, out result)) {
                 if (create) {
-                    result = new List<Registration>();
+                    result = new List<ServiceDefinition>();
                     _registrations.Add(type, result);
                 }
             }
@@ -47,22 +47,22 @@ namespace Nooshka
             return result;
         }
 
-        private void Add(Type registrationType, Registration registration)
+        private void Add(Type registrationType, ServiceDefinition serviceDefinition)
         {
             var list = GetServiceRegistrations(registrationType, true);
-            list.Add(registration);
+            list.Add(serviceDefinition);
         }
 
-        public void Add(Registration registration)
+        public void Add(ServiceDefinition serviceDefinition)
         {
-            var list = GetServiceRegistrations(registration.ServiceType, true);
-            list.Add(registration);
+            var list = GetServiceRegistrations(serviceDefinition.ServiceType, true);
+            list.Add(serviceDefinition);
         }
 
         public void Add(IServiceCollection services)
         {
             foreach (var service in services) {
-                Add(new Registration(service));
+                Add(new ServiceDefinition(service));
             }
         }
 
@@ -71,14 +71,14 @@ namespace Nooshka
 
         public RegistrationBuilder Resolve(Type type)
         {
-            var registration = new Registration(type);
+            var registration = new ServiceDefinition(type);
             Add(registration);
             return new RegistrationBuilder(registration);
         }
 
         public RegistrationBuilder<TService> Resolve<TService>()
         {
-            var registration = new Registration(typeof(TService));
+            var registration = new ServiceDefinition(typeof(TService));
             Add(registration);
             return new RegistrationBuilder<TService>(registration);
         }
@@ -86,9 +86,9 @@ namespace Nooshka
 
         /* ====== Resolution ====== */
 
-        IEnumerable<Registration> IModule.GetRegistrations(Type type)
+        IEnumerable<ServiceDefinition> IModule.GetRegistrations(Type type)
         {
-            return (GetServiceRegistrations(type, false) ?? Enumerable.Empty<Registration>())
+            return (GetServiceRegistrations(type, false) ?? Enumerable.Empty<ServiceDefinition>())
                 .AsEnumerable();
         }
 

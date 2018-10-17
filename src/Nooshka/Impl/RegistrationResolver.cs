@@ -2,14 +2,14 @@ namespace Nooshka.Impl
 {
     public class RegistrationResolver : Resolver
     {
-        public RegistrationResolver(Registration registration)
-            : base(registration)
+        public RegistrationResolver(ServiceDefinition serviceDefinition)
+            : base(serviceDefinition)
         {
         }
 
         protected override object Resolve(ServiceRequest request)
         {
-            return Registration.ImplementationFactory(request);
+            return ServiceDefinition.ImplementationFactory(request);
         }
     }
 }
