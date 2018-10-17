@@ -19,11 +19,11 @@ namespace Nooshka.Impl
             if (!PreconditionMet(request)) return null;
             var servicingContainer =
                 ServiceDefinition.Lifecycle.GetServicingContainer(request);
-            var lifecycleManager = servicingContainer.LifecycleManager;
-            var service = lifecycleManager.GetExisting(ServiceDefinition);
+            var lifecycleManager = servicingContainer.ServiceCache;
+            var service = lifecycleManager.Retrieve(ServiceDefinition);
             if (service == null) {
                 service = Resolve(request);
-                lifecycleManager.Cache(ServiceDefinition, service);
+                lifecycleManager.Store(ServiceDefinition, service);
                 if (ServiceDefinition.Lifecycle.IsTracked && service is IDisposable disposable) {
                     lifecycleManager.Track(disposable);
                 }

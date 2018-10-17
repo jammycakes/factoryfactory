@@ -14,7 +14,7 @@ namespace Nooshka
     {
         private readonly Configuration _configuration;
 
-        public ILifecycleManager LifecycleManager { get; }
+        public IServiceCache ServiceCache { get; }
 
         public IServiceProvider ServiceProvider => this;
 
@@ -22,7 +22,7 @@ namespace Nooshka
         {
             Parent = parent;
             Root = parent?.Root ?? this;
-            LifecycleManager = new LifecycleManager();
+            ServiceCache = new ServiceCache();
             _configuration = Root._configuration;
         }
 
@@ -80,7 +80,7 @@ namespace Nooshka
 
         public void Dispose()
         {
-            LifecycleManager.Dispose();
+            ServiceCache.Dispose();
         }
 
         /* ====== Hierarchy ====== */
@@ -92,7 +92,7 @@ namespace Nooshka
         public Container CreateChild()
         {
             var child = new Container(this);
-            LifecycleManager.Track(child);
+            ServiceCache.Track(child);
             return child;
         }
 

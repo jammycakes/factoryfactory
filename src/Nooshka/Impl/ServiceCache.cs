@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Nooshka.Impl
 {
-    public class LifecycleManager : ILifecycleManager
+    public class ServiceCache : IServiceCache
     {
         private LinkedList<IDisposable> _services = new LinkedList<IDisposable>();
         private IDictionary<ServiceDefinition, object> _servicesByRegistration
             = new Dictionary<ServiceDefinition, object>();
 
-        public void Cache(ServiceDefinition serviceDefinition, object service)
+        public void Store(ServiceDefinition serviceDefinition, object service)
         {
             _servicesByRegistration.Add(serviceDefinition, service);
         }
@@ -19,7 +19,7 @@ namespace Nooshka.Impl
             _services.AddFirst(service);
         }
 
-        public object GetExisting(ServiceDefinition serviceDefinition)
+        public object Retrieve(ServiceDefinition serviceDefinition)
         {
             if (_servicesByRegistration.TryGetValue(serviceDefinition, out var obj)) {
                 return obj;
