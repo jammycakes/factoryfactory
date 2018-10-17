@@ -12,7 +12,7 @@ namespace Nooshka
     /// </summary>
     public class Container : IServiceProvider, IServiceScope, IServiceScopeFactory
     {
-        private readonly ResolverCache _resolverCache;
+        private readonly Configuration _configuration;
 
         public ILifecycleManager LifecycleManager { get; }
 
@@ -23,12 +23,12 @@ namespace Nooshka
             Parent = parent;
             Root = parent?.Root ?? this;
             LifecycleManager = new LifecycleManager();
-            _resolverCache = Root._resolverCache;
+            _configuration = Root._configuration;
         }
 
-        public Container(params IModule[] modules) : this(parent: null)
+        internal Container(Configuration configuration) : this(parent: null)
         {
-            _resolverCache = new ResolverCache(modules);
+            _configuration = configuration;
         }
 
 
@@ -70,7 +70,7 @@ namespace Nooshka
         private IEnumerable<Resolver> GetResolvers(ServiceRequest serviceRequest)
         {
             return
-                from resolver in _resolverCache.GetResolvers(serviceRequest.ServiceType)
+                from resolver in _configuration.GetResolvers(serviceRequest.ServiceType)
                 where resolver.PreconditionMet(serviceRequest)
                 select resolver;
         }

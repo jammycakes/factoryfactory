@@ -8,12 +8,12 @@ namespace Nooshka.Impl
     public class ResolverBuilder
     {
         private readonly ServiceDefinition _serviceDefinition;
-        private readonly ResolverCache _cache;
+        private readonly Configuration _configuration;
 
-        public ResolverBuilder(ServiceDefinition serviceDefinition, ResolverCache cache)
+        public ResolverBuilder(ServiceDefinition serviceDefinition, Configuration configuration)
         {
             _serviceDefinition = serviceDefinition;
-            _cache = cache;
+            _configuration = configuration;
         }
 
         private Expression<Func<ServiceRequest, object>> MakeExpression(
@@ -29,7 +29,7 @@ namespace Nooshka.Impl
                 from constructor in constructors
                 let parameters = constructor.GetParameters()
                 let info = new { constructor, parameters, parameters.Length }
-                where parameters.All(p => _cache.IsTypeRegistered(p.ParameterType))
+                where parameters.All(p => _configuration.IsTypeRegistered(p.ParameterType))
                 orderby info descending
                 select info.constructor;
 

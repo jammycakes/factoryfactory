@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using Nooshka.Impl;
 
 namespace Nooshka
 {
@@ -11,6 +14,9 @@ namespace Nooshka
     public class Configuration
     {
         private List<IModule> _modules = new List<IModule>();
+        private ReaderWriterLockSlim _resolverLock = new ReaderWriterLockSlim();
+        private IDictionary<Type, List<Resolver>> _resolvers
+            = new Dictionary<Type, List<Resolver>>();
 
         public ConfigurationOptions Options { get; }
 
@@ -56,8 +62,51 @@ namespace Nooshka
         /// </returns>
         public Container CreateContainer()
         {
-            return new Container(_modules.ToArray());
+            return new Container(this);
         }
+
+
+        /* ====== Resolver cache ====== */
+
+        /// <summary>
+        ///  Gets the resolvers for the given type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public IEnumerable<Resolver> GetResolvers(Type type)
+        {
+            _resolverLock.EnterUpgradeableReadLock();
+            try {
+                List<Resolver> result;
+                if (!_resolvers.TryGetValue(type, out result)) {
+                    _resolverLock.EnterWriteLock();
+                    try {
+                        if (!_resolvers.TryGetValue(type, out result)) {
+                            var builders =
+                                from module in _modules
+                                from registration in module.GetRegistrations(type)
+                                select new ResolverBuilder(registration, this);
+                            var builtResolvers =
+                                from builder in builders
+                                select builder.Build();
+                            result = builtResolvers.ToList();
+                            _resolvers.Add(type, result);
+                        }
+                    }
+                    finally {
+                        _resolverLock.ExitWriteLock();
+                    }
+                }
+
+                return result;
+            }
+            finally {
+                _resolverLock.ExitUpgradeableReadLock();
+            }
+        }
+
+        public bool IsTypeRegistered(Type type)
+            => _modules.Any(m => m.IsTypeRegistered(type));
 
         /* ====== Static convenience methods ====== */
 
