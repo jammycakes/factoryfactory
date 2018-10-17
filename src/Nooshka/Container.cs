@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Nooshka.Impl;
@@ -37,23 +36,45 @@ namespace Nooshka
 
         public object GetService(Type serviceType)
         {
-            return GetService(new ServiceRequest(this, serviceType, null));
-        }
-
-        private IEnumerable<Resolver> GetResolvers(ServiceRequest serviceRequest)
-        {
-            return
-                from resolver in _resolverCache.GetResolvers(serviceRequest.RequestedType)
-                where resolver.PreconditionMet(serviceRequest)
-                select resolver;
+            var request = new ServiceRequest(this, serviceType, null);
+            return GetService(request);
         }
 
         public object GetService(ServiceRequest request)
+        {
+            if (request.GenericType == typeof(IEnumerable<>)) {
+                return GetAll(request);
+            }
+            else {
+                return GetOne(request);
+            }
+        }
+
+        private object GetAll(ServiceRequest request)
+        {
+            var resolvers = GetResolvers(request);
+            var services = resolvers.Select(r => r.GetService(request)).ToArray();
+            var result = Array.CreateInstance(request.ServiceType, services.Length);
+            Array.Copy(services, result, services.Length);
+            return result;
+        }
+
+        private object GetOne(ServiceRequest request)
         {
             var resolver = GetResolvers(request).LastOrDefault();
             if (resolver == null) return null;
             return resolver.GetService(request);
         }
+
+
+        private IEnumerable<Resolver> GetResolvers(ServiceRequest serviceRequest)
+        {
+            return
+                from resolver in _resolverCache.GetResolvers(serviceRequest.ServiceType)
+                where resolver.PreconditionMet(serviceRequest)
+                select resolver;
+        }
+
 
         /* ====== Release ====== */
 

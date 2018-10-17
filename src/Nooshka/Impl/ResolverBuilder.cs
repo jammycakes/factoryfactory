@@ -24,15 +24,16 @@ namespace Nooshka.Impl
 
         public ConstructorInfo GetBestConstructor()
         {
-            var constructors =
-                from constructor in _registration.ImplementationType.GetConstructors()
+            var constructors = _registration.ImplementationType.GetConstructors();
+            var matchingConstructors =
+                from constructor in constructors
                 let parameters = constructor.GetParameters()
                 let info = new { constructor, parameters, parameters.Length }
                 where parameters.All(p => _cache.IsTypeRegistered(p.ParameterType))
                 orderby info descending
                 select info.constructor;
 
-            return constructors.First();
+            return matchingConstructors.First();
         }
 
         public Expression<Func<ServiceRequest, object>>

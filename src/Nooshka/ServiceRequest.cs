@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Nooshka
 {
@@ -20,10 +22,22 @@ namespace Nooshka
 
         /// <summary>
         ///  The type of object that is being requested. This is not necessarily
-        ///  the required service itself; it may be a Func, Lazy or some kind of
-        ///  collection.
+        ///  the required service itself; it may be a Func<T>, Lazy<T> or
+        ///  IEnumerable<T>.
         /// </summary>
         public Type RequestedType { get; }
+
+        /// <summary>
+        ///  The type of the required service itself. For Func<T>, Lazy<T> or
+        ///  IEnumerable<T>, this will be the type parameter.
+        /// </summary>
+        public Type ServiceType { get; }
+
+        /// <summary>
+        ///  The open generic type definition of the object being requested,
+        ///  or null if this class is not a generic type.
+        /// </summary>
+        public Type GenericType { get; }
 
         /// <summary>
         ///  The <see cref="ServiceRequest"/> instance for the service into
@@ -44,6 +58,15 @@ namespace Nooshka
             RequestedType = requestedType;
             Receiver = receiver;
             _root = receiver?._root;
+            if (requestedType.IsGenericType) {
+                GenericType = requestedType.GetGenericTypeDefinition();
+                if (GenericType == typeof(IEnumerable<>) || GenericType == typeof(Func<>)) {
+                    ServiceType = requestedType.GetGenericArguments().Last();
+                    return;
+                }
+            }
+
+            ServiceType = requestedType;
         }
 
         public ServiceRequest CreateDependencyRequest(Type dependencyType)
