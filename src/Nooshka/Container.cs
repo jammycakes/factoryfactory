@@ -105,7 +105,6 @@ namespace Nooshka
         public Container CreateChild()
         {
             var child = new Container(this);
-            ServiceTracker.Track(child);
             return child;
         }
 
