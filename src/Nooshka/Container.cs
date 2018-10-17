@@ -29,7 +29,7 @@ namespace Nooshka
             _configuration = Root._configuration;
         }
 
-        internal Container(Configuration configuration) : this(parent: null)
+        public Container(Configuration configuration) : this(parent: null)
         {
             _configuration = configuration;
         }
