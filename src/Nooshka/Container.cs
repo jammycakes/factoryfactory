@@ -40,7 +40,8 @@ namespace Nooshka
         public object GetService(Type serviceType)
         {
             var request = new ServiceRequest(this, serviceType, null);
-            return GetService(request);
+            var result = GetService(request);
+            return result;
         }
 
         public object GetService(ServiceRequest request)
@@ -81,9 +82,18 @@ namespace Nooshka
 
         /* ====== Release ====== */
 
+        private bool _disposing = false;
+
         public void Dispose()
         {
-            ServiceTracker.Dispose();
+            if (_disposing) return;
+            _disposing = true;
+            try {
+                ServiceTracker.Dispose();
+            }
+            finally {
+                _disposing = false;
+            }
         }
 
         /* ====== Hierarchy ====== */

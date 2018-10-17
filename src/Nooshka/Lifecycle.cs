@@ -12,6 +12,8 @@ namespace Nooshka
         public static readonly Lifecycle Scoped = new ScopedLifecycle();
         public static readonly Lifecycle Singleton = new SingletonLifecycle();
         public static readonly Lifecycle Transient = new TransientLifecycle();
+        public static readonly Lifecycle Untracked = new UntrackedLifecycle();
+
         public static Lifecycle Default => Transient;
 
         public static Lifecycle Get(ServiceLifetime lifetime)

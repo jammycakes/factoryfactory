@@ -50,5 +50,13 @@ namespace Nooshka.Impl
         /// </summary>
         /// <returns></returns>
         public RegistrationOptions<TService> Scoped() => Lifecycle(Nooshka.Lifecycle.Scoped);
+
+        /// <summary>
+        ///  Configures this registration as an untracked service.
+        ///  IDisposable.Dispose() will not be called when the container is
+        ///  disposed.
+        /// </summary>
+        /// <returns></returns>
+        public RegistrationOptions<TService> Untracked() => Lifecycle(Nooshka.Lifecycle.Untracked);
     }
 }

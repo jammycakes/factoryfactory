@@ -31,6 +31,7 @@ namespace Nooshka
         /// </param>
         public Configuration(params IModule[] modules)
         {
+            Options = new ConfigurationOptions();
             _modules.Add(new DefaultModule(this));
             _modules.AddRange(modules);
         }
@@ -86,7 +87,8 @@ namespace Nooshka
                                 from module in _modules
                                 from registration in module.GetRegistrations(type)
                                 select Options.ResolverCompiler.Build(registration, this);
-                            _resolvers.Add(type, builtResolvers.ToList());
+                            result = builtResolvers.ToList();
+                            _resolvers.Add(type, result);
                         }
                     }
                     finally {
@@ -162,10 +164,10 @@ namespace Nooshka
         {
             public DefaultModule(Configuration configuration)
             {
-                Resolve<Configuration>().With(configuration);
-                Resolve<Container>().From(req => req.Container);
-                Resolve<IServiceProvider>().From(req => req.Container);
-                Resolve<IServiceScopeFactory>().From(req => req.Container);
+                Resolve<Configuration>().With(configuration).Untracked();
+                Resolve<Container>().From(req => req.Container).Untracked();
+                Resolve<IServiceProvider>().From(req => req.Container).Untracked();
+                Resolve<IServiceScopeFactory>().From(req => req.Container).Untracked();
             }
         }
     }
