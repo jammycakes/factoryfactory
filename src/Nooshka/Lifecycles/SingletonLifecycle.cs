@@ -2,11 +2,10 @@ namespace Nooshka.Lifecycles
 {
     public class SingletonLifecycle : Lifecycle
     {
-        public override Container GetServicingContainer(ServiceRequest request)
-        {
-            return request.Container.Root;
-        }
+        public override IServiceTracker GetTracker(ServiceRequest request)
+            => request.Container.Root.ServiceTracker;
 
-        public override bool IsTracked => true;
+        public override IServiceCache GetCache(ServiceRequest request)
+            => request.Container.Root.ServiceCache;
     }
 }

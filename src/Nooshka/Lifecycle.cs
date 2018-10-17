@@ -5,9 +5,9 @@ namespace Nooshka
 {
     public abstract class Lifecycle
     {
-        public abstract Container GetServicingContainer(ServiceRequest request);
+        public abstract IServiceTracker GetTracker(ServiceRequest request);
 
-        public abstract bool IsTracked { get; }
+        public abstract IServiceCache GetCache(ServiceRequest request);
 
         public static readonly Lifecycle Scoped = new ScopedLifecycle();
         public static readonly Lifecycle Singleton = new SingletonLifecycle();

@@ -2,11 +2,14 @@ namespace Nooshka.Lifecycles
 {
     public class ScopedLifecycle : Lifecycle
     {
-        public override Container GetServicingContainer(ServiceRequest request)
+        public override IServiceTracker GetTracker(ServiceRequest request)
         {
-            return request.Container;
+            return request.Container.ServiceTracker;
         }
 
-        public override bool IsTracked => true;
+        public override IServiceCache GetCache(ServiceRequest request)
+        {
+            return request.Container.ServiceCache;
+        }
     }
 }

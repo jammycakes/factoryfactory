@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Nooshka.Impl;
 
 namespace Nooshka
 {
@@ -44,7 +45,8 @@ namespace Nooshka
         ///  which this service is being injected. For root-level requests,
         ///  this will be null.
         /// </summary>
-        public ServiceRequest Receiver { get; }
+        public IServiceCache ServiceCache { get; }
+
 
         /// <summary>
         ///  Creates a new instance of the <see cref="ServiceRequest"/> class.
@@ -56,8 +58,8 @@ namespace Nooshka
         {
             Container = container;
             RequestedType = requestedType;
-            Receiver = receiver;
             _root = receiver?._root;
+            ServiceCache = _root?.ServiceCache ?? new ServiceCache();
             if (requestedType.IsGenericType) {
                 GenericType = requestedType.GetGenericTypeDefinition();
                 if (GenericType == typeof(IEnumerable<>) || GenericType == typeof(Func<>)) {

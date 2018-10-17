@@ -17,16 +17,14 @@ namespace Nooshka.Impl
         public object GetService(ServiceRequest request)
         {
             if (!PreconditionMet(request)) return null;
-            var servicingContainer =
-                Definition.Lifecycle.GetServicingContainer(request);
-            var cache = servicingContainer.ServiceCache;
-            var tracker = servicingContainer.ServiceTracker;
-            var service = cache.Retrieve(Definition);
+            var serviceTracker = Definition.Lifecycle.GetTracker(request);
+            var serviceCache = Definition.Lifecycle.GetCache(request);
+            var service = serviceCache?.Retrieve(Definition);
             if (service == null) {
                 service = Resolve(request);
-                cache.Store(Definition, service);
-                if (Definition.Lifecycle.IsTracked && service is IDisposable disposable) {
-                    tracker.Track(disposable);
+                serviceCache?.Store(Definition, service);
+                if (service is IDisposable disposable) {
+                    serviceTracker?.Track(disposable);
                 }
             }
 
