@@ -20,8 +20,8 @@ namespace Nooshka.Tests.Resolution.ResolverBuilderTests
         public void CanCreateServiceResolutionExpressionFromDefaultConstructor()
         {
             var module = new Module();
-            module.Resolve<IServiceWithDependencies>().As<ServiceWithDependencies>();
-            module.Resolve<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
+            module.Define<IServiceWithDependencies>().As<ServiceWithDependencies>();
+            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
             var configuration = new Configuration(_options, module);
             var definition =
                 ((IModule)module).GetRegistrations(typeof(IServiceWithDependencies))
@@ -40,12 +40,12 @@ namespace Nooshka.Tests.Resolution.ResolverBuilderTests
         public void CanCreateServiceResolutionExpressionFromConstructorExpression()
         {
             var module = new Module();
-            module.Resolve<IServiceWithDependencies>()
-                .From(req => new ServiceWithDependencies(
+            module.Define<IServiceWithDependencies>()
+                .As(req => new ServiceWithDependencies(
                     Resolve.From<IServiceWithoutDependencies>(),
                     "Hello world"
                 ));
-            module.Resolve<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
+            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
 
             var configuration = new Configuration(_options, module);
             var definition =
@@ -60,6 +60,7 @@ namespace Nooshka.Tests.Resolution.ResolverBuilderTests
             var container = configuration.CreateContainer();
             var service = container.GetService<IServiceWithDependencies>();
             Assert.Equal("Hello world", service.Message);
+            Assert.IsType<ServiceWithoutDependencies>(service.Dependency);
         }
     }
 }

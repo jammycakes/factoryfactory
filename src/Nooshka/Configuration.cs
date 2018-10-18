@@ -164,10 +164,10 @@ namespace Nooshka
         {
             public DefaultModule(Configuration configuration)
             {
-                Resolve<Configuration>().With(configuration).Untracked();
-                Resolve<Container>().From(req => req.Container).Untracked();
-                Resolve<IServiceProvider>().From(req => req.Container).Untracked();
-                Resolve<IServiceScopeFactory>().From(req => req.Container).Untracked();
+                Define<Configuration>().As(configuration).Untracked();
+                Define<Container>().As(req => req.Container).Untracked();
+                Define<IServiceProvider>().As(req => req.Container).Untracked();
+                Define<IServiceScopeFactory>().As(req => req.Container).Untracked();
             }
         }
     }

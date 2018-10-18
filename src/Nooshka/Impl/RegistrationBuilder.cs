@@ -34,9 +34,9 @@ namespace Nooshka.Impl
         ///  The object that implements this service.
         /// </param>
         /// <returns></returns>
-        public RegistrationOptions<object> With(object implementation)
+        public RegistrationOptions<object> As(object implementation)
         {
-            return From(req => implementation);
+            return As(req => implementation);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Nooshka.Impl
         /// <returns>
         ///  A factory method that creates the requested service.
         /// </returns>
-        public RegistrationOptions<object> From(Expression<Func<ServiceRequest, object>> factory)
+        public RegistrationOptions<object> As(Expression<Func<ServiceRequest, object>> factory)
         {
             State.ImplementationFactory = factory;
             State.ImplementationType = null;
@@ -83,7 +83,7 @@ namespace Nooshka.Impl
         ///  The object that implements this service.
         /// </param>
         /// <returns></returns>
-        public RegistrationOptions<TService> With(TService implementation)
+        public RegistrationOptions<TService> As(TService implementation)
         {
             State.ImplementationFactory = req => implementation;
             State.ImplementationType = null;
@@ -97,7 +97,7 @@ namespace Nooshka.Impl
         ///  A factory method that creates the requested service.
         /// </param>
         /// <returns></returns>
-        public RegistrationOptions<TService> From(Expression<Func<ServiceRequest, TService>> factory)
+        public RegistrationOptions<TService> As(Expression<Func<ServiceRequest, TService>> factory)
         {
             State.ImplementationFactory = Expression.Lambda<Func<ServiceRequest, object>>(
                 factory.Body,

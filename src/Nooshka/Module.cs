@@ -69,14 +69,14 @@ namespace Nooshka
 
         /* ====== Fluent registration ====== */
 
-        public RegistrationBuilder Resolve(Type type)
+        public RegistrationBuilder Define(Type type)
         {
             var registration = new ServiceDefinition(type);
             Add(registration);
             return new RegistrationBuilder(registration);
         }
 
-        public RegistrationBuilder<TService> Resolve<TService>()
+        public RegistrationBuilder<TService> Define<TService>()
         {
             var registration = new ServiceDefinition(typeof(TService));
             Add(registration);
