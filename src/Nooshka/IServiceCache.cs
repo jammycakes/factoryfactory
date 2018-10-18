@@ -1,6 +1,3 @@
-using System;
-using Nooshka.Impl;
-
 namespace Nooshka
 {
     public interface IServiceCache

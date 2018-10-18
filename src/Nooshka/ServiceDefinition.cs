@@ -1,4 +1,5 @@
 using System;
+using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Nooshka
@@ -10,7 +11,7 @@ namespace Nooshka
 
         private Type _serviceType;
         private Func<ServiceRequest, bool> _precondition = req => true;
-        private Func<ServiceRequest, object> _implementationFactory;
+        private Expression<Func<ServiceRequest, object>> _implementationFactory;
         private Type _implementationType;
         private Lifecycle _lifecycle = Lifecycle.Default;
 
@@ -95,7 +96,7 @@ namespace Nooshka
         ///  The factory method that instantiates the service, or null if a
         ///  specific type is specified in the ServiceResolution property.
         /// </summary>
-        public Func<ServiceRequest, object> ImplementationFactory {
+        public Expression<Func<ServiceRequest, object>> ImplementationFactory {
             get => Lock(_implementationFactory);
             set => _implementationFactory = AssertUnlocked(value);
         }

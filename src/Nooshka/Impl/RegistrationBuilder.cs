@@ -1,4 +1,5 @@
 using System;
+using System.Linq.Expressions;
 
 namespace Nooshka.Impl
 {
@@ -44,7 +45,7 @@ namespace Nooshka.Impl
         /// <returns>
         ///  A factory method that creates the requested service.
         /// </returns>
-        public RegistrationOptions<object> From(Func<ServiceRequest, object> factory)
+        public RegistrationOptions<object> From(Expression<Func<ServiceRequest, object>> factory)
         {
             State.ImplementationFactory = factory;
             State.ImplementationType = null;
