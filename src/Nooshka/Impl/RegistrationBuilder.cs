@@ -97,9 +97,12 @@ namespace Nooshka.Impl
         ///  A factory method that creates the requested service.
         /// </param>
         /// <returns></returns>
-        public RegistrationOptions<TService> From(Func<ServiceRequest, TService> factory)
+        public RegistrationOptions<TService> From(Expression<Func<ServiceRequest, TService>> factory)
         {
-            State.ImplementationFactory = req => factory(req);
+            State.ImplementationFactory = Expression.Lambda<Func<ServiceRequest, object>>(
+                factory.Body,
+                factory.Parameters
+            );
             State.ImplementationType = null;
             return new RegistrationOptions<TService>(State);
         }
