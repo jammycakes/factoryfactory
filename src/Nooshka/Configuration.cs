@@ -67,6 +67,12 @@ namespace Nooshka
         }
 
 
+        private bool CanAutoResolve(Type type)
+        {
+            return Options.AutoResolve && !type.IsAbstract && type.GetConstructors().Any();
+        }
+
+
         /* ====== Resolver cache ====== */
 
         /// <summary>
@@ -76,18 +82,38 @@ namespace Nooshka
         /// <returns></returns>
         public IEnumerable<IServiceBuilder> GetResolvers(Type type)
         {
+            List<IServiceBuilder> result;
+
             _resolverLock.EnterUpgradeableReadLock();
             try {
-                List<IServiceBuilder> result;
                 if (!_resolvers.TryGetValue(type, out result)) {
                     _resolverLock.EnterWriteLock();
                     try {
                         if (!_resolvers.TryGetValue(type, out result)) {
-                            var builtResolvers =
+                            var registrations =
                                 from module in _modules
                                 from registration in module.GetRegistrations(type)
-                                select Options.ResolverCompiler.Build(registration, this);
-                            result = builtResolvers.ToList();
+                                select registration;
+                            if (registrations.Any()) {
+                                var builtResolvers =
+                                    from registration in registrations
+                                    select Options.ResolverCompiler.Build(registration, this);
+                                result = builtResolvers.ToList();
+                            }
+                            else {
+                                result = new List<IServiceBuilder>();
+                                if (CanAutoResolve(type)) {
+                                    var resolver = Options.ResolverCompiler.Build(
+                                        new ServiceDefinition(type) {
+                                            ImplementationType = type,
+                                            Lifecycle = Options.DefaultLifecycle,
+                                            Precondition = req => true
+                                        },
+                                        this
+                                    );
+                                    result.Add(resolver);
+                                }
+                            }
                             _resolvers.Add(type, result);
                         }
                     }
@@ -96,15 +122,20 @@ namespace Nooshka
                     }
                 }
 
-                return result;
             }
             finally {
                 _resolverLock.ExitUpgradeableReadLock();
             }
+            return result;
         }
 
-        public bool IsTypeRegistered(Type type)
-            => _modules.Any(m => m.IsTypeRegistered(type));
+        public bool CanResolve(Type type)
+        {
+            return CanAutoResolve(type) ||
+                   _resolvers.ContainsKey(type) && _resolvers[type].Any() ||
+                   _modules.Any(m => m.IsTypeRegistered(type));
+        }
+
 
         /* ====== Static convenience methods ====== */
 

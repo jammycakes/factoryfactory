@@ -12,8 +12,8 @@ namespace Nooshka.Compilation
                 from constructor in constructors
                 let parameters = constructor.GetParameters()
                 let info = new { constructor, parameters, parameters.Length }
-                where parameters.All(p => configuration.IsTypeRegistered(p.ParameterType))
-                orderby info descending
+                where parameters.All(p => configuration.CanResolve(p.ParameterType))
+                orderby info.Length descending
                 select info.constructor;
 
             return matchingConstructors.First();
