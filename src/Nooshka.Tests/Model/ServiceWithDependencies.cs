@@ -11,6 +11,7 @@ namespace Nooshka.Tests.Model
         }
 
         public ServiceWithDependencies(IServiceWithoutDependencies dependency, string message)
+            : this(dependency)
         {
             Message = message;
         }
