@@ -29,18 +29,6 @@ namespace Nooshka
         public Type RequestedType { get; }
 
         /// <summary>
-        ///  The type of the required service itself. For Func<T>, Lazy<T> or
-        ///  IEnumerable<T>, this will be the type parameter.
-        /// </summary>
-        public Type ServiceType { get; }
-
-        /// <summary>
-        ///  The open generic type definition of the object being requested,
-        ///  or null if this class is not a generic type.
-        /// </summary>
-        public Type GenericType { get; }
-
-        /// <summary>
         ///  The <see cref="ServiceRequest"/> instance for the service into
         ///  which this service is being injected. For root-level requests,
         ///  this will be null.
@@ -60,15 +48,6 @@ namespace Nooshka
             RequestedType = requestedType;
             _root = receiver?._root;
             ServiceCache = _root?.ServiceCache ?? new ServiceCache();
-            if (requestedType.IsGenericType) {
-                GenericType = requestedType.GetGenericTypeDefinition();
-                if (GenericType == typeof(IEnumerable<>) || GenericType == typeof(Func<>)) {
-                    ServiceType = requestedType.GetGenericArguments().Last();
-                    return;
-                }
-            }
-
-            ServiceType = requestedType;
         }
 
         public ServiceRequest CreateDependencyRequest(Type dependencyType)

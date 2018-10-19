@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Nooshka.Impl;
+using Nooshka.Util;
 
 namespace Nooshka
 {
@@ -46,7 +47,7 @@ namespace Nooshka
 
         public object GetService(ServiceRequest request)
         {
-            if (request.GenericType == typeof(IEnumerable<>)) {
+            if (request.RequestedType.IsEnumerable()) {
                 return GetAll(request);
             }
             else {
@@ -58,7 +59,7 @@ namespace Nooshka
         {
             var resolvers = GetResolvers(request);
             var services = resolvers.Select(r => r.GetService(request)).ToArray();
-            var result = Array.CreateInstance(request.ServiceType, services.Length);
+            var result = Array.CreateInstance(request.RequestedType.GetServiceType(), services.Length);
             Array.Copy(services, result, services.Length);
             return result;
         }
@@ -74,7 +75,7 @@ namespace Nooshka
         private IEnumerable<IServiceBuilder> GetResolvers(ServiceRequest serviceRequest)
         {
             return
-                from resolver in _configuration.GetResolvers(serviceRequest.ServiceType)
+                from resolver in _configuration.GetResolvers(serviceRequest.RequestedType.GetServiceType())
                 where resolver.PreconditionMet(serviceRequest)
                 select resolver;
         }

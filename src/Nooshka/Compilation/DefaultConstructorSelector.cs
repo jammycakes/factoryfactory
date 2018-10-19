@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Reflection;
+using Nooshka.Util;
 
 namespace Nooshka.Compilation
 {
@@ -12,7 +13,7 @@ namespace Nooshka.Compilation
                 from constructor in constructors
                 let parameters = constructor.GetParameters()
                 let info = new { constructor, parameters, parameters.Length }
-                where parameters.All(p => configuration.CanResolve(p.ParameterType))
+                where parameters.All(p => configuration.CanResolve(p.ParameterType.GetServiceType()))
                 orderby info.Length descending
                 select info.constructor;
 
