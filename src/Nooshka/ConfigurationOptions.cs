@@ -8,11 +8,11 @@ namespace Nooshka
         public bool AutoResolve { get; }
         public IConstructorSelector ConstructorSelector { get; }
         public Lifecycle DefaultLifecycle { get; }
-        public IResolverCompiler ResolverCompiler { get; }
+        public ICompiler Compiler { get; }
 
         public ConfigurationOptions(
             IConstructorSelector constructorSelector = null,
-            IResolverCompiler resolverCompiler = null,
+            ICompiler compiler = null,
             Lifecycle defaultLifecycle = null,
             bool autoResolve = true
         )
@@ -20,7 +20,7 @@ namespace Nooshka
             AutoResolve = autoResolve;
             ConstructorSelector = constructorSelector ?? new DefaultConstructorSelector();
             DefaultLifecycle = defaultLifecycle ?? Lifecycle.Default;
-            ResolverCompiler = resolverCompiler ?? new ExpressionResolverCompiler();
+            Compiler = compiler ?? new ExpressionCompiler();
         }
     }
 }

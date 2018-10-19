@@ -72,7 +72,7 @@ namespace Nooshka
         }
 
 
-        private IEnumerable<IServiceBuilder> GetResolvers(ServiceRequest serviceRequest)
+        private IEnumerable<IServiceResolver> GetResolvers(ServiceRequest serviceRequest)
         {
             return
                 from resolver in _configuration.GetResolvers(serviceRequest.RequestedType.GetServiceType())

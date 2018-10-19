@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using Nooshka.Compilation.Expressions;
 using Nooshka.Impl;
 
 namespace Nooshka
@@ -15,8 +16,8 @@ namespace Nooshka
     {
         private List<IModule> _modules = new List<IModule>();
         private ReaderWriterLockSlim _resolverLock = new ReaderWriterLockSlim();
-        private IDictionary<Type, List<IServiceBuilder>> _resolvers
-            = new Dictionary<Type, List<IServiceBuilder>>();
+        private IDictionary<Type, List<IServiceResolver>> _resolvers
+            = new Dictionary<Type, List<IServiceResolver>>();
 
         public ConfigurationOptions Options { get; }
 
@@ -80,9 +81,9 @@ namespace Nooshka
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public IEnumerable<IServiceBuilder> GetResolvers(Type type)
+        public IEnumerable<IServiceResolver> GetResolvers(Type type)
         {
-            List<IServiceBuilder> result;
+            List<IServiceResolver> result;
 
             _resolverLock.EnterUpgradeableReadLock();
             try {
@@ -97,20 +98,20 @@ namespace Nooshka
                             if (registrations.Any()) {
                                 var builtResolvers =
                                     from registration in registrations
-                                    select Options.ResolverCompiler.Build(registration, this);
+                                    select (IServiceResolver)new ServiceResolver
+                                        (registration, Options.Compiler.Build(registration, this));
                                 result = builtResolvers.ToList();
                             }
                             else {
-                                result = new List<IServiceBuilder>();
+                                result = new List<IServiceResolver>();
                                 if (CanAutoResolve(type)) {
-                                    var resolver = Options.ResolverCompiler.Build(
-                                        new ServiceDefinition(type) {
-                                            ImplementationType = type,
-                                            Lifecycle = Options.DefaultLifecycle,
-                                            Precondition = req => true
-                                        },
-                                        this
-                                    );
+                                    var definition = new ServiceDefinition(type) {
+                                        ImplementationType = type,
+                                        Lifecycle = Options.DefaultLifecycle,
+                                        Precondition = req => true
+                                    };
+                                    var resolver = new ServiceResolver
+                                        (definition, Options.Compiler.Build(definition, this));
                                     result.Add(resolver);
                                 }
                             }

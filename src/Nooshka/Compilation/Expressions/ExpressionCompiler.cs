@@ -8,24 +8,24 @@ using Nooshka.Impl;
 
 namespace Nooshka.Compilation.Expressions
 {
-    public class ExpressionResolverCompiler : IResolverCompiler
+    public class ExpressionCompiler : ICompiler
     {
         public IServiceBuilder Build(ServiceDefinition definition, Configuration configuration)
         {
             if (definition.ImplementationFactory != null) {
                 if (definition.ImplementationFactory.Body is NewExpression nex) {
                     var expression = CreateExpressionFromConstructorExpression(nex);
-                    return new ExpressionServiceBuilder(definition, expression);
+                    return new ExpressionServiceBuilder(expression);
                 }
                 else {
-                    return new RegistrationServiceBuilder(definition);
+                    return new ExpressionServiceBuilder(definition.ImplementationFactory);
                 }
             }
             else {
                 var constructor = configuration.Options.ConstructorSelector
                     .SelectConstructor(definition, configuration);
                 var expression = CreateExpressionFromDefaultConstructor(constructor);
-                return new ExpressionServiceBuilder(definition, expression);
+                return new ExpressionServiceBuilder(expression);
             }
         }
 

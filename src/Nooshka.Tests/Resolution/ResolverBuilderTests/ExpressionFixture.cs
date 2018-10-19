@@ -13,7 +13,7 @@ namespace Nooshka.Tests.Resolution.ResolverBuilderTests
     {
         ConfigurationOptions _options = new ConfigurationOptions(
             constructorSelector: new DefaultConstructorSelector(),
-            resolverCompiler: new ExpressionResolverCompiler()
+            compiler: new ExpressionCompiler()
         );
 
         [Fact]
@@ -27,7 +27,7 @@ namespace Nooshka.Tests.Resolution.ResolverBuilderTests
                 ((IModule)module).GetRegistrations(typeof(IServiceWithDependencies))
                 .Single();
 
-            var builder = _options.ResolverCompiler.Build(definition, configuration)
+            var builder = _options.Compiler.Build(definition, configuration)
                 as ExpressionServiceBuilder;
 
             Assert.NotNull(builder);
@@ -52,7 +52,7 @@ namespace Nooshka.Tests.Resolution.ResolverBuilderTests
                 ((IModule)module).GetRegistrations(typeof(IServiceWithDependencies))
                 .Single();
 
-            var builder = _options.ResolverCompiler.Build(definition, configuration)
+            var builder = _options.Compiler.Build(definition, configuration)
                 as ExpressionServiceBuilder;
 
             Assert.NotNull(builder);

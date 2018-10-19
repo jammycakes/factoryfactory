@@ -2,7 +2,7 @@ using Nooshka.Impl;
 
 namespace Nooshka.Compilation
 {
-    public interface IResolverCompiler
+    public interface ICompiler
     {
         IServiceBuilder Build(ServiceDefinition definition, Configuration configuration);
     }

@@ -2,10 +2,13 @@ using System;
 
 namespace Nooshka.Impl
 {
-    public abstract class ServiceBuilder : IServiceBuilder
+    public class ServiceResolver : IServiceResolver
     {
-        protected ServiceBuilder(ServiceDefinition definition)
+        private readonly IServiceBuilder _builder;
+
+        public ServiceResolver(ServiceDefinition definition, IServiceBuilder builder)
         {
+            _builder = builder;
             Definition = definition;
         }
 
@@ -21,7 +24,7 @@ namespace Nooshka.Impl
             var serviceCache = Definition.Lifecycle.GetCache(request);
             var service = serviceCache?.Retrieve(Definition);
             if (service == null) {
-                service = Resolve(request);
+                service = _builder.GetService(request);
                 serviceCache?.Store(Definition, service);
                 if (service is IDisposable disposable) {
                     serviceTracker?.Track(disposable);
@@ -30,7 +33,5 @@ namespace Nooshka.Impl
 
             return service;
         }
-
-        protected abstract object Resolve(ServiceRequest request);
     }
 }

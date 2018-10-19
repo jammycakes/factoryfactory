@@ -4,21 +4,19 @@ using Nooshka.Impl;
 
 namespace Nooshka.Compilation.Expressions
 {
-    public class ExpressionServiceBuilder : ServiceBuilder
+    public class ExpressionServiceBuilder : IServiceBuilder
     {
         public Expression<Func<ServiceRequest, object>> Expression { get; }
 
         private Func<ServiceRequest, object> _getService;
 
-        public ExpressionServiceBuilder
-            (ServiceDefinition definition, Expression<Func<ServiceRequest, object>> expression)
-            : base(definition)
+        public ExpressionServiceBuilder(Expression<Func<ServiceRequest, object>> expression)
         {
             Expression = expression;
             _getService = expression.Compile();
         }
 
-        protected override object Resolve(ServiceRequest request)
+        public object GetService(ServiceRequest request)
         {
             return _getService(request);
         }
