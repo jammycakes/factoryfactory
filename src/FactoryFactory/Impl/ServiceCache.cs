@@ -4,17 +4,17 @@ namespace FactoryFactory.Impl
 {
     public class ServiceCache : IServiceCache
     {
-        private IDictionary<ServiceDefinition, object> _servicesByRegistration
+        private IDictionary<ServiceDefinition, object> _servicesByDefinition
             = new Dictionary<ServiceDefinition, object>();
 
         public void Store(ServiceDefinition serviceDefinition, object service)
         {
-            _servicesByRegistration.Add(serviceDefinition, service);
+            _servicesByDefinition.Add(serviceDefinition, service);
         }
 
         public object Retrieve(ServiceDefinition serviceDefinition)
         {
-            if (_servicesByRegistration.TryGetValue(serviceDefinition, out var obj)) {
+            if (_servicesByDefinition.TryGetValue(serviceDefinition, out var obj)) {
                 return obj;
             }
 

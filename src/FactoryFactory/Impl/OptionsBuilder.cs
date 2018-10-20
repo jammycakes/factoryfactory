@@ -12,7 +12,7 @@ namespace FactoryFactory.Impl
         }
 
         /// <summary>
-        ///  Configures the lifecycle for this registration.
+        ///  Configures the lifecycle for this service.
         /// </summary>
         /// <param name="lifecycle"></param>
         /// <returns></returns>
@@ -23,7 +23,7 @@ namespace FactoryFactory.Impl
         }
 
         /// <summary>
-        ///  Sets a precondition for this registration.
+        ///  Sets a precondition for this service.
         /// </summary>
         /// <param name="precondition"></param>
         /// <returns></returns>
@@ -34,25 +34,25 @@ namespace FactoryFactory.Impl
         }
 
         /// <summary>
-        ///  Configures this registration as a singleton.
+        ///  Configures the service as a singleton.
         /// </summary>
         /// <returns></returns>
         public OptionsBuilder<TService> Singleton() => Lifecycle(FactoryFactory.Lifecycle.Singleton);
 
         /// <summary>
-        ///  Configures this registration as a transient.
+        ///  Configures the service as a transient.
         /// </summary>
         /// <returns></returns>
         public OptionsBuilder<TService> Transient() => Lifecycle(FactoryFactory.Lifecycle.Transient);
 
         /// <summary>
-        ///  Configures this registration as a scoped service.
+        ///  Configures the service as a scoped service.
         /// </summary>
         /// <returns></returns>
         public OptionsBuilder<TService> Scoped() => Lifecycle(FactoryFactory.Lifecycle.Scoped);
 
         /// <summary>
-        ///  Configures this registration as an untracked service.
+        ///  Configures the service as an untracked service.
         ///  IDisposable.Dispose() will not be called when the container is
         ///  disposed.
         /// </summary>
@@ -60,7 +60,7 @@ namespace FactoryFactory.Impl
         public OptionsBuilder<TService> Untracked() => Lifecycle(FactoryFactory.Lifecycle.Untracked);
 
         /// <summary>
-        ///  Configures this registration with a null lifecycle.
+        ///  Configures the service with a null lifecycle.
         ///  Multiple instances will be created per injection, and they will not
         ///  be tracked for disposal by any container.
         /// </summary>

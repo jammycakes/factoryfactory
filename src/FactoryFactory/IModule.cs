@@ -7,7 +7,7 @@ namespace FactoryFactory
     {
         void Add(ServiceDefinition serviceDefinition);
 
-        IEnumerable<ServiceDefinition> GetRegistrations(Type type);
+        IEnumerable<ServiceDefinition> GetDefinitions(Type type);
 
         bool IsTypeRegistered(Type type);
     }

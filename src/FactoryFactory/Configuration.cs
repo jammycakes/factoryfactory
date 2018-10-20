@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace FactoryFactory
 {
     /// <summary>
-    ///  The base configuration class containing the service registrations and
+    ///  The base configuration class containing the service definitions and
     ///  from which containers are created in the first instance.
     /// </summary>
     public class Configuration
@@ -27,7 +27,7 @@ namespace FactoryFactory
         ///  the modules provided and a default set of options.
         /// </summary>
         /// <param name="modules">
-        ///  The modules containing service registration definitions.
+        ///  The modules containing service definitions.
         /// </param>
         public Configuration(params IModule[] modules)
         {
@@ -38,14 +38,14 @@ namespace FactoryFactory
 
         /// <summary>
         ///  Creates anew <see cref="Configuration"/> instance configured with
-        ///  the modules provided and
+        ///  the modules provided and the specified options.
         /// </summary>
         /// <param name="options">
         ///  The core options which control how the IOC container registers and
         ///  creates new services.
         /// </param>
         /// <param name="modules">
-        ///  One or more modules containing service registration definitions.
+        ///  One or more modules containing service definitions.
         /// </param>
         public Configuration(ConfigurationOptions options, params IModule[] modules)
             : this(modules)
@@ -90,16 +90,16 @@ namespace FactoryFactory
                     _resolverLock.EnterWriteLock();
                     try {
                         if (!_resolvers.TryGetValue(type, out result)) {
-                            var registrations =
+                            var definitions =
                                 from module in _modules
-                                from registration in module.GetRegistrations(type)
-                                select registration;
+                                from definition in module.GetDefinitions(type)
+                                select definition;
 
-                            if (registrations.Any()) {
+                            if (definitions.Any()) {
                                 var builtResolvers =
-                                    from registration in registrations
+                                    from definition in definitions
                                     select (IServiceResolver)new ServiceResolver
-                                        (registration, Options.Compiler.Build(registration, this));
+                                        (definition, Options.Compiler.Build(definition, this));
                                 result = builtResolvers.ToList();
                             }
                             else {
@@ -145,7 +145,7 @@ namespace FactoryFactory
         ///  provided modules.
         /// </summary>
         /// <param name="modules">
-        ///  One or more modules containing service registration definitions.
+        ///  One or more modules containing service definitions.
         /// </param>
         /// <returns>
         ///  The configured container.

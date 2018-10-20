@@ -23,7 +23,7 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
             module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
             var configuration = new Configuration(_options, module);
             var definition =
-                ((IModule)module).GetRegistrations(typeof(IServiceWithDependencies))
+                ((IModule)module).GetDefinitions(typeof(IServiceWithDependencies))
                 .Single();
 
             var builder = _options.Compiler.Build(definition, configuration)
@@ -48,7 +48,7 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
 
             var configuration = new Configuration(_options, module);
             var definition =
-                ((IModule)module).GetRegistrations(typeof(IServiceWithDependencies))
+                ((IModule)module).GetDefinitions(typeof(IServiceWithDependencies))
                 .Single();
 
             var builder = _options.Compiler.Build(definition, configuration)

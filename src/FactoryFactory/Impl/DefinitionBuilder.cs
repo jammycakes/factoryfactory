@@ -27,7 +27,7 @@ namespace FactoryFactory.Impl
         }
 
         /// <summary>
-        ///  Specifies the concrete class to provide services for this registration.
+        ///  Specifies the concrete class to provide services for this definition.
         /// </summary>
         /// <param name="implementationType">
         ///  The concrete type to implement this service.
@@ -41,7 +41,7 @@ namespace FactoryFactory.Impl
 
         /// <summary>
         ///  Specifies an already-created instance to provide services for this
-        ///  registration.
+        ///  definition.
         /// </summary>
         /// <param name="implementation">
         ///  The object that implements this service.
@@ -53,7 +53,7 @@ namespace FactoryFactory.Impl
         }
 
         /// <summary>
-        ///  Specifies a factory method to provide services for this registration.
+        ///  Specifies a factory method to provide services for this definition.
         /// </summary>
         /// <returns>
         ///  A factory method that creates the requested service.
@@ -74,7 +74,7 @@ namespace FactoryFactory.Impl
         }
 
         /// <summary>
-        ///  Specifies the concrete class to provide services for this registration.
+        ///  Specifies the concrete class to provide services for this definition.
         /// </summary>
         /// <returns></returns>
         /// <typeparam name="TImplementation">
@@ -90,7 +90,7 @@ namespace FactoryFactory.Impl
         }
 
         /// <summary>
-        ///  Specifies an already-created instance to provide services for this registration.
+        ///  Specifies an already-created instance to provide services for this definition.
         /// </summary>
         /// <param name="implementation">
         ///  The object that implements this service.
@@ -104,7 +104,7 @@ namespace FactoryFactory.Impl
         }
 
         /// <summary>
-        ///  Specifies a factory method to provide services for this registration.
+        ///  Specifies a factory method to provide services for this definition.
         /// </summary>
         /// <param name="factory">
         ///  A factory method that creates the requested service.

@@ -66,7 +66,7 @@ namespace FactoryFactory
         public Type ServiceType { get; }
 
         /// <summary>
-        ///  The precondition for this service registration to be activated.
+        ///  The precondition for this service definition to be activated.
         /// </summary>
         public Func<ServiceRequest, bool> Precondition { get;  }
 
