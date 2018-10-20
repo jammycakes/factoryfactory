@@ -10,9 +10,12 @@ namespace FactoryFactory.Impl
         {
             _builder = builder;
             Definition = definition;
+            IsOpenGeneric = definition.IsForOpenGeneric;
         }
 
         public ServiceDefinition Definition { get; }
+
+        public bool IsOpenGeneric { get; }
 
         public bool PreconditionMet(ServiceRequest request) =>
             Definition.Precondition(request);

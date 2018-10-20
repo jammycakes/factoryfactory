@@ -94,6 +94,12 @@ namespace FactoryFactory
         /// </summary>
         public Lifecycle Lifecycle { get; }
 
+        /// <summary>
+        ///  Gets a value indicating whether this definition was created for a
+        ///  generic type definition.
+        /// </summary>
+        public bool IsForOpenGeneric { get; private set; }
+
 
         public ServiceDefinition GetGenericDefinition(Type requestedType)
         {
@@ -107,7 +113,9 @@ namespace FactoryFactory
                         .GenericTypeArguments);
                 return new ServiceDefinition
                     (newType, ImplementationFactory, newImplementationType,
-                    Lifecycle, Precondition);
+                    Lifecycle, Precondition) {
+                    IsForOpenGeneric = true
+                };
             });
         }
 

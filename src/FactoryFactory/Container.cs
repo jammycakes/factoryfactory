@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using FactoryFactory.Impl;
 using FactoryFactory.Util;
 using Microsoft.Extensions.DependencyInjection;
@@ -65,9 +66,26 @@ namespace FactoryFactory
 
         private object GetOne(ServiceRequest request)
         {
-            var resolver = GetResolvers(request).LastOrDefault();
+            var resolver = GetResolver(request);
             if (resolver == null) return null;
             return resolver.GetService(request);
+        }
+
+        private IServiceResolver GetResolver(ServiceRequest serviceRequest)
+        {
+            IServiceResolver open = null;
+            IServiceResolver closed = null;
+
+            foreach (var resolver in GetResolvers(serviceRequest)) {
+                if (resolver.IsOpenGeneric) {
+                    open = resolver;
+                }
+                else {
+                    closed = resolver;
+                }
+            }
+
+            return closed ?? open;
         }
 
 
