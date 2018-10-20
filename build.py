@@ -12,13 +12,13 @@ is_release = False
 
 
 def abspath(path):
-    home = os.path.dirname(__file__)
+    home = abspath(os.path.dirname(__file__))
     return os.path.normpath(os.path.join(home, path))
 
 
 def dotnet(*args):
     process = ["dotnet"] + list(args)
-    subprocess.run(process)
+    subprocess.run(process, check=True)
 
 
 build_number = os.environ.get('APPVEYOR_BUILD_NUMBER', '0')
@@ -42,6 +42,7 @@ else:
         package_version += '=' + suffix
 
 package_path = abspath('build/FactoryFactory/FactoryFactory.{0}.nupkg'.format(package_version))
+
 
 os.makedirs(abspath('src/.version'), exist_ok=True)
 with open(abspath('src/.version/version.cs'), 'w') as f:
