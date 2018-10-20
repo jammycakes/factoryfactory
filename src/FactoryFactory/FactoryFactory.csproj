@@ -1,6 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <PackageId>FactoryFactory</PackageId>
+        <Description>Yet Another IOC Container for .NET</Description>
+        <VersionPrefix>0.0.1</VersionPrefix>
+        <VersionSuffix>alpha</VersionSuffix>
+        <Authors>James McKay</Authors>
+        <Copyright>Copyright 2018 James McKay</Copyright>
+        
+        <PackageProjectUrl>https://github.com/jammycakes/factoryfactory</PackageProjectUrl>
+        <PackageTags>IoC,DI,dependencyinjection,FactoryFactory</PackageTags>
+        <PackageLicenseUrl>https://github.com/jammycakes/factoryfactory/blob/master/LICENSE</PackageLicenseUrl>
+        
+        <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+        <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+        <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+        
         <TargetFramework>netstandard2.0</TargetFramework>
         <AssemblyName>FactoryFactory</AssemblyName>
         <RootNamespace>FactoryFactory</RootNamespace>
@@ -9,6 +24,12 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="..\.version\version.cs" Condition="Exists('..\.version\version.cs')">
+        <Link>version.cs</Link>
+      </Compile>
     </ItemGroup>
 
 </Project>
