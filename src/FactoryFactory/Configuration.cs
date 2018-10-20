@@ -102,7 +102,9 @@ namespace FactoryFactory
                             lifecycle: Options.DefaultLifecycle);
                         var resolver = new ServiceResolver
                             (definition, Options.Compiler.Build(definition, this));
-                        result.Add(resolver);
+                        if (resolver != null) {
+                            result.Add(resolver);
+                        }
                     }
                     return result;
                 }
@@ -111,6 +113,8 @@ namespace FactoryFactory
 
         public bool CanResolve(Type type)
         {
+            return GetResolvers(type).Any();
+
             var result =
                 CanAutoResolve(type) ||
                    _resolvers.ContainsKey(type) && _resolvers[type].Any() ||

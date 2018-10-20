@@ -13,11 +13,14 @@ namespace FactoryFactory.Compilation
                 from constructor in constructors
                 let parameters = constructor.GetParameters()
                 let info = new { constructor, parameters, parameters.Length }
-                where parameters.All(p => configuration.CanResolve(p.ParameterType.GetServiceType()))
+                where parameters.All(p =>
+                    p.IsOptional || configuration.CanResolve(p.ParameterType.GetServiceType())
+                )
                 orderby info.Length descending
                 select info.constructor;
+            var result = matchingConstructors.ToList();
 
-            return matchingConstructors.First();
+            return matchingConstructors.FirstOrDefault();
         }
     }
 }
