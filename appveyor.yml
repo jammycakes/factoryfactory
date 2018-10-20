@@ -2,3 +2,5 @@ version: 0.1.0.{build}
 image: Visual Studio 2017
 build_script:
 - cmd: C:\Python37\python build.py
+artifacts:
+- path: src\FactoryFactory\build\**\*.*
