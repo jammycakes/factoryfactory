@@ -68,7 +68,7 @@ namespace FactoryFactory
 
         private bool CanAutoResolve(Type type)
         {
-            return Options.AutoResolve && !type.IsAbstract && type.GetConstructors().Any();
+            return Options.AutoResolve && !type.IsValueType && !type.IsAbstract && type.GetConstructors().Any();
         }
 
 
