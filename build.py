@@ -12,7 +12,7 @@ is_release = False
 
 
 def abspath(path):
-    home = abspath(os.path.dirname(__file__))
+    home = os.path.abspath(os.path.dirname(__file__))
     return os.path.normpath(os.path.join(home, path))
 
 
