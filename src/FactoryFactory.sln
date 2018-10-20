@@ -10,6 +10,7 @@ ProjectSection(SolutionItems) = preProject
 	..\.gitattributes = ..\.gitattributes
 	..\.gitignore = ..\.gitignore
 	..\README.md = ..\README.md
+	..\LICENSE = ..\LICENSE
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{3133739A-EEC6-46AD-9DF7-8DB115BF85F0}"
