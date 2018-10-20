@@ -71,7 +71,17 @@ namespace Nooshka.Tests.Resolution.ResolverBuilderTests
             module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
             var service = Configuration.CreateContainer(module)
                 .GetService<IServiceWithDependencies>();
+            Assert.IsType<ServiceWithoutDependencies>(service.Dependency);
+        }
 
+        [Fact]
+        public void CanResolveLazyDependencies()
+        {
+            var module = new Module();
+            module.Define<IServiceWithDependencies>().As<ServiceWithLazyDependencies>();
+            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
+            var service = Configuration.CreateContainer(module)
+                .GetService<IServiceWithDependencies>();
             Assert.IsType<ServiceWithoutDependencies>(service.Dependency);
         }
     }
