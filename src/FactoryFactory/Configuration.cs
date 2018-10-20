@@ -100,9 +100,10 @@ namespace FactoryFactory
                         var definition = new ServiceDefinition(type,
                             implementationType: type,
                             lifecycle: Options.DefaultLifecycle);
-                        var resolver = new ServiceResolver
-                            (definition, Options.Compiler.Build(definition, this));
-                        if (resolver != null) {
+                        var builder = Options.Compiler.Build(definition, this);
+                        if (builder != null) {
+                            var resolver = new ServiceResolver
+                                (definition, Options.Compiler.Build(definition, this));
                             result.Add(resolver);
                         }
                     }
