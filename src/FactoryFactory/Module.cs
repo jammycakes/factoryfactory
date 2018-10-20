@@ -8,13 +8,14 @@ namespace FactoryFactory
 {
     public class Module : IModule
     {
-        private IDictionary<Type, List<ServiceDefinition>> _registrations;
+        private IDictionary<Type, List<Lazy<ServiceDefinition>>> _registrations;
 
         public Module(params ServiceDefinition[] serviceDefinitions)
         {
             var registrationsByType =
                 from registration in serviceDefinitions
-                group registration by registration.ServiceType
+                let lazy = new Lazy<ServiceDefinition>(() => registration)
+                group lazy by lazy.Value.ServiceType
                 into byType
                 select byType;
 
@@ -29,17 +30,17 @@ namespace FactoryFactory
 
         protected Module()
         {
-            _registrations = new Dictionary<Type, List<ServiceDefinition>>();
+            _registrations = new Dictionary<Type, List<Lazy<ServiceDefinition>>>();
         }
 
         /* ====== Registration ====== */
 
-        private List<ServiceDefinition> GetServiceRegistrations(Type type, bool create)
+        private List<Lazy<ServiceDefinition>> GetServiceRegistrations(Type type, bool create)
         {
-            List<ServiceDefinition> result = null;
+            List<Lazy<ServiceDefinition>> result = null;
             if (!_registrations.TryGetValue(type, out result)) {
                 if (create) {
-                    result = new List<ServiceDefinition>();
+                    result = new List<Lazy<ServiceDefinition>>();
                     _registrations.Add(type, result);
                 }
             }
@@ -49,14 +50,18 @@ namespace FactoryFactory
 
         private void Add(Type registrationType, ServiceDefinition serviceDefinition)
         {
-            var list = GetServiceRegistrations(registrationType, true);
-            list.Add(serviceDefinition);
+            Add(registrationType, () => serviceDefinition);
         }
 
         public void Add(ServiceDefinition serviceDefinition)
         {
-            var list = GetServiceRegistrations(serviceDefinition.ServiceType, true);
-            list.Add(serviceDefinition);
+            Add(serviceDefinition.ServiceType, () => serviceDefinition);
+        }
+
+        public void Add(Type registrationType, Func<ServiceDefinition> serviceDefinition)
+        {
+            var list = GetServiceRegistrations(registrationType, true);
+            list.Add(new Lazy<ServiceDefinition>(serviceDefinition));
         }
 
         public void Add(IServiceCollection services)
@@ -69,18 +74,14 @@ namespace FactoryFactory
 
         /* ====== Fluent registration ====== */
 
-        public RegistrationBuilder Define(Type type)
+        public DefinitionBuilder Define(Type type)
         {
-            var registration = new ServiceDefinition(type);
-            Add(registration);
-            return new RegistrationBuilder(registration);
+            return new DefinitionBuilder(this, type);
         }
 
-        public RegistrationBuilder<TService> Define<TService>()
+        public DefinitionBuilder<TService> Define<TService>()
         {
-            var registration = new ServiceDefinition(typeof(TService));
-            Add(registration);
-            return new RegistrationBuilder<TService>(registration);
+            return new DefinitionBuilder<TService>(this);
         }
 
 
@@ -89,15 +90,15 @@ namespace FactoryFactory
         IEnumerable<ServiceDefinition> IModule.GetRegistrations(Type type)
         {
             var definitions =
-                GetServiceRegistrations(type, false) ?? Enumerable.Empty<ServiceDefinition>();
+                GetServiceRegistrations(type, false) ?? Enumerable.Empty<Lazy<ServiceDefinition>>();
             if (type.IsGenericType) {
                 var genericType = type.GetGenericTypeDefinition();
                 var genericDefinitions = (GetServiceRegistrations(genericType, false)) ??
-                                         Enumerable.Empty<ServiceDefinition>();
+                                         Enumerable.Empty<Lazy<ServiceDefinition>>();
                 definitions = definitions.Concat(genericDefinitions);
             }
 
-            return definitions;
+            return definitions.Select(x => x.Value);
         }
 
         bool IModule.IsTypeRegistered(Type type) =>

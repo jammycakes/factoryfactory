@@ -105,11 +105,9 @@ namespace FactoryFactory
                             else {
                                 result = new List<IServiceResolver>();
                                 if (CanAutoResolve(type)) {
-                                    var definition = new ServiceDefinition(type) {
-                                        ImplementationType = type,
-                                        Lifecycle = Options.DefaultLifecycle,
-                                        Precondition = req => true
-                                    };
+                                    var definition = new ServiceDefinition(type,
+                                        implementationType: type,
+                                        lifecycle: Options.DefaultLifecycle);
                                     var resolver = new ServiceResolver
                                         (definition, Options.Compiler.Build(definition, this));
                                     result.Add(resolver);

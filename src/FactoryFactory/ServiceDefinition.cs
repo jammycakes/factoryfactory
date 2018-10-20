@@ -6,14 +6,7 @@ namespace FactoryFactory
 {
     public class ServiceDefinition
     {
-        private bool _locked = false;
         private readonly object _identity = new object();
-
-        private Type _serviceType;
-        private Func<ServiceRequest, bool> _precondition = req => true;
-        private Expression<Func<ServiceRequest, object>> _implementationFactory;
-        private Type _implementationType;
-        private Lifecycle _lifecycle = Lifecycle.Default;
 
         /* ====== Constructors ====== */
 
@@ -21,10 +14,17 @@ namespace FactoryFactory
         ///  Creates a new default instance of the <see cref="ServiceDefinition"/>
         ///  class.
         /// </summary>
-        public ServiceDefinition(Type serviceType)
+        public ServiceDefinition(Type serviceType,
+            Expression<Func<ServiceRequest, object>> implementationFactory = null,
+            Type implementationType = null,
+            Lifecycle lifecycle = null,
+            Func<ServiceRequest, bool> precondition = null)
         {
-            _serviceType = serviceType;
-            _locked = false;
+            ServiceType = serviceType;
+            Precondition = precondition ?? (req => true);
+            ImplementationFactory = implementationFactory;
+            ImplementationType = implementationType ?? (implementationFactory == null ? implementationType : null);
+            Lifecycle = lifecycle ?? Lifecycle.Default;
         }
 
         /// <summary>
@@ -36,88 +36,58 @@ namespace FactoryFactory
         public ServiceDefinition(ServiceDescriptor descriptor,
             Func<ServiceRequest, bool> precondition = null)
         {
-            _serviceType = descriptor.ServiceType;
+            ServiceType = descriptor.ServiceType;
             if (descriptor.ImplementationType != null) {
-                _implementationType = descriptor.ImplementationType;
+                ImplementationType = descriptor.ImplementationType;
             }
             else if (descriptor.ImplementationInstance != null) {
                 var instance = descriptor.ImplementationInstance;
-                _implementationFactory = sr => instance;
+                ImplementationFactory = sr => instance;
             }
             else if (descriptor.ImplementationFactory != null) {
                 var factory = descriptor.ImplementationFactory;
-                _implementationFactory = sr => factory(sr.Container);
+                ImplementationFactory = sr => factory(sr.Container);
             }
             else {
                 throw new ConfigurationException
                     ("Invalid descriptor: neither a service nor a service factory has been set.");
             }
 
-            _lifecycle = Lifecycle.Get(descriptor.Lifetime);
-            _precondition = precondition ?? (sr => true);
-            _locked = true;
+            Lifecycle = Lifecycle.Get(descriptor.Lifetime);
+            Precondition = precondition ?? (sr => true);
         }
 
-        /* ====== Lock on read ====== */
-
-        private T Lock<T>(T obj)
-        {
-            _locked = true;
-            return obj;
-        }
-
-        private T AssertUnlocked<T>(T obj)
-        {
-            if (_locked) {
-                throw new InvalidOperationException
-                    ("You can not change a service registration after it has been accessed.");
-            }
-
-            return obj;
-        }
 
         /* ====== Properties ====== */
 
         /// <summary>
         ///  The type of service being registered.
         /// </summary>
-        public Type ServiceType => _serviceType;
+        public Type ServiceType { get; }
 
         /// <summary>
         ///  The precondition for this service registration to be activated.
         /// </summary>
-        public Func<ServiceRequest, bool> Precondition {
-            get => Lock(_precondition);
-            set => _precondition = AssertUnlocked(value);
-        }
+        public Func<ServiceRequest, bool> Precondition { get;  }
 
 
         /// <summary>
         ///  The factory method that instantiates the service, or null if a
         ///  specific type is specified in the ServiceResolution property.
         /// </summary>
-        public Expression<Func<ServiceRequest, object>> ImplementationFactory {
-            get => Lock(_implementationFactory);
-            set => _implementationFactory = AssertUnlocked(value);
-        }
+        public Expression<Func<ServiceRequest, object>> ImplementationFactory { get; }
 
         /// <summary>
         ///  The type that will be constructed which implements the service type
         ///  specified in ServiceType.
         /// </summary>
-        public Type ImplementationType {
-            get => Lock(_implementationType);
-            set => _implementationType = AssertUnlocked(value);
-        }
+        public Type ImplementationType { get; }
 
         /// <summary>
         ///  The <see cref="FactoryFactory.Lifecycle"/> implementation that tells the
         ///  container where to resolve and when to release dependencies.
         /// </summary>
-        public Lifecycle Lifecycle {
-            get => Lock(_lifecycle);
-            set => _lifecycle = AssertUnlocked(value);
-        }
+        public Lifecycle Lifecycle { get; }
 
         public override bool Equals(object obj)
         {

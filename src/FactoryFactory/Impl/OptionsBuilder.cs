@@ -2,13 +2,13 @@ using System;
 
 namespace FactoryFactory.Impl
 {
-    public class RegistrationOptions<TService>
+    public class OptionsBuilder<TService>
     {
-        private readonly ServiceDefinition _state;
+        private readonly DefinitionOptions _options;
 
-        public RegistrationOptions(ServiceDefinition state)
+        public OptionsBuilder(DefinitionOptions options)
         {
-            _state = state;
+            _options = options;
         }
 
         /// <summary>
@@ -16,9 +16,9 @@ namespace FactoryFactory.Impl
         /// </summary>
         /// <param name="lifecycle"></param>
         /// <returns></returns>
-        public RegistrationOptions<TService> Lifecycle(Lifecycle lifecycle)
+        public OptionsBuilder<TService> Lifecycle(Lifecycle lifecycle)
         {
-            _state.Lifecycle = lifecycle;
+            _options.Lifecycle = lifecycle;
             return this;
         }
 
@@ -27,9 +27,9 @@ namespace FactoryFactory.Impl
         /// </summary>
         /// <param name="precondition"></param>
         /// <returns></returns>
-        public RegistrationOptions<TService> Precondition(Func<ServiceRequest, bool> precondition)
+        public OptionsBuilder<TService> Precondition(Func<ServiceRequest, bool> precondition)
         {
-            _state.Precondition = precondition;
+            _options.Precondition = precondition;
             return this;
         }
 
@@ -37,19 +37,19 @@ namespace FactoryFactory.Impl
         ///  Configures this registration as a singleton.
         /// </summary>
         /// <returns></returns>
-        public RegistrationOptions<TService> Singleton() => Lifecycle(FactoryFactory.Lifecycle.Singleton);
+        public OptionsBuilder<TService> Singleton() => Lifecycle(FactoryFactory.Lifecycle.Singleton);
 
         /// <summary>
         ///  Configures this registration as a transient.
         /// </summary>
         /// <returns></returns>
-        public RegistrationOptions<TService> Transient() => Lifecycle(FactoryFactory.Lifecycle.Transient);
+        public OptionsBuilder<TService> Transient() => Lifecycle(FactoryFactory.Lifecycle.Transient);
 
         /// <summary>
         ///  Configures this registration as a scoped service.
         /// </summary>
         /// <returns></returns>
-        public RegistrationOptions<TService> Scoped() => Lifecycle(FactoryFactory.Lifecycle.Scoped);
+        public OptionsBuilder<TService> Scoped() => Lifecycle(FactoryFactory.Lifecycle.Scoped);
 
         /// <summary>
         ///  Configures this registration as an untracked service.
@@ -57,7 +57,7 @@ namespace FactoryFactory.Impl
         ///  disposed.
         /// </summary>
         /// <returns></returns>
-        public RegistrationOptions<TService> Untracked() => Lifecycle(FactoryFactory.Lifecycle.Untracked);
+        public OptionsBuilder<TService> Untracked() => Lifecycle(FactoryFactory.Lifecycle.Untracked);
 
         /// <summary>
         ///  Configures this registration with a null lifecycle.
@@ -65,6 +65,6 @@ namespace FactoryFactory.Impl
         ///  be tracked for disposal by any container.
         /// </summary>
         /// <returns></returns>
-        public RegistrationOptions<TService> NullLifecycle() => Lifecycle(FactoryFactory.Lifecycle.Null);
+        public OptionsBuilder<TService> NullLifecycle() => Lifecycle(FactoryFactory.Lifecycle.Null);
     }
 }

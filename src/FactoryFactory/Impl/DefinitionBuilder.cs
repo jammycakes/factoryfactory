@@ -1,0 +1,123 @@
+using System;
+using System.Linq.Expressions;
+
+namespace FactoryFactory.Impl
+{
+    public class DefinitionBuilder
+    {
+        private readonly Type _type;
+        private protected Type _implementationType;
+        private protected Expression<Func<ServiceRequest, object>> _implementationFactory;
+        private protected DefinitionOptions _options = new DefinitionOptions();
+
+        public DefinitionBuilder(Module module, Type type)
+        {
+            _type = type;
+            module.Add(type, () => Build());
+        }
+
+        private ServiceDefinition Build()
+        {
+            return new ServiceDefinition(_type,
+                implementationType: _implementationType,
+                implementationFactory: _implementationFactory,
+                lifecycle: _options.Lifecycle,
+                precondition: _options.Precondition
+            );
+        }
+
+        /// <summary>
+        ///  Specifies the concrete class to provide services for this registration.
+        /// </summary>
+        /// <param name="implementationType">
+        ///  The concrete type to implement this service.
+        /// </param>
+        /// <returns></returns>
+        public OptionsBuilder<object> As(Type implementationType)
+        {
+            _implementationType = implementationType;
+            return new OptionsBuilder<object>(_options);
+        }
+
+        /// <summary>
+        ///  Specifies an already-created instance to provide services for this
+        ///  registration.
+        /// </summary>
+        /// <param name="implementation">
+        ///  The object that implements this service.
+        /// </param>
+        /// <returns></returns>
+        public OptionsBuilder<object> As(object implementation)
+        {
+            return As(req => implementation);
+        }
+
+        /// <summary>
+        ///  Specifies a factory method to provide services for this registration.
+        /// </summary>
+        /// <returns>
+        ///  A factory method that creates the requested service.
+        /// </returns>
+        public OptionsBuilder<object> As(Expression<Func<ServiceRequest, object>> factory)
+        {
+            _implementationFactory = factory;
+            _implementationType = null;
+            return new OptionsBuilder<object>(_options);
+        }
+    }
+
+    public class DefinitionBuilder<TService> : DefinitionBuilder
+    {
+        public DefinitionBuilder(Module module)
+            : base(module, typeof(TService))
+        {
+        }
+
+        /// <summary>
+        ///  Specifies the concrete class to provide services for this registration.
+        /// </summary>
+        /// <returns></returns>
+        /// <typeparam name="TImplementation">
+        ///  The concrete type to implement this service.
+        /// </typeparam>
+        /// <returns></returns>
+        public OptionsBuilder<TService> As<TImplementation>()
+            where TImplementation : TService
+        {
+            _implementationType = typeof(TImplementation);
+            _implementationFactory = null;
+            return new OptionsBuilder<TService>(_options);
+        }
+
+        /// <summary>
+        ///  Specifies an already-created instance to provide services for this registration.
+        /// </summary>
+        /// <param name="implementation">
+        ///  The object that implements this service.
+        /// </param>
+        /// <returns></returns>
+        public OptionsBuilder<TService> As(TService implementation)
+        {
+            _implementationFactory = req => implementation;
+            _implementationType = null;
+            return new OptionsBuilder<TService>(_options);
+        }
+
+        /// <summary>
+        ///  Specifies a factory method to provide services for this registration.
+        /// </summary>
+        /// <param name="factory">
+        ///  A factory method that creates the requested service.
+        /// </param>
+        /// <returns></returns>
+        public OptionsBuilder<TService> As(Expression<Func<ServiceRequest, TService>> factory)
+        {
+            _implementationFactory = Expression.Lambda<Func<ServiceRequest, object>>(
+                factory.Body,
+                factory.Parameters
+            );
+            _implementationType = null;
+            return new OptionsBuilder<TService>(_options);
+        }
+    }
+}
