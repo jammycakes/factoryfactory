@@ -115,12 +115,6 @@ namespace FactoryFactory
         public bool CanResolve(Type type)
         {
             return GetResolvers(type).Any();
-
-            var result =
-                CanAutoResolve(type) ||
-                   _resolvers.ContainsKey(type) && _resolvers[type].Any() ||
-                   _modules.Any(m => m.IsTypeRegistered(type));
-            return result;
         }
 
 
