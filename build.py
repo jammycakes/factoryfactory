@@ -69,4 +69,8 @@ dotnet(
 if is_release:
     key = os.environ.get('NUGET_KEY', False)
     if key:
-        dotnet('nuget', 'push', package_path, '-k', key)
+        dotnet(
+            'nuget', 'push', package_path,
+            '-k', key,
+            '-s', 'https://api.nuget.org/v3/index.json'
+        )
