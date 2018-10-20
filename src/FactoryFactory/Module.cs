@@ -16,7 +16,7 @@ namespace FactoryFactory
             var definitionsByType =
                 from definition in serviceDefinitions
                 let lazy = new Lazy<ServiceDefinition>(() => definition)
-                group lazy by lazy.Value.ServiceType
+                group lazy by GetKey(lazy.Value.ServiceType)
                 into byType
                 select byType;
 
@@ -35,8 +35,18 @@ namespace FactoryFactory
 
         /* ====== Registration ====== */
 
+
+        private Type GetKey(Type type)
+        {
+            if (!type.IsGenericType) return type;
+            if (type.IsGenericTypeDefinition) return type;
+            return type.GetGenericTypeDefinition();
+        }
+
+
         private List<Lazy<ServiceDefinition>> GetServiceDefinitions(Type type, bool create)
         {
+            type = GetKey(type);
             List<Lazy<ServiceDefinition>> result = null;
             if (!_definitions.TryGetValue(type, out result)) {
                 if (create) {
@@ -48,9 +58,9 @@ namespace FactoryFactory
             return result;
         }
 
-        private void Add(Type registrationType, ServiceDefinition serviceDefinition)
+        private void Add(Type type, ServiceDefinition serviceDefinition)
         {
-            Add(registrationType, () => serviceDefinition);
+            Add(type, () => serviceDefinition);
         }
 
         public void Add(ServiceDefinition serviceDefinition)
@@ -58,9 +68,10 @@ namespace FactoryFactory
             Add(serviceDefinition.ServiceType, () => serviceDefinition);
         }
 
-        public void Add(Type registrationType, Func<ServiceDefinition> serviceDefinition)
+        public void Add(Type type, Func<ServiceDefinition> serviceDefinition)
         {
-            var list = GetServiceDefinitions(registrationType, true);
+            type = GetKey(type);
+            var list = GetServiceDefinitions(type, true);
             list.Add(new Lazy<ServiceDefinition>(serviceDefinition));
         }
 
@@ -89,19 +100,16 @@ namespace FactoryFactory
 
         IEnumerable<ServiceDefinition> IModule.GetDefinitions(Type type)
         {
+            var key = GetKey(type);
             var definitions =
-                GetServiceDefinitions(type, false)?.Select(x => x.Value)
+                GetServiceDefinitions(key, false)?.Select(x => x.Value)
                 ?? Enumerable.Empty<ServiceDefinition>();
-            if (type.IsGenericType) {
-                var genericType = type.GetGenericTypeDefinition();
-                var genericDefinitions =
-                    GetServiceDefinitions(genericType, false)?.Select(x => x.Value)
-                    ?? Enumerable.Empty<ServiceDefinition>();
-                genericDefinitions = genericDefinitions.Select(x => x.GetGenericDefinition(type));
-                definitions = genericDefinitions.Concat(definitions);
-            }
 
-            return definitions;
+            return
+                from definition in definitions
+                where definition.ServiceType.IsGenericTypeDefinition
+                    || definition.ServiceType == type
+                select definition.GetGenericDefinition(type);
         }
 
         bool IModule.IsTypeRegistered(Type type) =>
