@@ -88,10 +88,21 @@ namespace FactoryFactory
 
         IEnumerable<ServiceDefinition> IModule.GetRegistrations(Type type)
         {
-            return (GetServiceRegistrations(type, false) ?? Enumerable.Empty<ServiceDefinition>())
-                .AsEnumerable();
+            var definitions =
+                GetServiceRegistrations(type, false) ?? Enumerable.Empty<ServiceDefinition>();
+            if (type.IsGenericType) {
+                var genericType = type.GetGenericTypeDefinition();
+                var genericDefinitions = (GetServiceRegistrations(genericType, false)) ??
+                                         Enumerable.Empty<ServiceDefinition>();
+                definitions = definitions.Concat(genericDefinitions);
+            }
+
+            return definitions;
         }
 
-        bool IModule.IsTypeRegistered(Type type) => _registrations.ContainsKey(type);
+        bool IModule.IsTypeRegistered(Type type) =>
+            _registrations.ContainsKey(type) ||
+            (type.IsGenericTypeDefinition &&
+             _registrations.ContainsKey(type.GetGenericTypeDefinition()));
     }
 }

@@ -41,8 +41,7 @@ namespace FactoryFactory
         public object GetService(Type serviceType)
         {
             var request = new ServiceRequest(this, serviceType, null);
-            var result = GetService(request);
-            return result;
+            return GetService(request);
         }
 
         public object GetService(ServiceRequest request)

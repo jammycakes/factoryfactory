@@ -94,6 +94,7 @@ namespace FactoryFactory
                                 from module in _modules
                                 from registration in module.GetRegistrations(type)
                                 select registration;
+
                             if (registrations.Any()) {
                                 var builtResolvers =
                                     from registration in registrations
