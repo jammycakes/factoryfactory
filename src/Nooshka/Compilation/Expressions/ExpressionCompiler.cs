@@ -15,17 +15,17 @@ namespace Nooshka.Compilation.Expressions
             if (definition.ImplementationFactory != null) {
                 if (definition.ImplementationFactory.Body is NewExpression nex) {
                     var expression = CreateExpressionFromConstructorExpression(nex);
-                    return new ExpressionServiceBuilder(expression);
+                    return new ExpressionServiceBuilder(expression, definition.ServiceType);
                 }
                 else {
-                    return new ExpressionServiceBuilder(definition.ImplementationFactory);
+                    return new ExpressionServiceBuilder(definition.ImplementationFactory, definition.ServiceType);
                 }
             }
             else {
                 var constructor = configuration.Options.ConstructorSelector
                     .SelectConstructor(definition, configuration);
                 var expression = CreateExpressionFromDefaultConstructor(constructor);
-                return new ExpressionServiceBuilder(expression);
+                return new ExpressionServiceBuilder(expression, definition.ServiceType);
             }
         }
 

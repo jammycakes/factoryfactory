@@ -62,5 +62,17 @@ namespace Nooshka.Tests.Resolution.ResolverBuilderTests
             Assert.Equal("Hello world", service.Message);
             Assert.IsType<ServiceWithoutDependencies>(service.Dependency);
         }
+
+        [Fact]
+        public void CanResolveFuncDependencies()
+        {
+            var module = new Module();
+            module.Define<IServiceWithDependencies>().As<ServiceWithFuncDependencies>();
+            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
+            var service = Configuration.CreateContainer(module)
+                .GetService<IServiceWithDependencies>();
+
+            Assert.IsType<ServiceWithoutDependencies>(service.Dependency);
+        }
     }
 }
