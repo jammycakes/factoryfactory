@@ -90,15 +90,18 @@ namespace FactoryFactory
         IEnumerable<ServiceDefinition> IModule.GetDefinitions(Type type)
         {
             var definitions =
-                GetServiceDefinitions(type, false) ?? Enumerable.Empty<Lazy<ServiceDefinition>>();
+                GetServiceDefinitions(type, false)?.Select(x => x.Value)
+                ?? Enumerable.Empty<ServiceDefinition>();
             if (type.IsGenericType) {
                 var genericType = type.GetGenericTypeDefinition();
-                var genericDefinitions = (GetServiceDefinitions(genericType, false)) ??
-                                         Enumerable.Empty<Lazy<ServiceDefinition>>();
-                definitions = definitions.Concat(genericDefinitions);
+                var genericDefinitions =
+                    GetServiceDefinitions(genericType, false)?.Select(x => x.Value)
+                    ?? Enumerable.Empty<ServiceDefinition>();
+                genericDefinitions = genericDefinitions.Select(x => x.GetGenericDefinition(type));
+                definitions = genericDefinitions.Concat(definitions);
             }
 
-            return definitions.Select(x => x.Value);
+            return definitions;
         }
 
         bool IModule.IsTypeRegistered(Type type) =>

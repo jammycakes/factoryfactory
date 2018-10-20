@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory
@@ -7,6 +10,8 @@ namespace FactoryFactory
     public class ServiceDefinition
     {
         private readonly object _identity = new object();
+        private ConcurrentDictionary<Type, ServiceDefinition> _genericDefinitions
+            = new ConcurrentDictionary<Type, ServiceDefinition>();
 
         /* ====== Constructors ====== */
 
@@ -88,6 +93,24 @@ namespace FactoryFactory
         ///  container where to resolve and when to release dependencies.
         /// </summary>
         public Lifecycle Lifecycle { get; }
+
+
+        public ServiceDefinition GetGenericDefinition(Type requestedType)
+        {
+            if (!requestedType.IsGenericType) return this;
+            if (!ServiceType.IsGenericTypeDefinition) return this;
+            return _genericDefinitions.GetOrAdd(requestedType, t => {
+                var newType =
+                    ServiceType.MakeGenericType(requestedType.GenericTypeArguments);
+                var newImplementationType =
+                    ImplementationType.MakeGenericType(requestedType
+                        .GenericTypeArguments);
+                return new ServiceDefinition
+                    (newType, ImplementationFactory, newImplementationType,
+                    Lifecycle, Precondition);
+            });
+        }
+
 
         public override bool Equals(object obj)
         {

@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using FactoryFactory.Impl;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,9 +14,8 @@ namespace FactoryFactory
     public class Configuration
     {
         private List<IModule> _modules = new List<IModule>();
-        private ReaderWriterLockSlim _resolverLock = new ReaderWriterLockSlim();
-        private IDictionary<Type, List<IServiceResolver>> _resolvers
-            = new Dictionary<Type, List<IServiceResolver>>();
+        private ConcurrentDictionary<Type, List<IServiceResolver>> _resolvers
+            = new ConcurrentDictionary<Type, List<IServiceResolver>>();
 
         public ConfigurationOptions Options { get; }
 
@@ -82,50 +81,32 @@ namespace FactoryFactory
         /// <returns></returns>
         public IEnumerable<IServiceResolver> GetResolvers(Type type)
         {
-            List<IServiceResolver> result;
+            return _resolvers.GetOrAdd(type, t => {
+                var definitions =
+                    from module in _modules
+                    from definition in module.GetDefinitions(type)
+                    select definition;
 
-            _resolverLock.EnterUpgradeableReadLock();
-            try {
-                if (!_resolvers.TryGetValue(type, out result)) {
-                    _resolverLock.EnterWriteLock();
-                    try {
-                        if (!_resolvers.TryGetValue(type, out result)) {
-                            var definitions =
-                                from module in _modules
-                                from definition in module.GetDefinitions(type)
-                                select definition;
-
-                            if (definitions.Any()) {
-                                var builtResolvers =
-                                    from definition in definitions
-                                    select (IServiceResolver)new ServiceResolver
-                                        (definition, Options.Compiler.Build(definition, this));
-                                result = builtResolvers.ToList();
-                            }
-                            else {
-                                result = new List<IServiceResolver>();
-                                if (CanAutoResolve(type)) {
-                                    var definition = new ServiceDefinition(type,
-                                        implementationType: type,
-                                        lifecycle: Options.DefaultLifecycle);
-                                    var resolver = new ServiceResolver
-                                        (definition, Options.Compiler.Build(definition, this));
-                                    result.Add(resolver);
-                                }
-                            }
-                            _resolvers.Add(type, result);
-                        }
-                    }
-                    finally {
-                        _resolverLock.ExitWriteLock();
-                    }
+                if (definitions.Any()) {
+                    var builtResolvers =
+                        from definition in definitions
+                        select (IServiceResolver)new ServiceResolver
+                            (definition, Options.Compiler.Build(definition, this));
+                    return builtResolvers.ToList();
                 }
-
-            }
-            finally {
-                _resolverLock.ExitUpgradeableReadLock();
-            }
-            return result;
+                else {
+                    var result = new List<IServiceResolver>();
+                    if (CanAutoResolve(type)) {
+                        var definition = new ServiceDefinition(type,
+                            implementationType: type,
+                            lifecycle: Options.DefaultLifecycle);
+                        var resolver = new ServiceResolver
+                            (definition, Options.Compiler.Build(definition, this));
+                        result.Add(resolver);
+                    }
+                    return result;
+                }
+            });
         }
 
         public bool CanResolve(Type type)
