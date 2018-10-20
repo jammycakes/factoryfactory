@@ -1,6 +1,6 @@
 using System;
 
-namespace FactoryFactory.Impl
+namespace FactoryFactory.Registration
 {
     public class OptionsBuilder<TService>
     {

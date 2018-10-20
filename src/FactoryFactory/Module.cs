@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FactoryFactory.Impl;
+using FactoryFactory.Registration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory
@@ -23,8 +24,7 @@ namespace FactoryFactory
         }
 
         public Module(IServiceCollection services)
-            : this(services.Select<ServiceDescriptor, ServiceDefinition>
-                (s => new ServiceDefinition(s)).ToArray())
+            : this(services.Select(s => new ServiceDefinition(s)).ToArray())
         {
         }
 
