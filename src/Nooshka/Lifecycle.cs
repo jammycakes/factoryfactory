@@ -9,6 +9,7 @@ namespace Nooshka
 
         public abstract IServiceCache GetCache(ServiceRequest request);
 
+        public static readonly Lifecycle Null = new NullLifecycle();
         public static readonly Lifecycle Scoped = new ScopedLifecycle();
         public static readonly Lifecycle Singleton = new SingletonLifecycle();
         public static readonly Lifecycle Transient = new TransientLifecycle();

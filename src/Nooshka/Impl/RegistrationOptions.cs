@@ -58,5 +58,13 @@ namespace Nooshka.Impl
         /// </summary>
         /// <returns></returns>
         public RegistrationOptions<TService> Untracked() => Lifecycle(Nooshka.Lifecycle.Untracked);
+
+        /// <summary>
+        ///  Configures this registration with a null lifecycle.
+        ///  Multiple instances will be created per injection, and they will not
+        ///  be tracked for disposal by any container.
+        /// </summary>
+        /// <returns></returns>
+        public RegistrationOptions<TService> NullLifecycle() => Lifecycle(Nooshka.Lifecycle.Null);
     }
 }
