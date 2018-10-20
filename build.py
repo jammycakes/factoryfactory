@@ -41,8 +41,7 @@ else:
     if suffix and suffix != '':
         package_version += '=' + suffix
 
-package_path = abspath('build/FactoryFactory/FactoryFactory.{0}.nupkg'.format(package_version))
-
+package_path = abspath('build')
 
 os.makedirs(abspath('src/.version'), exist_ok=True)
 with open(abspath('src/.version/version.cs'), 'w') as f:
@@ -70,8 +69,11 @@ dotnet(
 if is_release:
     key = os.environ.get('NUGET_KEY', False)
     if key:
-        dotnet(
-            'nuget', 'push', package_path,
-            '-k', key,
-            '-s', 'https://api.nuget.org/v3/index.json'
-        )
+        for f in os.listdir(package_path):
+            artifact = os.path.join(package_path, f)
+            if artifact.endswith('.nupkg') and os.path.isfile(artifact):
+                dotnet(
+                    'nuget', 'push', artifact,
+                    '-k', key,
+                    '-s', 'https://api.nuget.org/v3/index.json'
+                )
