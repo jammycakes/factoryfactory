@@ -5,12 +5,14 @@ ground up to support the .NET Core abstractions out of the box, and it features
 a fluent interface, preconditions, custom lifecycles, and whatever other bits
 and pieces I see fit to introduce as I feel like it.
 
-Its current status is experimental. Since this is still in the pre-alpha stage,
-there is no NuGet package available yet. If you want to play with it, you'll
-have to compile it yourself, sorry!
-
 Usage:
 ------
+Get it from NuGet:
+
+```
+Install-Package FactoryFactory -Version 0.1.0
+```
+
 Create one or more modules to contain your service definitions:
 
 ```c#
