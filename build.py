@@ -6,7 +6,9 @@ import re
 import shutil
 import subprocess
 
-version = '0.0.1-alpha'
+version = '0.1.0'
+suffix = ''
+is_release = False
 
 
 def abspath(path):
@@ -21,11 +23,8 @@ def dotnet(*args):
 
 build_number = os.environ.get('APPVEYOR_BUILD_NUMBER', '0')
 pull_request_number = os.environ.get('APPVEYOR_PULL_REQUEST_NUMBER', False)
-suffix = ''
-is_release = False
 
 if os.environ.get('APPVEYOR_REPO_TAG', False) == 'true':
-    version = os.environ.get('APPVEYOR_REPO_TAG_NAME')
     is_release = True
 
 version_number = re.search(r'^\d+\.\d+\.\d+', version)
@@ -39,6 +38,8 @@ if pull_request_number:
     package_version = version + '-pr' + pull_request_number
 else:
     package_version = version
+    if suffix and suffix != '':
+        package_version += '=' + suffix
 
 os.makedirs(abspath('src/.version'), exist_ok=True)
 with open(abspath('src/.version/version.cs'), 'w') as f:
