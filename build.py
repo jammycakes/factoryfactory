@@ -41,6 +41,8 @@ else:
     if suffix and suffix != '':
         package_version += '=' + suffix
 
+package_path = abspath('build/FactoryFactory/FactoryFactory.{0}.nupkg'.format(package_version))
+
 os.makedirs(abspath('src/.version'), exist_ok=True)
 with open(abspath('src/.version/version.cs'), 'w') as f:
     f.writelines([
@@ -59,7 +61,12 @@ dotnet('build', abspath('src/FactoryFactory.sln'))
 dotnet('test', abspath('src/FactoryFactory.Tests/FactoryFactory.Tests.csproj'))
 dotnet(
     'pack',
-    '-o', abspath('build/FactoryFactory'),
+    '-o', package_path,
     '--no-build',
     abspath('src/FactoryFactory/FactoryFactory.csproj')
 )
+
+if is_release:
+    key = os.environ.get('NUGET_KEY', False)
+    if key:
+        dotnet('nuget', 'push', package_path, '-k', key)
