@@ -6,6 +6,11 @@ import re
 import shutil
 import subprocess
 
+projects = [
+    'FactoryFactory',
+    'FactoryFactory.AspNet.DependencyInjection'
+]
+
 version = '0.1.1'
 suffix = ''
 is_release = False
@@ -59,12 +64,14 @@ with open(abspath('src/.version/version.cs'), 'w') as f:
 shutil.rmtree(abspath('build'), ignore_errors=True)
 dotnet('build', abspath('src/FactoryFactory.sln'))
 dotnet('test', abspath('src/FactoryFactory.Tests/FactoryFactory.Tests.csproj'))
-dotnet(
-    'pack',
-    '-o', package_path,
-    '--no-build',
-    abspath('src/FactoryFactory/FactoryFactory.csproj')
-)
+
+for project in projects:
+    dotnet(
+        'pack',
+        '-o', package_path,
+        '--no-build',
+        abspath('src/{0}/{0}.csproj'.format(project))
+    )
 
 if is_release:
     key = os.environ.get('NUGET_KEY', False)
