@@ -10,7 +10,7 @@ Usage:
 Get it from NuGet:
 
 ```
-Install-Package FactoryFactory -Version 0.1.0
+Install-Package FactoryFactory
 ```
 
 Create one or more modules to contain your service definitions:
@@ -36,5 +36,35 @@ Create a container from a Configuration, then get your root service:
 var cfg = new Configuration(new MyModule());
 using (var container = cfg.CreateContainer()) {
     container.GetService<Program>().Run();
+}
+```
+
+## In ASP.NET Core:
+
+Install FactoryFactory.AspNet.DependencyInjection:
+
+```
+Install-Package FactoryFactory.AspNet.DependencyInjection
+```
+
+In Program.cs, add a call to `.UseFactoryFactory()` to your `WebHostBuilder`:
+
+```c#
+using FactoryFactory.AspNet.DependencyInjection;
+
+/* snip */
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseFactoryFactory()
+                .UseStartup<Startup>();
+```
+
+In Startup.cs, add a `ConfigureContainer(Module)` method:
+
+```c#
+public void ConfigureContainer(Module module)
+{
+    // Add your registrations to Module here
 }
 ```
