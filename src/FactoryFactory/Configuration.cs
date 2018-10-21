@@ -90,8 +90,10 @@ namespace FactoryFactory
                 if (definitions.Any()) {
                     var builtResolvers =
                         from definition in definitions
+                        let builder = Options.Compiler.Build(definition, this)
+                        where builder != null
                         select (IServiceResolver)new ServiceResolver
-                            (definition, Options.Compiler.Build(definition, this));
+                            (definition, builder);
                     return builtResolvers.ToList();
                 }
                 else {

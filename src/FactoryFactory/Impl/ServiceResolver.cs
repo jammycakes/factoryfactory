@@ -8,8 +8,10 @@ namespace FactoryFactory.Impl
 
         public ServiceResolver(ServiceDefinition definition, IServiceBuilder builder)
         {
-            _builder = builder;
+            if (definition == null) throw new ArgumentNullException(nameof(definition));
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             Definition = definition;
+            _builder = builder;
             IsOpenGeneric = definition.IsForOpenGeneric;
         }
 
