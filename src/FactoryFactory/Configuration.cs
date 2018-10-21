@@ -162,7 +162,7 @@ namespace FactoryFactory
         /// <returns>
         ///  The configured container.
         /// </returns>
-        public static Container CreateContainer(Action<IModule> moduleConfig)
+        public static Container CreateContainer(Action<Module> moduleConfig)
         {
             var module = new Module();
             moduleConfig(module);
