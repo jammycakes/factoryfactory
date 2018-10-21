@@ -12,14 +12,14 @@ namespace FactoryFactory.Compilation
             var matchingConstructors =
                 from constructor in constructors
                 let parameters = constructor.GetParameters()
-                let info = new { constructor, parameters, parameters.Length }
+                let info = new {constructor, parameters, parameters.Length}
                 where parameters.All(p =>
-                    p.IsOptional || configuration.CanResolve(p.ParameterType.GetServiceType())
+                    p.IsOptional ||
+                    p.ParameterType.IsEnumerable() ||
+                    configuration.CanResolve(p.ParameterType.GetServiceType())
                 )
                 orderby info.Length descending
                 select info.constructor;
-            var result = matchingConstructors.ToList();
-
             return matchingConstructors.FirstOrDefault();
         }
     }
