@@ -19,6 +19,8 @@ ProjectSection(SolutionItems) = preProject
 	..\appveyor.yml = ..\appveyor.yml
 EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FactoryFactory.AspNet.DependencyInjection", "FactoryFactory.AspNet.DependencyInjection\FactoryFactory.AspNet.DependencyInjection.csproj", "{130BDFD8-D9D8-4F29-9760-01C087B3CF3B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,5 +35,9 @@ Global
 		{892F72CD-2822-48E1-98D6-707FF5C2D929}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{892F72CD-2822-48E1-98D6-707FF5C2D929}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{892F72CD-2822-48E1-98D6-707FF5C2D929}.Release|Any CPU.Build.0 = Release|Any CPU
+		{130BDFD8-D9D8-4F29-9760-01C087B3CF3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{130BDFD8-D9D8-4F29-9760-01C087B3CF3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{130BDFD8-D9D8-4F29-9760-01C087B3CF3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{130BDFD8-D9D8-4F29-9760-01C087B3CF3B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
