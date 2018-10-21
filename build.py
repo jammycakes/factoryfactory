@@ -6,7 +6,7 @@ import re
 import shutil
 import subprocess
 
-version = '0.1.0'
+version = '0.1.1'
 suffix = ''
 is_release = False
 
