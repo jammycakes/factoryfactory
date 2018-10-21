@@ -133,5 +133,8 @@ namespace FactoryFactory
         {
             return _identity.GetHashCode();
         }
+
+        public override string ToString() =>
+            $"ServiceDefinition: {this.ServiceType.ToString()}";
     }
 }
