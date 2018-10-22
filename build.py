@@ -11,7 +11,7 @@ projects = [
     'FactoryFactory.AspNet.DependencyInjection'
 ]
 
-version = '0.1.1'
+version = '0.1.2'
 suffix = ''
 is_release = False
 
