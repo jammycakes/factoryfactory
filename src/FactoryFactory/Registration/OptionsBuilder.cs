@@ -58,13 +58,5 @@ namespace FactoryFactory.Registration
         /// </summary>
         /// <returns></returns>
         public OptionsBuilder<TService> Untracked() => Lifecycle(FactoryFactory.Lifecycle.Untracked);
-
-        /// <summary>
-        ///  Configures the service with a null lifecycle.
-        ///  Multiple instances will be created per injection, and they will not
-        ///  be tracked for disposal by any container.
-        /// </summary>
-        /// <returns></returns>
-        public OptionsBuilder<TService> NullLifecycle() => Lifecycle(FactoryFactory.Lifecycle.Null);
     }
 }

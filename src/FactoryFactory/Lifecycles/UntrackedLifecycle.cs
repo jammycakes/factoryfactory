@@ -2,13 +2,13 @@ using System;
 
 namespace FactoryFactory.Lifecycles
 {
-    public class UntrackedLifecycle : Lifecycle, IServiceTracker
+    public class UntrackedLifecycle : Lifecycle, IServiceTracker, IServiceCache
     {
         public override IServiceTracker GetTracker(ServiceRequest request)
             => this;
 
         public override IServiceCache GetCache(ServiceRequest request)
-            => request.ServiceCache;
+            => this;
 
         public void Dispose()
         {
@@ -17,5 +17,12 @@ namespace FactoryFactory.Lifecycles
         public void Track(IDisposable service)
         {
         }
+
+        public void Store(ServiceDefinition serviceDefinition, object service)
+        {
+        }
+
+        public object Retrieve(ServiceDefinition serviceDefinition)
+            => null;
     }
 }
