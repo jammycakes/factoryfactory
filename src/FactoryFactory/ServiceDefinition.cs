@@ -1,8 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
+using System.Xml.Schema;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory
@@ -30,6 +33,8 @@ namespace FactoryFactory
             ImplementationFactory = implementationFactory;
             ImplementationType = implementationType ?? (implementationFactory == null ? implementationType : null);
             Lifecycle = lifecycle ?? Lifecycle.Default;
+
+            Validate();
         }
 
         /// <summary>
@@ -54,7 +59,7 @@ namespace FactoryFactory
                 ImplementationFactory = sr => factory(sr.Container);
             }
             else {
-                throw new ConfigurationException
+                throw new ServiceDefinitionException
                     ("Invalid descriptor: neither a service nor a service factory has been set.");
             }
 
@@ -100,6 +105,114 @@ namespace FactoryFactory
         /// </summary>
         public bool IsForOpenGeneric { get; private set; }
 
+
+        private void Validate()
+        {
+            // ServiceType must be specified.
+            if (ServiceType == null) {
+                throw new ServiceDefinitionException("No service type was specified.");
+            }
+
+            // Implementation type or implementation expression must be specified.
+            if (ImplementationType == null && ImplementationFactory == null) {
+                throw new ServiceDefinitionException
+                    ($"No implementation was specified for type {ServiceType.FullName}.");
+            }
+
+            // Implementation type and implementation expression can not both be specified
+            if (ImplementationType != null && ImplementationFactory != null) {
+                throw new ServiceDefinitionException
+                    ("More than one implementation was specified for type " +
+                     ServiceType.FullName);
+            }
+
+            var actualImplementationType = ImplementationType;
+
+            if (ImplementationFactory != null) {
+                if (ImplementationFactory.Body is UnaryExpression uex) {
+                    if (uex.NodeType == ExpressionType.Convert) {
+                        actualImplementationType = uex.Operand.Type;
+                    }
+                }
+                actualImplementationType = actualImplementationType ??
+                    ImplementationFactory.Body.Type;
+            }
+
+            // Implementation must not be a value type.
+            if (actualImplementationType.IsValueType) {
+                throw new ServiceDefinitionException
+                    ($"Type {ServiceType.FullName} has been specified to be " +
+                     $"implemented by type {actualImplementationType.FullName}, " +
+                     $"which is a value type. Value types are not supported as " +
+                     $"registered services.");
+            }
+
+            // Implementations by type must be concrete classes.
+            if (ImplementationType != null && ImplementationType.IsAbstract) {
+                throw new ServiceDefinitionException
+                    ($"Type {ServiceType.FullName} has been specified bo be " +
+                     $"implemented by type {ImplementationType.FullName}, " +
+                     $"which is an interface or an abstract base class. " +
+                     $"Services implemented by type must be concrete classes.");
+            }
+
+            if (ServiceType.IsGenericTypeDefinition) {
+                ValidateOpenGeneric();
+            }
+            else {
+                ValidateClosedType(actualImplementationType);
+            }
+        }
+
+        private void ValidateOpenGeneric()
+        {
+            string name = ServiceType.FullName;
+
+            // Open generics must be registered by type.
+            if (ImplementationType == null) {
+                throw new ServiceDefinitionException
+                    ($"Open generic type {name} must be implemented by type, " +
+                     $"not by instance or expression.");
+            }
+
+            var impl = ImplementationType.FullName;
+            // Open generic implementations must also be open generics.
+            if (!ImplementationType.IsGenericTypeDefinition
+                ) {
+                throw new ServiceDefinitionException
+                    ($"{impl} is not a valid implementation for {name} as it " +
+                     $"is not an open generic.");
+            }
+
+            // Open generic implementations must either implement the service interface...
+            if (ImplementationType.GetInterfaces().Contains(ServiceType)) {
+                return;
+            }
+
+            // Or else be derived from the service base class
+            var baseClass = ImplementationType;
+            while (baseClass != null) {
+                if (baseClass == ServiceType) {
+                    return;
+                }
+
+                baseClass = baseClass.BaseType;
+            }
+
+            throw new ServiceDefinitionException
+                ($"Implementation type {ImplementationType.FullName} does not " +
+                 $"implement or derive from service type {ServiceType.FullName}.");
+        }
+
+        private void ValidateClosedType(Type impl)
+        {
+            // Implementing type must be assignable from service type.
+            if (!ServiceType.IsAssignableFrom(impl)) {
+                throw new ServiceDefinitionException
+                    ($"Type {impl.FullName} can not be assigned " +
+                     $"to a value of type {ServiceType.FullName}.");
+            }
+        }
 
         public ServiceDefinition GetGenericDefinition(Type requestedType)
         {
