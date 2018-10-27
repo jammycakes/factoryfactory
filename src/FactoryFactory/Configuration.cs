@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using FactoryFactory.Impl;
 using FactoryFactory.Util;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,11 +15,13 @@ namespace FactoryFactory
     /// </summary>
     public class Configuration
     {
-        private ConcurrentDictionary<Type, List<IServiceResolver>> _resolvers
-            = new ConcurrentDictionary<Type, List<IServiceResolver>>();
-
-        private DictionaryOfLists<Type, ServiceDefinition> _definitions
+        private readonly DictionaryOfLists<Type, ServiceDefinition> _definitions
             = new DictionaryOfLists<Type, ServiceDefinition>();
+
+        private readonly DictionaryOfLists<Type, IServiceResolver> _resolvers
+            = new DictionaryOfLists<Type, IServiceResolver>();
+
+        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         public ConfigurationOptions Options { get; }
 
@@ -41,7 +44,7 @@ namespace FactoryFactory
         }
 
         /// <summary>
-        ///  Creates anew <see cref="Configuration"/> instance configured with
+        ///  Creates a new <see cref="Configuration"/> instance configured with
         ///  the modules provided and the specified options.
         /// </summary>
         /// <param name="options">
@@ -126,34 +129,56 @@ namespace FactoryFactory
         /// <returns></returns>
         public IEnumerable<IServiceResolver> GetResolvers(Type type)
         {
-            return _resolvers.GetOrAdd(type, t => {
-                var definitions = GetDefinitions(type);
-
-                if (definitions.Any()) {
-                    var builtResolvers =
-                        from definition in definitions
-                        let builder = Options.Compiler.Build(definition, this)
-                        where builder != null
-                        select (IServiceResolver)new ServiceResolver
-                            (definition, builder);
-                    return builtResolvers.ToList();
-                }
-                else {
-                    var result = new List<IServiceResolver>();
-                    if (CanAutoResolve(type)) {
-                        var definition = new ServiceDefinition(type,
-                            implementationType: type,
-                            lifecycle: Options.DefaultLifecycle);
-                        var builder = Options.Compiler.Build(definition, this);
-                        if (builder != null) {
-                            var resolver = new ServiceResolver
-                                (definition, Options.Compiler.Build(definition, this));
-                            result.Add(resolver);
+            _lock.EnterUpgradeableReadLock();
+            try {
+                if (!_resolvers.TryGetValue(type, out var result)) {
+                    _lock.EnterWriteLock();
+                    try {
+                        if (!_resolvers.ContainsKey(type)) {
+                            result = CreateResolvers(type);
+                            _resolvers.Add(type, result);
                         }
                     }
-                    return result;
+                    finally {
+                        _lock.ExitWriteLock();
+                    }
                 }
-            });
+                return result;
+            }
+            finally {
+                _lock.ExitUpgradeableReadLock();
+            }
+        }
+
+        private IList<IServiceResolver> CreateResolvers(Type type)
+        {
+            var definitions = GetDefinitions(type);
+
+            if (definitions.Any()) {
+                var builtResolvers =
+                    from definition in definitions
+                    let builder = Options.Compiler.Build(definition, this)
+                    where builder != null
+                    select (IServiceResolver)new ServiceResolver
+                        (definition, builder);
+                return builtResolvers.ToList();
+            }
+            else {
+                var result = new List<IServiceResolver>();
+                if (CanAutoResolve(type)) {
+                    var definition = new ServiceDefinition(type,
+                        implementationType: type,
+                        lifecycle: Options.DefaultLifecycle);
+                    var builder = Options.Compiler.Build(definition, this);
+                    if (builder != null) {
+                        var resolver = new ServiceResolver
+                            (definition, Options.Compiler.Build(definition, this));
+                        result.Add(resolver);
+                    }
+                }
+
+                return result;
+            }
         }
 
         public bool CanResolve(Type type)
