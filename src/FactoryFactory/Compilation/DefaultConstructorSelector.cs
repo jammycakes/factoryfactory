@@ -12,13 +12,18 @@ namespace FactoryFactory.Compilation
             var matchingConstructors =
                 from constructor in constructors
                 let parameters = constructor.GetParameters()
-                let info = new {constructor, parameters, parameters.Length}
+                let info = new {
+                    constructor,
+                    parameters,
+                    parameters.Length,
+                    funcParameterCount = parameters.Count(p => p.ParameterType.IsFunc())
+                }
                 where parameters.All(p =>
                     p.IsOptional ||
                     p.ParameterType.IsEnumerable() ||
                     configuration.CanResolve(p.ParameterType.GetServiceType())
                 )
-                orderby info.Length descending
+                orderby info.Length descending, info.funcParameterCount descending
                 select info.constructor;
             return matchingConstructors.FirstOrDefault();
         }

@@ -17,11 +17,10 @@ namespace FactoryFactory
     {
         private readonly DictionaryOfLists<Type, ServiceDefinition> _definitions
             = new DictionaryOfLists<Type, ServiceDefinition>();
-
         private readonly DictionaryOfLists<Type, IServiceResolver> _resolvers
             = new DictionaryOfLists<Type, IServiceResolver>();
-
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        private readonly ISet<Type> _resolversBeingBuilt = new HashSet<Type>();
 
         public ConfigurationOptions Options { get; }
 
@@ -152,37 +151,46 @@ namespace FactoryFactory
 
         private IList<IServiceResolver> CreateResolvers(Type type)
         {
-            var definitions = GetDefinitions(type);
+            _resolversBeingBuilt.Add(type);
+            try {
+                var definitions = GetDefinitions(type);
 
-            if (definitions.Any()) {
-                var builtResolvers =
-                    from definition in definitions
-                    let builder = Options.Compiler.Build(definition, this)
-                    where builder != null
-                    select (IServiceResolver)new ServiceResolver
-                        (definition, builder);
-                return builtResolvers.ToList();
-            }
-            else {
-                var result = new List<IServiceResolver>();
-                if (CanAutoResolve(type)) {
-                    var definition = new ServiceDefinition(type,
-                        implementationType: type,
-                        lifecycle: Options.DefaultLifecycle);
-                    var builder = Options.Compiler.Build(definition, this);
-                    if (builder != null) {
-                        var resolver = new ServiceResolver
-                            (definition, Options.Compiler.Build(definition, this));
-                        result.Add(resolver);
-                    }
+                if (definitions.Any()) {
+                    var builtResolvers =
+                        from definition in definitions
+                        let builder = Options.Compiler.Build(definition, this)
+                        where builder != null
+                        select (IServiceResolver)new ServiceResolver
+                            (definition, builder);
+                    return builtResolvers.ToList();
                 }
+                else {
+                    var result = new List<IServiceResolver>();
+                    if (CanAutoResolve(type)) {
+                        var definition = new ServiceDefinition(type,
+                            implementationType: type,
+                            lifecycle: Options.DefaultLifecycle);
+                        var builder = Options.Compiler.Build(definition, this);
+                        if (builder != null) {
+                            var resolver = new ServiceResolver
+                                (definition, Options.Compiler.Build(definition, this));
+                            result.Add(resolver);
+                        }
+                    }
 
-                return result;
+                    return result;
+                }
+            }
+            finally {
+                _resolversBeingBuilt.Remove(type);
             }
         }
 
         public bool CanResolve(Type type)
         {
+            if (_lock.IsWriteLockHeld && _resolversBeingBuilt.Contains(type)) {
+                return true;
+            }
             return GetResolvers(type).Any();
         }
 

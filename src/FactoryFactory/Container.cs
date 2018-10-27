@@ -47,7 +47,7 @@ namespace FactoryFactory
 
         public object GetService(ServiceRequest request)
         {
-            if (request.RequestedType.IsEnumerable()) {
+            if (request.IsEnumerable) {
                 return GetAll(request);
             }
             else {

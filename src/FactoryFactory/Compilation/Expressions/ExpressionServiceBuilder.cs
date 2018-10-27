@@ -32,7 +32,7 @@ namespace FactoryFactory.Compilation.Expressions
 
         public object GetService(ServiceRequest request)
         {
-            if (request.RequestedType.IsFunc()) {
+            if (request.IsFunc) {
                 return _getServiceFunc(request);
             }
             else {
