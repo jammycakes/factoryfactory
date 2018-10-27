@@ -1,7 +1,9 @@
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using FactoryFactory.Compilation;
 using FactoryFactory.Compilation.Expressions;
+using FactoryFactory.Lifecycles;
 using FactoryFactory.Tests.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -62,23 +64,33 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
             Assert.IsType<ServiceWithoutDependencies>(service.Dependency);
         }
 
-        [Fact]
-        public void CanResolveFuncDependencies()
+        [Theory]
+        [InlineData(typeof(ScopedLifecycle))]
+        [InlineData(typeof(SingletonLifecycle))]
+        [InlineData(typeof(TransientLifecycle))]
+        [InlineData(typeof(UntrackedLifecycle))]
+        public void CanResolveFuncDependencies(Type lifecycleType)
         {
+            var lifecycle = Activator.CreateInstance(lifecycleType) as Lifecycle;
             var module = new Module();
-            module.Define<IServiceWithDependencies>().As<ServiceWithFuncDependencies>();
-            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
+            module.Define<IServiceWithDependencies>().As<ServiceWithFuncDependencies>().Lifecycle(lifecycle);
+            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>().Lifecycle(lifecycle);
             var service = Configuration.CreateContainer(module)
                 .GetService<IServiceWithDependencies>();
             Assert.IsType<ServiceWithoutDependencies>(service.Dependency);
         }
 
-        [Fact]
-        public void CanResolveLazyDependencies()
+        [Theory]
+        [InlineData(typeof(ScopedLifecycle))]
+        [InlineData(typeof(SingletonLifecycle))]
+        [InlineData(typeof(TransientLifecycle))]
+        [InlineData(typeof(UntrackedLifecycle))]
+        public void CanResolveLazyDependencies(Type lifecycleType)
         {
+            var lifecycle = Activator.CreateInstance(lifecycleType) as Lifecycle;
             var module = new Module();
-            module.Define<IServiceWithDependencies>().As<ServiceWithLazyDependencies>();
-            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
+            module.Define<IServiceWithDependencies>().As<ServiceWithLazyDependencies>().Lifecycle(lifecycle);
+            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>().Lifecycle(lifecycle);
             var service = Configuration.CreateContainer(module)
                 .GetService<IServiceWithDependencies>();
             Assert.IsType<ServiceWithoutDependencies>(service.Dependency);
