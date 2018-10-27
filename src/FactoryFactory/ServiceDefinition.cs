@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Xml.Schema;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +14,7 @@ namespace FactoryFactory
     public class ServiceDefinition
     {
         private readonly object _identity = new object();
-        private ConcurrentDictionary<Type, ServiceDefinition> _genericDefinitions
+        private IDictionary<Type, ServiceDefinition> _genericDefinitions
             = new ConcurrentDictionary<Type, ServiceDefinition>();
 
         /* ====== Constructors ====== */
@@ -214,22 +215,26 @@ namespace FactoryFactory
             }
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public ServiceDefinition GetGenericDefinition(Type requestedType)
         {
             if (!requestedType.IsGenericType) return this;
             if (!ServiceType.IsGenericTypeDefinition) return this;
-            return _genericDefinitions.GetOrAdd(requestedType, t => {
+            if (!_genericDefinitions.TryGetValue(requestedType, out var result)) {
                 var newType =
                     ServiceType.MakeGenericType(requestedType.GenericTypeArguments);
                 var newImplementationType =
                     ImplementationType.MakeGenericType(requestedType
                         .GenericTypeArguments);
-                return new ServiceDefinition
-                    (newType, ImplementationFactory, newImplementationType,
+                result = new ServiceDefinition(newType,
+                    ImplementationFactory, newImplementationType,
                     Lifecycle, Precondition) {
                     IsForOpenGeneric = true
                 };
-            });
+                _genericDefinitions.Add(requestedType, result);
+            }
+
+            return result;
         }
 
 
