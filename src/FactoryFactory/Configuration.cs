@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using FactoryFactory.Impl;
+using FactoryFactory.Util;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory
@@ -13,9 +14,11 @@ namespace FactoryFactory
     /// </summary>
     public class Configuration
     {
-        private List<IModule> _modules = new List<IModule>();
         private ConcurrentDictionary<Type, List<IServiceResolver>> _resolvers
             = new ConcurrentDictionary<Type, List<IServiceResolver>>();
+
+        private DictionaryOfLists<Type, ServiceDefinition> _definitions
+            = new DictionaryOfLists<Type, ServiceDefinition>();
 
         public ConfigurationOptions Options { get; }
 
@@ -31,8 +34,10 @@ namespace FactoryFactory
         public Configuration(params IModule[] modules)
         {
             Options = new ConfigurationOptions();
-            _modules.Add(new DefaultModule(this));
-            _modules.AddRange(modules);
+            AddModule(new DefaultModule(this));
+            foreach (var module in modules) {
+                AddModule(module);
+            }
         }
 
         /// <summary>
@@ -53,6 +58,46 @@ namespace FactoryFactory
         }
 
         /* ====== Methods ====== */
+
+        private Type GetKey(Type type)
+        {
+            if (!type.IsGenericType) return type;
+            if (type.IsGenericTypeDefinition) return type;
+            return type.GetGenericTypeDefinition();
+        }
+
+        public IEnumerable<ServiceDefinition> GetDefinitions(Type type)
+        {
+            var key = GetKey(type);
+            if (_definitions.TryGetValue(key, out var definitions)) {
+                return
+                    from definition in definitions
+                    where definition.ServiceType.IsGenericTypeDefinition
+                          || definition.ServiceType == type
+                    select definition.GetGenericDefinition(type);
+            }
+            else {
+                return Enumerable.Empty<ServiceDefinition>();
+            }
+        }
+
+
+        public bool IsTypeRegistered(Type type)
+            => _definitions.ContainsKey(GetKey(type));
+
+
+        private void AddServiceDefinitions(IEnumerable<ServiceDefinition> defs)
+        {
+            foreach (var def in defs) {
+                var key = GetKey(def.ServiceType);
+                _definitions.AddOne(key, def);
+            }
+        }
+
+        private void AddModule(IModule module)
+        {
+            AddServiceDefinitions(module.GetServiceDefinitions());
+        }
 
         /// <summary>
         ///  Creates a new <see cref="Container"/> instance.
@@ -82,10 +127,7 @@ namespace FactoryFactory
         public IEnumerable<IServiceResolver> GetResolvers(Type type)
         {
             return _resolvers.GetOrAdd(type, t => {
-                var definitions =
-                    from module in _modules
-                    from definition in module.GetDefinitions(type)
-                    select definition;
+                var definitions = GetDefinitions(type);
 
                 if (definitions.Any()) {
                     var builtResolvers =

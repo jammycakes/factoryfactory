@@ -7,8 +7,10 @@ namespace FactoryFactory
     {
         void Add(ServiceDefinition serviceDefinition);
 
-        IEnumerable<ServiceDefinition> GetDefinitions(Type type);
-
-        bool IsTypeRegistered(Type type);
+        IEnumerable<ServiceDefinition> GetServiceDefinitions();
+//
+//        IEnumerable<ServiceDefinition> GetDefinitions(Type type);
+//
+//        bool IsTypeRegistered(Type type);
     }
 }

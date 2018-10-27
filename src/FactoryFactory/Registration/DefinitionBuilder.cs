@@ -5,20 +5,18 @@ namespace FactoryFactory.Registration
 {
     public class DefinitionBuilder
     {
-        private readonly Type _type;
         private protected Type _implementationType;
         private protected Expression<Func<ServiceRequest, object>> _implementationFactory;
         private protected DefinitionOptions _options = new DefinitionOptions();
 
         public DefinitionBuilder(Module module, Type type)
         {
-            _type = type;
-            module.Add(type, () => Build());
+            module.Add(() => Build(type));
         }
 
-        private ServiceDefinition Build()
+        private ServiceDefinition Build(Type type)
         {
-            return new ServiceDefinition(_type,
+            return new ServiceDefinition(type,
                 implementationType: _implementationType,
                 implementationFactory: _implementationFactory,
                 lifecycle: _options.Lifecycle,

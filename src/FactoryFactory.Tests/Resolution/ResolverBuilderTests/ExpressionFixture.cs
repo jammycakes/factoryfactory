@@ -19,13 +19,13 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
         public void CanCreateServiceResolutionExpressionFromDefaultConstructor()
         {
             var module = new Module();
-            module.Define<IServiceWithDependencies>().As<ServiceWithDependencies>();
+            var definition = new ServiceDefinition(
+                typeof(IServiceWithDependencies),
+                implementationType: typeof(ServiceWithDependencies)
+            );
+            module.Add(definition);
             module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
             var configuration = new Configuration(_options, module);
-            var definition =
-                ((IModule)module).GetDefinitions(typeof(IServiceWithDependencies))
-                .Single();
-
             var builder = _options.Compiler.Build(definition, configuration)
                 as ExpressionServiceBuilder;
 
@@ -39,18 +39,18 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
         public void CanCreateServiceResolutionExpressionFromConstructorExpression()
         {
             var module = new Module();
-            module.Define<IServiceWithDependencies>()
-                .As(req => new ServiceWithDependencies(
+            var definition = new ServiceDefinition(
+                typeof(IServiceWithDependencies),
+                implementationFactory: req => new ServiceWithDependencies(
                     Resolve.From<IServiceWithoutDependencies>(),
                     "Hello world"
-                ));
+                )
+            );
+
+            module.Add(definition);
             module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
 
             var configuration = new Configuration(_options, module);
-            var definition =
-                ((IModule)module).GetDefinitions(typeof(IServiceWithDependencies))
-                .Single();
-
             var builder = _options.Compiler.Build(definition, configuration)
                 as ExpressionServiceBuilder;
 
