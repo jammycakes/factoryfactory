@@ -33,7 +33,7 @@ namespace FactoryFactory
         /// <param name="modules">
         ///  The modules containing service definitions.
         /// </param>
-        public Configuration(params IModule[] modules)
+        public Configuration(params Module[] modules)
         {
             Options = new ConfigurationOptions();
             AddModule(new DefaultModule(this));
@@ -53,7 +53,7 @@ namespace FactoryFactory
         /// <param name="modules">
         ///  One or more modules containing service definitions.
         /// </param>
-        public Configuration(ConfigurationOptions options, params IModule[] modules)
+        public Configuration(ConfigurationOptions options, params Module[] modules)
             : this(modules)
         {
             Options = options;
@@ -96,7 +96,7 @@ namespace FactoryFactory
             }
         }
 
-        private void AddModule(IModule module)
+        private void AddModule(Module module)
         {
             AddServiceDefinitions(module.GetServiceDefinitions());
         }
@@ -207,7 +207,7 @@ namespace FactoryFactory
         /// <returns>
         ///  The configured container.
         /// </returns>
-        public static Container CreateContainer(params IModule[] modules)
+        public static Container CreateContainer(params Module[] modules)
         {
             return new Configuration(modules).CreateContainer();
         }

@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory
 {
-    public class Module : IModule
+    public class Module
     {
         private List<Lazy<ServiceDefinition>> _definitions = new List<Lazy<ServiceDefinition>>();
 
