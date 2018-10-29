@@ -40,6 +40,5 @@ namespace FactoryFactory.Tests.Resolution.LifecycleTests
 
             Assert.False(svc.Disposed);
         }
-
     }
 }
