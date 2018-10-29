@@ -42,8 +42,8 @@ namespace FactoryFactory.Tests.Resolution.ResolutionTests
             var lifecycle = Activator.CreateInstance(lifecycleType) as Lifecycle;
 
             var container = Configuration.CreateContainer(module => {
-                module.Define<RecursiveServiceWithLazyDependency>()
-                    .As<RecursiveServiceWithLazyDependency>()
+                module.Define<RecursiveServiceWithFuncDependency>()
+                    .As<RecursiveServiceWithFuncDependency>()
                     .Lifecycle(lifecycle);
             });
             var service = container.GetService<RecursiveServiceWithFuncDependency>();

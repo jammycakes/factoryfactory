@@ -64,6 +64,26 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
             Assert.IsType<ServiceWithoutDependencies>(service.Dependency);
         }
 
+        [Fact]
+        public void CanCreateServiceResolutionExpressionFromFluentConstructorExpression()
+        {
+            var module = new Module();
+            module.Define<IServiceWithDependencies>().As(req =>
+                new ServiceWithDependencies(
+                    Resolve.From<IServiceWithoutDependencies>(),
+                    "Hello world"
+                )
+            );
+            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
+
+            var configuration = new Configuration(_options, module);
+            var container = configuration.CreateContainer();
+            var service = container.GetService<IServiceWithDependencies>();
+            Assert.Equal("Hello world", service.Message);
+            Assert.IsType<ServiceWithoutDependencies>(service.Dependency);
+        }
+
+
         [Theory]
         [InlineData(typeof(ScopedLifecycle))]
         [InlineData(typeof(SingletonLifecycle))]

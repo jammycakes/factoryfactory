@@ -221,20 +221,36 @@ namespace FactoryFactory
             if (!requestedType.IsGenericType) return this;
             if (!ServiceType.IsGenericTypeDefinition) return this;
             if (!_genericDefinitions.TryGetValue(requestedType, out var result)) {
-                var newType =
-                    ServiceType.MakeGenericType(requestedType.GenericTypeArguments);
-                var newImplementationType =
-                    ImplementationType.MakeGenericType(requestedType
-                        .GenericTypeArguments);
-                result = new ServiceDefinition(newType,
-                    ImplementationFactory, newImplementationType,
-                    Lifecycle, Precondition) {
-                    IsForOpenGeneric = true
-                };
+                result = Close(requestedType);
                 _genericDefinitions.Add(requestedType, result);
             }
 
             return result;
+        }
+
+        /// <summary>
+        ///  Closes an open generic type. You can override this to customise
+        ///  how open generics are implemented.
+        /// </summary>
+        /// <param name="requestedType">
+        ///  The concrete type that is being requested.
+        /// </param>
+        /// <returns>
+        ///  A new <see cref="ServiceDefinition"/> instance.
+        /// </returns>
+        protected virtual ServiceDefinition Close(Type requestedType)
+        {
+            var newType =
+                ServiceType.MakeGenericType(requestedType.GenericTypeArguments);
+            var newImplementationType =
+                ImplementationType.MakeGenericType(requestedType
+                    .GenericTypeArguments);
+            return new ServiceDefinition(newType,
+                ImplementationFactory, newImplementationType,
+                Lifecycle, Precondition)
+            {
+                IsForOpenGeneric = true
+            };
         }
 
 
