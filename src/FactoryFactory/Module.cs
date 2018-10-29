@@ -61,7 +61,7 @@ namespace FactoryFactory
             return new DefinitionBuilder(this, type);
         }
 
-        public DefinitionBuilder<TService> Define<TService>()
+        public DefinitionBuilder<TService> Define<TService>() where TService: class
         {
             return new DefinitionBuilder<TService>(this);
         }

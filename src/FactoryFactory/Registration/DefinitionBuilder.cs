@@ -64,7 +64,7 @@ namespace FactoryFactory.Registration
         }
     }
 
-    public class DefinitionBuilder<TService> : DefinitionBuilder
+    public class DefinitionBuilder<TService> : DefinitionBuilder where TService: class
     {
         public DefinitionBuilder(Module module)
             : base(module, typeof(TService))
