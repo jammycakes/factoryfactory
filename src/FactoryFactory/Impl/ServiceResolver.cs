@@ -26,7 +26,7 @@ namespace FactoryFactory.Impl
         {
             if (!PreconditionMet(request)) return null;
             var serviceTracker = Definition.Lifecycle.GetTracker(request);
-            var serviceCache = request.IsFunc ? null : Definition.Lifecycle.GetCache(request);
+            var serviceCache = Definition.Lifecycle.GetCache(request);
             var service = serviceCache?.Retrieve(Definition);
             if (service == null) {
                 service = _builder.GetService(request);

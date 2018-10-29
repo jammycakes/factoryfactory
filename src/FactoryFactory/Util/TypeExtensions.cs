@@ -10,7 +10,7 @@ namespace FactoryFactory.Util
         {
             if (type.IsGenericType) {
                 var generic = type.GetGenericTypeDefinition();
-                if (generic == typeof(IEnumerable<>) || generic == typeof(Func<>)) {
+                if (generic == typeof(IEnumerable<>)) {
                     return type.GetGenericArguments().Last();
                 }
             }

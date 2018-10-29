@@ -35,11 +35,6 @@ namespace FactoryFactory
         public IServiceCache ServiceCache { get; }
 
         /// <summary>
-        ///  Indicates whether this is a request for a factory method (Func<T>)
-        /// </summary>
-        public bool IsFunc { get; }
-
-        /// <summary>
         ///  Indicates whether this is a request for an IEnumerable<T>.
         /// </summary>
         public bool IsEnumerable { get; }
@@ -56,7 +51,6 @@ namespace FactoryFactory
             RequestedType = requestedType;
             _root = receiver?._root;
             ServiceCache = _root?.ServiceCache ?? new ServiceCache();
-            IsFunc = requestedType.IsFunc();
             IsEnumerable = requestedType.IsEnumerable();
         }
 
