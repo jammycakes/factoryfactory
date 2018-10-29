@@ -48,6 +48,7 @@ namespace FactoryFactory.Registration
         /// <returns></returns>
         public OptionsBuilder<object> As(object implementation)
         {
+            _options.Lifecycle = Lifecycle.Untracked;
             return As(req => implementation);
         }
 
@@ -99,6 +100,7 @@ namespace FactoryFactory.Registration
         {
             _implementationFactory = req => implementation;
             _implementationType = null;
+            _options.Lifecycle = Lifecycle.Untracked;
             return new OptionsBuilder<TService>(_options);
         }
 

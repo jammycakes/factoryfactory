@@ -48,27 +48,31 @@ namespace FactoryFactory
         /// <param name="descriptor"></param>
         /// <param name="precondition"></param>
         public ServiceDefinition(ServiceDescriptor descriptor,
-            Func<ServiceRequest, bool> precondition = null)
+            Func<ServiceRequest, bool> precondition = null,
+            Func<ServiceRequest, object, object> decorator = null)
         {
             ServiceType = descriptor.ServiceType;
             if (descriptor.ImplementationType != null) {
                 ImplementationType = descriptor.ImplementationType;
+                Lifecycle = Lifecycle.Get(descriptor.Lifetime);
             }
             else if (descriptor.ImplementationInstance != null) {
                 var instance = descriptor.ImplementationInstance;
                 ImplementationFactory = sr => instance;
+                Lifecycle = Lifecycle.Untracked;
             }
             else if (descriptor.ImplementationFactory != null) {
                 var factory = descriptor.ImplementationFactory;
                 ImplementationFactory = sr => factory(sr.Container);
+                Lifecycle = Lifecycle.Get(descriptor.Lifetime);
             }
             else {
                 throw new ServiceDefinitionException
                     ("Invalid descriptor: neither a service nor a service factory has been set.");
             }
 
-            Lifecycle = Lifecycle.Get(descriptor.Lifetime);
             Precondition = precondition ?? (sr => true);
+            Decorator = decorator;
         }
 
 
