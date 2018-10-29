@@ -2,7 +2,7 @@ using System;
 
 namespace FactoryFactory.Registration
 {
-    public class OptionsBuilder<TService>
+    public class OptionsBuilder<TService> where TService: class
     {
         private readonly DefinitionOptions _options;
 
@@ -30,6 +30,35 @@ namespace FactoryFactory.Registration
         public OptionsBuilder<TService> Precondition(Func<ServiceRequest, bool> precondition)
         {
             _options.Precondition = precondition;
+            return this;
+        }
+
+        /// <summary>
+        ///  Proxies the resolved service with a decorator.
+        /// </summary>
+        /// <param name="decorator">
+        ///  A function that takes the service request and the generated service
+        ///  and returns a proxy in its place.
+        /// </param>
+        /// <returns></returns>
+        public OptionsBuilder<TService> Proxy(Func<ServiceRequest, TService, TService> decorator)
+        {
+            _options.Decorator = (req, svc) => decorator(req, (TService)svc);
+            return this;
+        }
+
+        /// <summary>
+        ///  Proxies the resolved service with a decorator.
+        /// </summary>
+        /// <param name="decorator">
+        ///  A function that takes the generated service and returns a proxy in
+        ///  its place. Use this overload when you do not need to take the
+        ///  service request information into account.
+        /// </param>
+        /// <returns></returns>
+        public OptionsBuilder<TService> Proxy(Func<TService, TService> decorator)
+        {
+            _options.Decorator = (req, svc) => decorator((TService)svc);
             return this;
         }
 

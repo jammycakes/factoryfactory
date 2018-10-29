@@ -30,6 +30,9 @@ namespace FactoryFactory.Impl
             var service = serviceCache?.Retrieve(Definition);
             if (service == null) {
                 service = _builder.GetService(request);
+                if (Definition.Decorator != null) {
+                    service = Definition.Decorator(request, service);
+                }
                 serviceCache?.Store(Definition, service);
                 if (service is IDisposable disposable) {
                     serviceTracker?.Track(disposable);

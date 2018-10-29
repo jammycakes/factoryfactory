@@ -27,11 +27,14 @@ namespace FactoryFactory
             Expression<Func<ServiceRequest, object>> implementationFactory = null,
             Type implementationType = null,
             Lifecycle lifecycle = null,
-            Func<ServiceRequest, bool> precondition = null)
+            Func<ServiceRequest, bool> precondition = null,
+            Func<ServiceRequest, object, object> decorator = null)
         {
             ServiceType = serviceType;
             Precondition = precondition ?? (req => true);
+
             ImplementationFactory = implementationFactory;
+            Decorator = decorator;
             ImplementationType = implementationType ?? (implementationFactory == null ? implementationType : null);
             Lifecycle = lifecycle ?? Lifecycle.Default;
 
@@ -81,12 +84,17 @@ namespace FactoryFactory
         /// </summary>
         public Func<ServiceRequest, bool> Precondition { get;  }
 
-
         /// <summary>
         ///  The factory method that instantiates the service, or null if a
         ///  specific type is specified in the ServiceResolution property.
         /// </summary>
         public Expression<Func<ServiceRequest, object>> ImplementationFactory { get; }
+
+        /// <summary>
+        ///  A method that decorates the resolved service with a proxy
+        ///  or even to replace it altogether if desired.
+        /// </summary>
+        public Func<ServiceRequest, object, object> Decorator { get; }
 
         /// <summary>
         ///  The type that will be constructed which implements the service type

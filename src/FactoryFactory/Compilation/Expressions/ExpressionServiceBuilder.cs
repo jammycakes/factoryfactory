@@ -11,8 +11,7 @@ namespace FactoryFactory.Compilation.Expressions
 
         private Func<ServiceRequest, object> _getService;
 
-        public ExpressionServiceBuilder(SLE.Expression<Func<ServiceRequest, object>> expression,
-            Type registeredType)
+        public ExpressionServiceBuilder(SLE.Expression<Func<ServiceRequest, object>> expression)
         {
             Expression = expression;
             _getService = expression.Compile();

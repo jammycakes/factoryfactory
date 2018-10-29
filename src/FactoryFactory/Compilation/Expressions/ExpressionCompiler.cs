@@ -13,10 +13,10 @@ namespace FactoryFactory.Compilation.Expressions
             if (definition.ImplementationFactory != null) {
                 if (definition.ImplementationFactory.Body is NewExpression nex) {
                     var expression = CreateExpressionFromConstructorExpression(nex);
-                    return new ExpressionServiceBuilder(expression, definition.ServiceType);
+                    return new ExpressionServiceBuilder(expression);
                 }
                 else {
-                    return new ExpressionServiceBuilder(definition.ImplementationFactory, definition.ServiceType);
+                    return new ExpressionServiceBuilder(definition.ImplementationFactory);
                 }
             }
             else {
@@ -24,7 +24,7 @@ namespace FactoryFactory.Compilation.Expressions
                     .SelectConstructor(definition, configuration);
                 if (constructor == null) return null;
                 var expression = CreateExpressionFromDefaultConstructor(constructor);
-                return new ExpressionServiceBuilder(expression, definition.ServiceType);
+                return new ExpressionServiceBuilder(expression);
             }
         }
 
