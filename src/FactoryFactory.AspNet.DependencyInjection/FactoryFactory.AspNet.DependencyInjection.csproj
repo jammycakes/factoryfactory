@@ -3,8 +3,8 @@
     <PropertyGroup>
         <PackageId>FactoryFactory.AspNet.DependencyInjection</PackageId>
         <Description>Yet Another IOC Container for .NET</Description>
-        <VersionPrefix>0.1.2</VersionPrefix>
-        <VersionSuffix></VersionSuffix>
+        <VersionPrefix>0.2.0</VersionPrefix>
+        <VersionSuffix>alpha</VersionSuffix>
         <Authors>James McKay</Authors>
         <Copyright>Copyright 2018 James McKay</Copyright>
 
@@ -15,7 +15,7 @@
         <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
         <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
         <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
-        
+
         <TargetFramework>netstandard2.0</TargetFramework>
     </PropertyGroup>
 
