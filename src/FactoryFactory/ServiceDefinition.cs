@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Xml.Schema;
+using FactoryFactory.Util;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory
@@ -198,18 +199,8 @@ namespace FactoryFactory
             }
 
             // Open generic implementations must either implement the service interface...
-            if (ImplementationType.GetInterfaces().Contains(ServiceType)) {
+            if (ImplementationType.InheritsOrImplements(ServiceType)) {
                 return;
-            }
-
-            // Or else be derived from the service base class
-            var baseClass = ImplementationType;
-            while (baseClass != null) {
-                if (baseClass == ServiceType) {
-                    return;
-                }
-
-                baseClass = baseClass.BaseType;
             }
 
             throw new ServiceDefinitionException

@@ -254,6 +254,9 @@ namespace FactoryFactory
             public DefaultModule(Configuration configuration)
             {
                 Add(new FuncServiceDefinition());
+                Define(typeof(ICollection<>)).As(typeof(List<>)).Untracked();
+                Define(typeof(IReadOnlyCollection<>)).As(typeof(List<>)).Untracked();
+                Define(typeof(IList<>)).As(typeof(List<>)).Untracked();
                 Define<Configuration>().As(configuration).Untracked();
                 Define<Container>().As(req => req.Container).Untracked();
                 Define<IServiceProvider>().As(req => req.Container).Untracked();
