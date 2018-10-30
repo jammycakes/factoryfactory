@@ -65,5 +65,10 @@ namespace FactoryFactory
         {
             return new DefinitionBuilder<TService>(this);
         }
+
+        public DecorationBuilder<TService> Decorate<TService>() where TService : class
+        {
+            return new DecorationBuilder<TService>(this);
+        }
     }
 }

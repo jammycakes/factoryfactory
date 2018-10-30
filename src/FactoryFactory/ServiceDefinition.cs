@@ -28,14 +28,12 @@ namespace FactoryFactory
             Expression<Func<ServiceRequest, object>> implementationFactory = null,
             Type implementationType = null,
             Lifecycle lifecycle = null,
-            Func<ServiceRequest, bool> precondition = null,
-            Func<ServiceRequest, object, object> decorator = null)
+            Func<ServiceRequest, bool> precondition = null)
         {
             ServiceType = serviceType;
             Precondition = precondition ?? (req => true);
 
             ImplementationFactory = implementationFactory;
-            Decorator = decorator;
             ImplementationType = implementationType ?? (implementationFactory == null ? implementationType : null);
             Lifecycle = lifecycle ?? Lifecycle.Default;
 
@@ -49,8 +47,7 @@ namespace FactoryFactory
         /// <param name="descriptor"></param>
         /// <param name="precondition"></param>
         public ServiceDefinition(ServiceDescriptor descriptor,
-            Func<ServiceRequest, bool> precondition = null,
-            Func<ServiceRequest, object, object> decorator = null)
+            Func<ServiceRequest, bool> precondition = null)
         {
             ServiceType = descriptor.ServiceType;
             if (descriptor.ImplementationType != null) {
@@ -73,7 +70,6 @@ namespace FactoryFactory
             }
 
             Precondition = precondition ?? (sr => true);
-            Decorator = decorator;
         }
 
 
@@ -94,12 +90,6 @@ namespace FactoryFactory
         ///  specific type is specified in the ServiceResolution property.
         /// </summary>
         public Expression<Func<ServiceRequest, object>> ImplementationFactory { get; }
-
-        /// <summary>
-        ///  A method that decorates the resolved service with a proxy
-        ///  or even to replace it altogether if desired.
-        /// </summary>
-        public Func<ServiceRequest, object, object> Decorator { get; }
 
         /// <summary>
         ///  The type that will be constructed which implements the service type

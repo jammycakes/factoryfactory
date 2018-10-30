@@ -19,7 +19,6 @@ namespace FactoryFactory.Registration
             return new ServiceDefinition(type,
                 implementationType: _implementationType,
                 implementationFactory: _implementationFactory,
-                decorator: _options.Decorator,
                 lifecycle: _options.Lifecycle,
                 precondition: _options.Precondition
             );

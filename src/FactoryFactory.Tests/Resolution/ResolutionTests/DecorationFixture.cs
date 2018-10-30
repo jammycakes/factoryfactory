@@ -11,8 +11,9 @@ namespace FactoryFactory.Tests.Resolution.ResolutionTests
         {
             var container = Configuration.CreateContainer(module => {
                 module.Define<IServiceWithoutDependencies>()
-                    .As<ServiceWithoutDependencies>()
-                    .Proxy((req, svc) => new AlternateServiceWithoutDependencies());
+                    .As<ServiceWithoutDependencies>();
+                module.Decorate<IServiceWithoutDependencies>()
+                    .By((req, svc) => new AlternateServiceWithoutDependencies());
             });
 
             var service = container.GetService<IServiceWithoutDependencies>();

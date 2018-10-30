@@ -121,6 +121,13 @@ namespace FactoryFactory
 
         /* ====== Resolver cache ====== */
 
+        private IServiceResolver CreateServiceResolver(ServiceDefinition definition, IServiceBuilder builder)
+        {
+            var resolverType = typeof(ServiceResolver<>).MakeGenericType(definition.ServiceType);
+            return (IServiceResolver)Activator.CreateInstance(resolverType, definition, builder);
+        }
+
+
         /// <summary>
         ///  Gets the resolvers for the given type.
         /// </summary>
@@ -160,8 +167,7 @@ namespace FactoryFactory
                         from definition in definitions
                         let builder = Options.Compiler.Build(definition, this)
                         where builder != null
-                        select (IServiceResolver)new ServiceResolver
-                            (definition, builder);
+                        select CreateServiceResolver(definition, builder);
                     return builtResolvers.ToList();
                 }
                 else {
@@ -172,8 +178,7 @@ namespace FactoryFactory
                             lifecycle: Options.DefaultLifecycle);
                         var builder = Options.Compiler.Build(definition, this);
                         if (builder != null) {
-                            var resolver = new ServiceResolver
-                                (definition, Options.Compiler.Build(definition, this));
+                            var resolver = CreateServiceResolver(definition, Options.Compiler.Build(definition, this));
                             result.Add(resolver);
                         }
                     }

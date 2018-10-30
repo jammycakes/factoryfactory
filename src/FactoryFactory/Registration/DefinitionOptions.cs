@@ -7,7 +7,5 @@ namespace FactoryFactory.Registration
         public Lifecycle Lifecycle { get; set; }
 
         public Func<ServiceRequest, bool> Precondition { get; set; }
-
-        public Func<ServiceRequest, object, object> Decorator { get; set; }
     }
 }
