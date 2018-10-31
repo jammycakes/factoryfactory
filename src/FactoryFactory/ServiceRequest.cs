@@ -28,6 +28,12 @@ namespace FactoryFactory
         public Type RequestedType { get; }
 
         /// <summary>
+        ///  The request for the service into which this dependency is being
+        ///  injected, if any.
+        /// </summary>
+        public ServiceRequest Receiver { get; }
+
+        /// <summary>
         ///  The <see cref="ServiceRequest"/> instance for the service into
         ///  which this service is being injected. For root-level requests,
         ///  this will be null.
@@ -49,6 +55,7 @@ namespace FactoryFactory
         {
             Container = container;
             RequestedType = requestedType;
+            Receiver = receiver;
             _root = receiver?._root;
             ServiceCache = _root?.ServiceCache ?? new ServiceCache();
             IsEnumerable = requestedType.IsEnumerable();
