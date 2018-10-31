@@ -3,20 +3,20 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory
 {
-    public abstract class Lifecycle
+    public abstract class Lifecycle : ILifecycle
     {
         public abstract IServiceTracker GetTracker(ServiceRequest request);
 
         public abstract IServiceCache GetCache(ServiceRequest request);
 
-        public static readonly Lifecycle Scoped = new ScopedLifecycle();
-        public static readonly Lifecycle Singleton = new SingletonLifecycle();
-        public static readonly Lifecycle Transient = new TransientLifecycle();
-        public static readonly Lifecycle Untracked = new UntrackedLifecycle();
+        public static readonly ILifecycle Scoped = new ScopedLifecycle();
+        public static readonly ILifecycle Singleton = new SingletonLifecycle();
+        public static readonly ILifecycle Transient = new TransientLifecycle();
+        public static readonly ILifecycle Untracked = new UntrackedLifecycle();
 
-        public static Lifecycle Default => Transient;
+        public static ILifecycle Default => Transient;
 
-        public static Lifecycle Get(ServiceLifetime lifetime)
+        public static ILifecycle Get(ServiceLifetime lifetime)
         {
             switch (lifetime) {
                 case ServiceLifetime.Scoped: return Scoped;

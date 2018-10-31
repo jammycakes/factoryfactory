@@ -16,7 +16,7 @@ namespace FactoryFactory.Registration
         /// </summary>
         /// <param name="lifecycle"></param>
         /// <returns></returns>
-        public OptionsBuilder<TService> Lifecycle(Lifecycle lifecycle)
+        public OptionsBuilder<TService> Lifecycle(ILifecycle lifecycle)
         {
             _options.Lifecycle = lifecycle;
             return this;

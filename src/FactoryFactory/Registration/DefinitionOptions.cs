@@ -4,7 +4,7 @@ namespace FactoryFactory.Registration
 {
     public class DefinitionOptions
     {
-        public Lifecycle Lifecycle { get; set; }
+        public ILifecycle Lifecycle { get; set; }
 
         public Func<ServiceRequest, bool> Precondition { get; set; }
     }

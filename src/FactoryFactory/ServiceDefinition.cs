@@ -27,7 +27,7 @@ namespace FactoryFactory
         public ServiceDefinition(Type serviceType,
             Expression<Func<ServiceRequest, object>> implementationFactory = null,
             Type implementationType = null,
-            Lifecycle lifecycle = null,
+            ILifecycle lifecycle = null,
             Func<ServiceRequest, bool> precondition = null)
         {
             ServiceType = serviceType;
@@ -35,7 +35,7 @@ namespace FactoryFactory
 
             ImplementationFactory = implementationFactory;
             ImplementationType = implementationType ?? (implementationFactory == null ? implementationType : null);
-            Lifecycle = lifecycle ?? Lifecycle.Default;
+            Lifecycle = lifecycle ?? FactoryFactory.Lifecycle.Default;
 
             Validate();
         }
@@ -52,17 +52,17 @@ namespace FactoryFactory
             ServiceType = descriptor.ServiceType;
             if (descriptor.ImplementationType != null) {
                 ImplementationType = descriptor.ImplementationType;
-                Lifecycle = Lifecycle.Get(descriptor.Lifetime);
+                Lifecycle = FactoryFactory.Lifecycle.Get(descriptor.Lifetime);
             }
             else if (descriptor.ImplementationInstance != null) {
                 var instance = descriptor.ImplementationInstance;
                 ImplementationFactory = sr => instance;
-                Lifecycle = Lifecycle.Untracked;
+                Lifecycle = FactoryFactory.Lifecycle.Untracked;
             }
             else if (descriptor.ImplementationFactory != null) {
                 var factory = descriptor.ImplementationFactory;
                 ImplementationFactory = sr => factory(sr.Container);
-                Lifecycle = Lifecycle.Get(descriptor.Lifetime);
+                Lifecycle = FactoryFactory.Lifecycle.Get(descriptor.Lifetime);
             }
             else {
                 throw new ServiceDefinitionException
@@ -101,7 +101,7 @@ namespace FactoryFactory
         ///  The <see cref="FactoryFactory.Lifecycle"/> implementation that tells the
         ///  container where to resolve and when to release dependencies.
         /// </summary>
-        public Lifecycle Lifecycle { get; }
+        public ILifecycle Lifecycle { get; }
 
         /// <summary>
         ///  Gets a value indicating whether this definition was created for a

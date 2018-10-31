@@ -7,7 +7,7 @@ namespace FactoryFactory
     {
         public bool AutoResolve { get; }
         public IConstructorSelector ConstructorSelector { get; }
-        public Lifecycle DefaultLifecycle { get; }
+        public ILifecycle DefaultLifecycle { get; }
         public ICompiler Compiler { get; }
 
         public ConfigurationOptions(

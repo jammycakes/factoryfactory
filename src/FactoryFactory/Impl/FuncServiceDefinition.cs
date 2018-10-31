@@ -7,7 +7,7 @@ namespace FactoryFactory.Impl
     internal class FuncServiceDefinition : ServiceDefinition
     {
         public FuncServiceDefinition()
-            : base(typeof(Func<>), implementationType: typeof(Func<>), lifecycle: Lifecycle.Untracked)
+            : base(typeof(Func<>), implementationType: typeof(Func<>), lifecycle: FactoryFactory.Lifecycle.Untracked)
         {
         }
 
