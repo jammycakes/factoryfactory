@@ -4,7 +4,7 @@
         <PackageId>FactoryFactory.AspNet.DependencyInjection</PackageId>
         <Description>Yet Another IOC Container for .NET</Description>
         <VersionPrefix>0.2.0</VersionPrefix>
-        <VersionSuffix>alpha</VersionSuffix>
+        <VersionSuffix>alpha1</VersionSuffix>
         <Authors>James McKay</Authors>
         <Copyright>Copyright 2018 James McKay</Copyright>
 

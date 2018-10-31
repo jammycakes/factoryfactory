@@ -1,4 +1,4 @@
-version: 0.2.0-alpha.{build}
+version: 0.2.0-alpha1.{build}
 image: Visual Studio 2017
 build_script:
 - cmd: C:\Python37\python build.py
