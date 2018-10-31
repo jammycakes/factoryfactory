@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 
 namespace FactoryFactory
 {
+    [Serializable]
     public class ServiceDefinitionException : Exception
     {
         public ServiceDefinitionException()
