@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace FactoryFactory.Util
 {
@@ -73,6 +74,12 @@ namespace FactoryFactory.Util
             if (parent.IsGenericType && shouldUseGenericType)
                 parent = parent.GetGenericTypeDefinition();
             return parent;
+        }
+
+        public static bool IsNullable(this Type type)
+        {
+            var typeInfo = type.GetTypeInfo();
+            return typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace FactoryFactory.Compilation.Expressions
         public ExpressionServiceBuilder(SLE.Expression<Func<ServiceRequest, object>> expression)
         {
             Expression = expression;
-            _getService = expression.Compile();
+            _getService = expression.CompileFast();
         }
 
         public object GetService(ServiceRequest request)
