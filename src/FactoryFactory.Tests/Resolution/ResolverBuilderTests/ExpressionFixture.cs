@@ -91,7 +91,7 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
         [InlineData(typeof(UntrackedLifecycle))]
         public void CanResolveFuncDependencies(Type lifecycleType)
         {
-            var lifecycle = Activator.CreateInstance(lifecycleType) as Lifecycle;
+            var lifecycle = Activator.CreateInstance(lifecycleType) as ILifecycle;
             var module = new Module();
             module.Define<IServiceWithDependencies>().As<ServiceWithFuncDependencies>().Lifecycle(lifecycle);
             module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>().Lifecycle(lifecycle);
@@ -107,7 +107,7 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
         [InlineData(typeof(UntrackedLifecycle))]
         public void CanResolveLazyDependencies(Type lifecycleType)
         {
-            var lifecycle = Activator.CreateInstance(lifecycleType) as Lifecycle;
+            var lifecycle = Activator.CreateInstance(lifecycleType) as ILifecycle;
             var module = new Module();
             module.Define<IServiceWithDependencies>().As<ServiceWithLazyDependencies>().Lifecycle(lifecycle);
             module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>().Lifecycle(lifecycle);

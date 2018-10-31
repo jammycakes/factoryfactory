@@ -13,7 +13,7 @@ namespace FactoryFactory
         public ConfigurationOptions(
             IConstructorSelector constructorSelector = null,
             ICompiler compiler = null,
-            Lifecycle defaultLifecycle = null,
+            ILifecycle defaultLifecycle = null,
             bool autoResolve = true
         )
         {

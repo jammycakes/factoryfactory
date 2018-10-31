@@ -15,7 +15,7 @@ namespace FactoryFactory.Tests.Resolution.ResolutionTests
         [InlineData(typeof(UntrackedLifecycle), false)]
         public void CanResolveRecursiveLazyDependency(Type lifecycleType, bool shouldBeSame)
         {
-            var lifecycle = Activator.CreateInstance(lifecycleType) as Lifecycle;
+            var lifecycle = Activator.CreateInstance(lifecycleType) as ILifecycle;
 
             var container = Configuration.CreateContainer(module => {
                 module.Define<RecursiveServiceWithLazyDependency>()
@@ -39,7 +39,7 @@ namespace FactoryFactory.Tests.Resolution.ResolutionTests
         [InlineData(typeof(UntrackedLifecycle), false)]
         public void CanResolveRecursiveFuncDependency(Type lifecycleType, bool shouldBeSame)
         {
-            var lifecycle = Activator.CreateInstance(lifecycleType) as Lifecycle;
+            var lifecycle = Activator.CreateInstance(lifecycleType) as ILifecycle;
 
             var container = Configuration.CreateContainer(module => {
                 module.Define<RecursiveServiceWithFuncDependency>()
