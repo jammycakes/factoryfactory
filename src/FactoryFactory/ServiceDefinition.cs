@@ -18,8 +18,6 @@ namespace FactoryFactory
         private IDictionary<Type, ServiceDefinition> _genericDefinitions
             = new ConcurrentDictionary<Type, ServiceDefinition>();
 
-        private int _priority;
-
         /* ====== Constructors ====== */
 
         /// <summary>
@@ -105,7 +103,7 @@ namespace FactoryFactory
         /// </summary>
         public ILifecycle Lifecycle { get; }
 
-        int IServiceDefinition.Priority => _priority;
+        int IServiceDefinition.Priority => ServiceType.IsGenericTypeDefinition ? 1000 : 2000;
 
         /// <summary>
         ///  Gets a value indicating whether this definition was created for a
