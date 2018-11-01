@@ -12,11 +12,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory
 {
-    public class ServiceDefinition
+    public class ServiceDefinition : IServiceDefinition
     {
         private readonly object _identity = new object();
         private IDictionary<Type, ServiceDefinition> _genericDefinitions
             = new ConcurrentDictionary<Type, ServiceDefinition>();
+
+        private int _priority;
 
         /* ====== Constructors ====== */
 
@@ -102,6 +104,8 @@ namespace FactoryFactory
         ///  container where to resolve and when to release dependencies.
         /// </summary>
         public ILifecycle Lifecycle { get; }
+
+        int IServiceDefinition.Priority => _priority;
 
         /// <summary>
         ///  Gets a value indicating whether this definition was created for a
@@ -246,6 +250,34 @@ namespace FactoryFactory
             };
         }
 
+        IEnumerable<Type> IServiceDefinition.GetTypes(Type requestedType)
+        {
+            if (ImplementationType != null) {
+                if (requestedType == ServiceType) {
+                    yield return ImplementationType;
+                }
+                else if (IsForOpenGeneric && requestedType.IsGenericType &&
+                         ServiceType.IsGenericTypeDefinition) {
+                    var openedRequest = requestedType.GetGenericTypeDefinition();
+                    if (openedRequest == requestedType) {
+                        yield return ImplementationType.MakeGenericType
+                            (requestedType.GenericTypeArguments);
+                    }
+                }
+            }
+        }
+
+        IEnumerable<object> IServiceDefinition.GetInstances(Type requestedType)
+        {
+            yield break;
+        }
+
+        IEnumerable<Expression<Func<ServiceRequest, object>>> IServiceDefinition.GetExpressions(Type requestedType)
+        {
+            if (ImplementationFactory != null && requestedType == ServiceType) {
+                yield return ImplementationFactory;
+            }
+        }
 
         public override bool Equals(object obj)
         {
