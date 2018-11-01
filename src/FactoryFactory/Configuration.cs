@@ -15,7 +15,7 @@ namespace FactoryFactory
     /// </summary>
     public class Configuration
     {
-        private readonly DictionaryOfLists<Type, ServiceDefinition> _definitions
+        private readonly DictionaryOfLists<Type, ServiceDefinition> _definitionsByType
             = new DictionaryOfLists<Type, ServiceDefinition>();
         private readonly DictionaryOfLists<Type, IServiceResolver> _resolvers
             = new DictionaryOfLists<Type, IServiceResolver>();
@@ -71,7 +71,7 @@ namespace FactoryFactory
         public IEnumerable<ServiceDefinition> GetDefinitions(Type type)
         {
             var key = GetKey(type);
-            if (_definitions.TryGetValue(key, out var definitions)) {
+            if (_definitionsByType.TryGetValue(key, out var definitions)) {
                 return
                     from definition in definitions
                     where definition.ServiceType.IsGenericTypeDefinition
@@ -85,14 +85,14 @@ namespace FactoryFactory
 
 
         public bool IsTypeRegistered(Type type)
-            => _definitions.ContainsKey(GetKey(type));
+            => _definitionsByType.ContainsKey(GetKey(type));
 
 
         private void AddServiceDefinitions(IEnumerable<ServiceDefinition> defs)
         {
             foreach (var def in defs) {
                 var key = GetKey(def.ServiceType);
-                _definitions.AddOne(key, def);
+                _definitionsByType.AddOne(key, def);
             }
         }
 
@@ -107,7 +107,7 @@ namespace FactoryFactory
         /// <returns>
         ///  The created container.
         /// </returns>
-        public Container CreateContainer()
+        public IContainer CreateContainer()
         {
             return new Container(this);
         }
@@ -212,7 +212,7 @@ namespace FactoryFactory
         /// <returns>
         ///  The configured container.
         /// </returns>
-        public static Container CreateContainer(params Module[] modules)
+        public static IContainer CreateContainer(params Module[] modules)
         {
             return new Configuration(modules).CreateContainer();
         }
@@ -227,7 +227,7 @@ namespace FactoryFactory
         /// <returns>
         ///  The configured container.
         /// </returns>
-        public static Container CreateContainer(IServiceCollection services)
+        public static IContainer CreateContainer(IServiceCollection services)
         {
             return CreateContainer(new Module(services));
         }
@@ -242,7 +242,7 @@ namespace FactoryFactory
         /// <returns>
         ///  The configured container.
         /// </returns>
-        public static Container CreateContainer(Action<Module> moduleConfig)
+        public static IContainer CreateContainer(Action<Module> moduleConfig)
         {
             var module = new Module();
             moduleConfig(module);
@@ -263,7 +263,7 @@ namespace FactoryFactory
                 Define(typeof(IReadOnlyCollection<>)).As(typeof(List<>)).Untracked();
                 Define(typeof(IList<>)).As(typeof(List<>)).Untracked();
                 Define<Configuration>().As(configuration).Untracked();
-                Define<Container>().As(req => req.Container).Untracked();
+                Define<IContainer>().As(req => req.Container).Untracked();
                 Define<IServiceProvider>().As(req => req.Container).Untracked();
                 Define<IServiceScopeFactory>().As(req => req.Container).Untracked();
             }

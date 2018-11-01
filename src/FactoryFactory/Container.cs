@@ -8,11 +8,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory
 {
+
     /// <summary>
     ///  The core class which is responsible for resolution and management of
     ///  requested services.
     /// </summary>
-    public class Container : IServiceProvider, IServiceScope, IServiceScopeFactory
+    internal class Container : IContainer
     {
         private readonly Configuration _configuration;
 
@@ -22,18 +23,17 @@ namespace FactoryFactory
 
         public IServiceProvider ServiceProvider => this;
 
-        private Container(Container parent)
+        private Container(IContainer parent, Configuration configuration)
         {
             Parent = parent;
             Root = parent?.Root ?? this;
             ServiceCache = new ServiceCache();
             ServiceTracker = new ServiceTracker();
-            _configuration = Root._configuration;
+            _configuration = configuration;
         }
 
-        public Container(Configuration configuration) : this(parent: null)
+        public Container(Configuration configuration) : this(null, configuration)
         {
-            _configuration = configuration;
         }
 
 
@@ -116,13 +116,13 @@ namespace FactoryFactory
 
         /* ====== Hierarchy ====== */
 
-        public Container Parent { get; }
+        public IContainer Parent { get; }
 
-        public Container Root { get; }
+        public IContainer Root { get; }
 
-        public Container CreateChild()
+        public IContainer CreateChild()
         {
-            var child = new Container(this);
+            var child = new Container(this, _configuration);
             return child;
         }
 

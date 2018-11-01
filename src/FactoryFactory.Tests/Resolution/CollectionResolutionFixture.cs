@@ -8,7 +8,7 @@ namespace FactoryFactory.Tests.Resolution
 {
     public class CollectionResolutionFixture
     {
-        private Container _container;
+        private IContainer _container;
 
         public CollectionResolutionFixture()
         {

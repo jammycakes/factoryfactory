@@ -31,7 +31,7 @@ namespace FactoryFactory.Impl
                 Expression.Convert(
                     Expression.Call(
                         containerExpression,
-                        typeof(Container).GetMethod(nameof(Container.GetService),
+                        typeof(IContainer).GetMethod(nameof(IContainer.GetService),
                             new [] {typeof(ServiceRequest)}),
                         subRequestExpression
                     ),

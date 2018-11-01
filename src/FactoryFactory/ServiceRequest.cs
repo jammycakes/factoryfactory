@@ -18,7 +18,7 @@ namespace FactoryFactory
         ///  originally made. This may or may not be the container that
         ///  ultimately creates and manages the service.
         /// </summary>
-        public Container Container { get; }
+        public IContainer Container { get; }
 
         /// <summary>
         ///  The type of object that is being requested. This is not necessarily
@@ -51,7 +51,7 @@ namespace FactoryFactory
         /// <param name="container"></param>
         /// <param name="requestedType"></param>
         /// <param name="receiver"></param>
-        public ServiceRequest(Container container, Type requestedType, ServiceRequest receiver)
+        public ServiceRequest(IContainer container, Type requestedType, ServiceRequest receiver)
         {
             Container = container;
             RequestedType = requestedType;
