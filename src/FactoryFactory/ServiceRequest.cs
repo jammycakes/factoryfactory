@@ -11,7 +11,7 @@ namespace FactoryFactory
     /// </summary>
     public class ServiceRequest
     {
-        private ServiceRequest _root;
+        private bool? _isEnumerable;
 
         /// <summary>
         ///  The <see cref="Container"/> instance to which the request was
@@ -34,16 +34,17 @@ namespace FactoryFactory
         public ServiceRequest Receiver { get; }
 
         /// <summary>
-        ///  The <see cref="ServiceRequest"/> instance for the service into
-        ///  which this service is being injected. For root-level requests,
-        ///  this will be null.
-        /// </summary>
-        public IServiceCache ServiceCache { get; }
-
-        /// <summary>
         ///  Indicates whether this is a request for an IEnumerable<T>.
         /// </summary>
-        public bool IsEnumerable { get; }
+        public bool IsEnumerable {
+            get {
+                if (!_isEnumerable.HasValue) {
+                    _isEnumerable = RequestedType.IsEnumerable();
+                }
+
+                return _isEnumerable.Value;
+            }
+        }
 
         /// <summary>
         ///  Creates a new instance of the <see cref="ServiceRequest"/> class.
@@ -56,9 +57,6 @@ namespace FactoryFactory
             Container = container;
             RequestedType = requestedType;
             Receiver = receiver;
-            _root = receiver?._root;
-            ServiceCache = _root?.ServiceCache ?? new ServiceCache();
-            IsEnumerable = requestedType.IsEnumerable();
         }
 
         public ServiceRequest CreateDependencyRequest(Type dependencyType)
