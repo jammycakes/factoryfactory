@@ -5,9 +5,13 @@ namespace FactoryFactory
 {
     public abstract class Lifecycle : ILifecycle
     {
-        public abstract IServiceTracker GetTracker(ServiceRequest request);
+        public abstract bool Cached { get; }
+
+        public abstract bool Tracked { get; }
 
         public abstract IServiceCache GetCache(ServiceRequest request);
+
+        public abstract IServiceTracker GetTracker(ServiceRequest request);
 
         public static readonly ILifecycle Scoped = new ScopedLifecycle();
         public static readonly ILifecycle Singleton = new SingletonLifecycle();

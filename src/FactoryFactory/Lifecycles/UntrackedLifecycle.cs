@@ -4,6 +4,10 @@ namespace FactoryFactory.Lifecycles
 {
     public class UntrackedLifecycle : Lifecycle, IServiceTracker, IServiceCache
     {
+        public override bool Cached => false;
+
+        public override bool Tracked => false;
+
         public override IServiceTracker GetTracker(ServiceRequest request)
             => this;
 
