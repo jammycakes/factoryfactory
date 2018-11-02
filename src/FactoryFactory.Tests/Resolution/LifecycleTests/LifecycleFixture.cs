@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using FactoryFactory.Tests.Model;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Xunit;
 
 namespace FactoryFactory.Tests.Resolution.LifecycleTests

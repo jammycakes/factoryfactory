@@ -10,7 +10,9 @@ namespace FactoryFactory.Impl
 
         public void Track(IDisposable service)
         {
-            _services.AddFirst(service);
+            if (service != null) {
+                _services.AddFirst(service);
+            }
         }
 
         public void Dispose()

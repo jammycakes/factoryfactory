@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using FactoryFactory.Tests.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using Xunit.Sdk;
 
 namespace FactoryFactory.Tests.Resolution
 {

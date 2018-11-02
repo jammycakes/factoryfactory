@@ -1,9 +1,11 @@
+#define NEW_CONTAINERS
+
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using FactoryFactory.Impl;
+using FactoryFactory.Resolution;
 using FactoryFactory.Util;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -93,6 +95,7 @@ namespace FactoryFactory
             foreach (var def in defs) {
                 var key = GetKey(def.ServiceType);
                 _definitionsByType.AddOne(key, def);
+                _definitions.Add(def);
             }
         }
 
@@ -109,7 +112,11 @@ namespace FactoryFactory
         /// </returns>
         public IContainer CreateContainer()
         {
+#if NEW_CONTAINERS
+            return new NewContainer(this);
+#else
             return new Container(this);
+#endif
         }
 
 
@@ -197,6 +204,55 @@ namespace FactoryFactory
                 return true;
             }
             return GetResolvers(type).Any();
+        }
+
+
+
+        /* ====== New Resolver infrastructure ====== */
+
+        private IList<IServiceDefinition> _definitions = new List<IServiceDefinition>();
+        private IDictionary<Type, IResolver> _resolverCache = new Dictionary<Type, IResolver>();
+
+        public IResolver GetResolver(Type type)
+        {
+            if (!_resolverCache.TryGetValue(type, out var resolver)) {
+                lock (_resolverCache) {
+                    resolver = EnsureResolver(type);
+                }
+            }
+
+            return resolver;
+        }
+
+
+        private IResolver EnsureResolver(Type type)
+        {
+            if (_resolverCache.TryGetValue(type, out IResolver resolver)) {
+                return resolver;
+            }
+
+            var builder = new ResolverBuilder(type, _definitions, this);
+            if (_resolversBeingBuilt.Contains(builder.InstanceType)) return null;
+            _resolversBeingBuilt.Add(builder.InstanceType);
+            try {
+                var enumerable = builder.GetEnumerableResolver();
+                _resolverCache[builder.EnumerableType] = enumerable;
+                var instance = builder.GetInstanceResolver();
+                _resolverCache[builder.InstanceType] = instance;
+                return type.IsEnumerable() ? enumerable : instance;
+            }
+            finally {
+                _resolversBeingBuilt.Remove(builder.InstanceType);
+            }
+        }
+
+        internal bool CanResolveNew(Type type)
+        {
+            if (_resolversBeingBuilt.Contains(type)) return true;
+            if (type.IsEnumerable()) return true;
+            if (type.IsValueType) return false;
+            var resolver = EnsureResolver(type);
+            return resolver.CanResolve;
         }
 
 

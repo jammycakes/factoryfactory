@@ -1,5 +1,4 @@
 using System;
-using FactoryFactory.Impl;
 using FactoryFactory.Util;
 
 namespace FactoryFactory

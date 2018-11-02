@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FactoryFactory.Impl;
 using FactoryFactory.Registration;
 using Microsoft.Extensions.DependencyInjection;
 

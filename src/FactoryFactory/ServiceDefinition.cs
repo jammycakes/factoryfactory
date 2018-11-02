@@ -1,12 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Xml.Schema;
 using FactoryFactory.Util;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -156,7 +152,7 @@ namespace FactoryFactory
             // Implementations by type must be concrete classes.
             if (ImplementationType != null && ImplementationType.IsAbstract) {
                 throw new ServiceDefinitionException
-                    ($"Type {ServiceType.FullName} has been specified bo be " +
+                    ($"Type {ServiceType.FullName} has been specified to be " +
                      $"implemented by type {ImplementationType.FullName}, " +
                      $"which is an interface or an abstract base class. " +
                      $"Services implemented by type must be concrete classes.");
