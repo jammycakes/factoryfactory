@@ -40,7 +40,7 @@ namespace FactoryFactory.Compilation.Expressions
             );
         }
 
-        private Expression<Func<ServiceRequest, object>>
+        public Expression<Func<ServiceRequest, object>>
             CreateExpressionFromDefaultConstructor(ConstructorInfo selectedConstructor)
         {
             var req = Expression.Parameter(typeof(ServiceRequest), "serviceRequest");
@@ -59,7 +59,7 @@ namespace FactoryFactory.Compilation.Expressions
         }
 
 
-        private Expression<Func<ServiceRequest, object>>
+        public Expression<Func<ServiceRequest, object>>
             CreateExpressionFromConstructorExpression(NewExpression nex)
         {
             var req = Expression.Parameter(typeof(ServiceRequest), "serviceRequest");
