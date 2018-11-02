@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Reflection;
 using FactoryFactory.Util;
@@ -6,9 +7,9 @@ namespace FactoryFactory.Compilation
 {
     public class DefaultConstructorSelector : IConstructorSelector
     {
-        public ConstructorInfo SelectConstructor(ServiceDefinition serviceDefinition, Configuration configuration)
+        public ConstructorInfo SelectConstructor(Type implementationType, Configuration configuration)
         {
-            var constructors = serviceDefinition.ImplementationType.GetConstructors();
+            var constructors = implementationType.GetConstructors();
             var matchingConstructors =
                 from constructor in constructors
                 let parameters = constructor.GetParameters()

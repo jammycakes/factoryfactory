@@ -21,7 +21,7 @@ namespace FactoryFactory.Compilation.Expressions
             }
             else {
                 var constructor = configuration.Options.ConstructorSelector
-                    .SelectConstructor(definition, configuration);
+                    .SelectConstructor(definition.ImplementationType, configuration);
                 if (constructor == null) return null;
                 var expression = CreateExpressionFromDefaultConstructor(constructor);
                 return new ExpressionServiceBuilder(expression);
