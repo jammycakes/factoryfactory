@@ -18,11 +18,11 @@ namespace FactoryFactory.Lifecycles
         {
         }
 
-        public void Store(ServiceDefinition serviceDefinition, object service)
+        public void Store(object key, object service)
         {
         }
 
-        public object Retrieve(ServiceDefinition serviceDefinition)
+        public object Retrieve(object key)
             => null;
     }
 }

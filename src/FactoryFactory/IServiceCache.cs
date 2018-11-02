@@ -2,8 +2,8 @@ namespace FactoryFactory
 {
     public interface IServiceCache
     {
-        void Store(ServiceDefinition serviceDefinition, object service);
+        void Store(object key, object service);
 
-        object Retrieve(ServiceDefinition serviceDefinition);
+        object Retrieve(object key);
     }
 }

@@ -8,10 +8,10 @@ namespace FactoryFactory.Lifecycles
         public override IServiceCache GetCache(ServiceRequest request)
             => this;
 
-        public void Store(ServiceDefinition serviceDefinition, object service)
+        public void Store(object key, object service)
         {
         }
 
-        public object Retrieve(ServiceDefinition serviceDefinition) => null;
+        public object Retrieve(object key) => null;
     }
 }
