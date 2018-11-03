@@ -31,7 +31,8 @@ namespace FactoryFactory.Resolution
             return _resolvers
                 .Where(r => r.IsConditionMet(request))
                 .Select(r => r.GetService(request))
-                .Cast<TService>();
+                .Cast<TService>()
+                .ToList();
         }
 
         public override string ToString() => $"EnumerableResolver for {Type}";
