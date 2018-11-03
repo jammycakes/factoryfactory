@@ -3,16 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory
 {
-    public abstract class Lifecycle : ILifecycle
+    public static class Lifecycle
     {
-        public abstract bool Cached { get; }
-
-        public abstract bool Tracked { get; }
-
-        public abstract IServiceCache GetCache(ServiceRequest request);
-
-        public abstract IServiceTracker GetTracker(ServiceRequest request);
-
         public static readonly ILifecycle Scoped = new ScopedLifecycle();
         public static readonly ILifecycle Singleton = new SingletonLifecycle();
         public static readonly ILifecycle Transient = new TransientLifecycle();
