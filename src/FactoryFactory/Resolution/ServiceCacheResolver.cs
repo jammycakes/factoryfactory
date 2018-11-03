@@ -11,11 +11,11 @@ namespace FactoryFactory.Resolution
         private readonly ILifecycle _lifecycle;
         private readonly object _key;
 
-        public ServiceCacheResolver(IServiceDefinition definition, ExpressionResolver innerResolver)
+        public ServiceCacheResolver(IServiceDefinition definition, IResolver innerResolver, object key)
         {
             _innerResolver = innerResolver;
             _lifecycle = definition.Lifecycle;
-            _key = innerResolver.Key;
+            _key = key;
         }
 
         public bool CanResolve => true;

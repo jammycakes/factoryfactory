@@ -128,27 +128,29 @@ namespace FactoryFactory.Resolution
              *  6. Enumerable resolver / Selector resolver
              */
 
+            IResolver built = resolver;
+
             if (isTracked && definition.Lifecycle.Tracked) {
-                resolver = new ServiceTrackerResolver(definition, resolver);
+                built = new ServiceTrackerResolver(definition, built);
             }
 
             if (resolver is ExpressionResolver exr && definition.Lifecycle.Cached) {
-                resolver = new ServiceCacheResolver(definition, exr);
+                built = new ServiceCacheResolver(definition, built, exr.Key);
             }
 
             var decoratorType = typeof(IDecorator<>).MakeGenericType(InstanceType);
             if (_configuration.CanResolveNew(decoratorType)) {
                 var decoratorResolverType
                     = typeof(DecoratorResolver<>).MakeGenericType(InstanceType);
-                resolver = (IResolver)Activator.CreateInstance
-                    (decoratorResolverType, resolver, _configuration);
+                built = (IResolver)Activator.CreateInstance
+                    (decoratorResolverType, built, _configuration);
             }
 
             if (definition.Precondition != null) {
-                resolver = new ConditionalResolver(definition, resolver);
+                built = new ConditionalResolver(definition, built);
             }
 
-            return resolver;
+            return built;
         }
     }
 }
