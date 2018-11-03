@@ -18,7 +18,8 @@ namespace FactoryFactory.Resolution
 
         public Type EnumerableType { get; }
 
-        public ResolverBuilder(Type type, IList<IServiceDefinition> definitions, Configuration configuration)
+        public ResolverBuilder(Type type, IList<IServiceDefinition> definitions,
+            Configuration configuration)
         {
             _definitions = definitions;
             _configuration = configuration;
@@ -27,8 +28,24 @@ namespace FactoryFactory.Resolution
                 InstanceType = type.GenericTypeArguments.Single();
             }
             else {
-                EnumerableType = typeof(IEnumerable<>).MakeGenericType(type);
                 InstanceType = type;
+                if (type.IsPointer || type.IsValueType) {
+                    EnumerableType = null;
+                }
+                else {
+                    try {
+                        EnumerableType = typeof(IEnumerable<>).MakeGenericType(type);
+                    }
+                    catch {
+                        /*
+                         * For justification for this fine example of Pokémon
+                         * exception handling, see:
+                         * https://github.com/aspnet/DependencyInjection/issues/471
+                         * https://stackoverflow.com/a/4864565/886
+                         */
+                        EnumerableType = null;
+                    }
+                }
             }
         }
 
@@ -46,7 +63,14 @@ namespace FactoryFactory.Resolution
 
         private void EnsureResolvers()
         {
-            if (_resolvers != null) return;
+            if (_enumerableResolver != null || _instanceResolver != null) return;
+
+            if (EnumerableType == null || InstanceType == null) {
+                _enumerableResolver = new NonResolver(EnumerableType ?? InstanceType);
+                _instanceResolver = new NonResolver(InstanceType ?? EnumerableType);
+                return;
+            }
+
             _resolvers = new List<IResolver>();
             foreach (var definition in _definitions) {
                 foreach (var implementationType in definition.GetTypes(InstanceType)) {
@@ -62,7 +86,7 @@ namespace FactoryFactory.Resolution
                 }
             }
 
-            if (!_definitions.Any() &&
+            if (!_resolvers.Any() &&
                 !InstanceType.IsAbstract &&
                 !InstanceType.IsValueType &&
                 !InstanceType.IsGenericTypeDefinition) {
@@ -76,12 +100,18 @@ namespace FactoryFactory.Resolution
                     _resolvers.Add(CreateResolverByType(definition, InstanceType));
                 }
             }
+            else {
+                _resolvers.Add(new NonResolver(InstanceType));
+            }
 
-            var enumerableResolverType = typeof(EnumerableResolver<>).MakeGenericType(InstanceType);
+            if (EnumerableType != null) {
+                var enumerableResolverType =
+                    typeof(EnumerableResolver<>).MakeGenericType(InstanceType);
 
-            _enumerableResolver =
-                (IResolver)Activator.CreateInstance(enumerableResolverType, _resolvers);
-            _instanceResolver = new SingleResolver(_resolvers, InstanceType).ActualResolver;
+                _enumerableResolver =
+                    (IResolver)Activator.CreateInstance(enumerableResolverType, _resolvers);
+                _instanceResolver = new SingleResolver(_resolvers, InstanceType).ActualResolver;
+            }
         }
 
         private IResolver CreateResolverByType(IServiceDefinition definition, Type implementationType)

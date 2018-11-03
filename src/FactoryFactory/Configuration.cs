@@ -108,9 +108,13 @@ namespace FactoryFactory
             _resolversBeingBuilt.Add(builder.InstanceType);
             try {
                 var enumerable = builder.GetEnumerableResolver();
-                _resolverCache[builder.EnumerableType] = enumerable;
+                if (builder.EnumerableType != null) {
+                    _resolverCache[builder.EnumerableType] = enumerable;
+                }
                 var instance = builder.GetInstanceResolver();
-                _resolverCache[builder.InstanceType] = instance;
+                if (builder.InstanceType != null) {
+                    _resolverCache[builder.InstanceType] = instance;
+                }
                 return type.IsEnumerable() ? enumerable : instance;
             }
             finally {
