@@ -121,19 +121,19 @@ namespace FactoryFactory.Resolution
              * Resplvers must be decorated in the following order:
              *
              *  1. Instance resolver / Expression resolver
-             *  2. Service cache resolver
-             *  3. Service tracker resolver
+             *  2. Service tracker resolver
+             *  3. Service cache resolver
              *  4. Decorator resolver
              *  5. Conditional resolver
              *  6. Enumerable resolver / Selector resolver
              */
 
-            if (resolver is ExpressionResolver exr && definition.Lifecycle.Cached) {
-                resolver = new ServiceCacheResolver(definition, exr);
-            }
-
             if (isTracked && definition.Lifecycle.Tracked) {
                 resolver = new ServiceTrackerResolver(definition, resolver);
+            }
+
+            if (resolver is ExpressionResolver exr && definition.Lifecycle.Cached) {
+                resolver = new ServiceCacheResolver(definition, exr);
             }
 
             var decoratorType = typeof(IDecorator<>).MakeGenericType(InstanceType);
