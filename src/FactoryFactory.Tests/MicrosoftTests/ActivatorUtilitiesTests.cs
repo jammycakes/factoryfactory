@@ -364,7 +364,7 @@ namespace FactoryFactory.Tests.MicrosoftTests
         {
             // Act & Assert
             var ex = Assert.Throws<InvalidOperationException>(() => ActivatorUtilities.CreateInstance(default(IServiceProvider), typeof(AbstractFoo)));
-            var msg = "A suitable constructor for type 'Microsoft.Extensions.DependencyInjection.Specification.DependencyInjectionSpecificationTests+AbstractFoo' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
+            var msg = "A suitable constructor for type 'FactoryFactory.Tests.MicrosoftTests.DependencyInjectionSpecificationTests+AbstractFoo' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
             Assert.Equal(msg, ex.Message);
         }
 
