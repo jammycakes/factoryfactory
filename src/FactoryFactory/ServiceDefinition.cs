@@ -281,7 +281,7 @@ namespace FactoryFactory
 
         IEnumerable<object> IServiceDefinition.GetInstances(Type requestedType)
         {
-            if (requestedType.IsInstanceOfType(ImplementationInstance)) {
+            if (ImplementationInstance != null && requestedType == ServiceType) {
                 yield return ImplementationInstance;
             }
         }

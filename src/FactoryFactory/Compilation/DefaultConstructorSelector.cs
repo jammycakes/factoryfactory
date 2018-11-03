@@ -22,7 +22,7 @@ namespace FactoryFactory.Compilation
                 where parameters.All(p =>
                     p.IsOptional ||
                     p.ParameterType.IsEnumerable() ||
-                    configuration.CanResolveNew(p.ParameterType.GetServiceType())
+                    configuration.CanResolveNew(p.ParameterType)
                 )
                 orderby info.Length descending, info.funcParameterCount descending
                 select info.constructor;
