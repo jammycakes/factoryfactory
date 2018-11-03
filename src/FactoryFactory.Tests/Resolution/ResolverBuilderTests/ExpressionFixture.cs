@@ -27,11 +27,12 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
             module.Add(definition);
             module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
             var configuration = new Configuration(_options, module);
-            var builder = _options.Compiler.Build(definition, configuration)
-                as ExpressionServiceBuilder;
+            var constructor =
+                _options.ConstructorSelector.SelectConstructor
+                    (definition.ImplementationType, configuration);
+            var expression = _options.Compiler.CreateExpressionFromDefaultConstructor(constructor);
 
-            Assert.NotNull(builder);
-            var expressionBody = builder.Expression.Body;
+            var expressionBody = expression.Body;
             Assert.IsType<NewExpression>(expressionBody);
             Assert.Equal(typeof(ServiceWithDependencies), expressionBody.Type);
         }
@@ -50,13 +51,7 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
 
             module.Add(definition);
             module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
-
             var configuration = new Configuration(_options, module);
-            var builder = _options.Compiler.Build(definition, configuration)
-                as ExpressionServiceBuilder;
-
-            Assert.NotNull(builder);
-
             var container = configuration.CreateContainer();
             var service = container.GetService<IServiceWithDependencies>();
             Assert.Equal("Hello world", service.Message);

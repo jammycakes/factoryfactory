@@ -8,26 +8,6 @@ namespace FactoryFactory.Compilation.Expressions
 {
     public class ExpressionCompiler : ICompiler
     {
-        public IServiceBuilder Build(ServiceDefinition definition, Configuration configuration)
-        {
-            if (definition.ImplementationFactory != null) {
-                if (definition.ImplementationFactory.Body is NewExpression nex) {
-                    var expression = CreateExpressionFromConstructorExpression(nex);
-                    return new ExpressionServiceBuilder(expression);
-                }
-                else {
-                    return new ExpressionServiceBuilder(definition.ImplementationFactory);
-                }
-            }
-            else {
-                var constructor = configuration.Options.ConstructorSelector
-                    .SelectConstructor(definition.ImplementationType, configuration);
-                if (constructor == null) return null;
-                var expression = CreateExpressionFromDefaultConstructor(constructor);
-                return new ExpressionServiceBuilder(expression);
-            }
-        }
-
         private Expression GetParameterResolutionExpression(Type type, ParameterExpression req)
         {
             return Expression.Convert(

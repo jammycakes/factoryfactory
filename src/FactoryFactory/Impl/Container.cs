@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FactoryFactory.Util;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory.Impl
@@ -45,54 +42,8 @@ namespace FactoryFactory.Impl
 
         public object GetService(ServiceRequest request)
         {
-            if (request.IsEnumerable) {
-                return GetAll(request);
-            }
-            else {
-                return GetOne(request);
-            }
-        }
-
-        private object GetAll(ServiceRequest request)
-        {
-            var resolvers = GetResolvers(request);
-            var services = resolvers.Select(r => r.GetService(request)).ToArray();
-            var result = Array.CreateInstance(request.RequestedType.GetServiceType(), services.Length);
-            Array.Copy(services, result, services.Length);
-            return result;
-        }
-
-        private object GetOne(ServiceRequest request)
-        {
-            var resolver = GetResolver(request);
-            if (resolver == null) return null;
-            return resolver.GetService(request);
-        }
-
-        private IServiceResolver GetResolver(ServiceRequest serviceRequest)
-        {
-            IServiceResolver open = null;
-            IServiceResolver closed = null;
-
-            foreach (var resolver in GetResolvers(serviceRequest)) {
-                if (resolver.IsOpenGeneric) {
-                    open = resolver;
-                }
-                else {
-                    closed = resolver;
-                }
-            }
-
-            return closed ?? open;
-        }
-
-
-        private IEnumerable<IServiceResolver> GetResolvers(ServiceRequest serviceRequest)
-        {
-            return
-                from resolver in _configuration.GetResolvers(serviceRequest.RequestedType.GetServiceType())
-                where resolver.PreconditionMet(serviceRequest)
-                select resolver;
+            var resolver = _configuration.GetResolver(request.RequestedType);
+            return resolver?.GetService(request);
         }
 
 

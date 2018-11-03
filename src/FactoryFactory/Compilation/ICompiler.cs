@@ -7,8 +7,6 @@ namespace FactoryFactory.Compilation
 {
     public interface ICompiler
     {
-        IServiceBuilder Build(ServiceDefinition definition, Configuration configuration);
-
         Expression<Func<ServiceRequest, object>>
             CreateExpressionFromDefaultConstructor(ConstructorInfo selectedConstructor);
 
