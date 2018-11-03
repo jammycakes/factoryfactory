@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using FactoryFactory.Util;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,8 +11,6 @@ namespace FactoryFactory
     public class ServiceDefinition : IServiceDefinition
     {
         private readonly object _identity = new object();
-        private IDictionary<Type, ServiceDefinition> _genericDefinitions
-            = new ConcurrentDictionary<Type, ServiceDefinition>();
 
         /* ====== Constructors ====== */
 
@@ -223,44 +219,6 @@ namespace FactoryFactory
                     ($"Type {impl.FullName} can not be assigned " +
                      $"to a value of type {ServiceType.FullName}.");
             }
-        }
-
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public ServiceDefinition GetGenericDefinition(Type requestedType)
-        {
-            if (!requestedType.IsGenericType) return this;
-            if (!ServiceType.IsGenericTypeDefinition) return this;
-            if (!_genericDefinitions.TryGetValue(requestedType, out var result)) {
-                result = Close(requestedType);
-                _genericDefinitions.Add(requestedType, result);
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///  Closes an open generic type. You can override this to customise
-        ///  how open generics are implemented.
-        /// </summary>
-        /// <param name="requestedType">
-        ///  The concrete type that is being requested.
-        /// </param>
-        /// <returns>
-        ///  A new <see cref="ServiceDefinition"/> instance.
-        /// </returns>
-        protected virtual ServiceDefinition Close(Type requestedType)
-        {
-            var newType =
-                ServiceType.MakeGenericType(requestedType.GenericTypeArguments);
-            var newImplementationType =
-                ImplementationType.MakeGenericType(requestedType
-                    .GenericTypeArguments);
-            return new ServiceDefinition(newType,
-                ImplementationFactory, newImplementationType, ImplementationInstance,
-                Lifecycle, Precondition)
-            {
-                IsForOpenGeneric = true
-            };
         }
 
         IEnumerable<Type> IServiceDefinition.GetTypes(Type requestedType)
