@@ -11,6 +11,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FakeItEasy" Version="4.9.1" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Specification.Tests" Version="2.1.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />

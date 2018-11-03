@@ -56,7 +56,7 @@ namespace FactoryFactory
             }
             else if (descriptor.ImplementationInstance != null) {
                 var instance = descriptor.ImplementationInstance;
-                ImplementationFactory = sr => instance;
+                ImplementationInstance = instance;
                 Lifecycle = FactoryFactory.Lifecycle.Untracked;
             }
             else if (descriptor.ImplementationFactory != null) {
@@ -281,7 +281,7 @@ namespace FactoryFactory
 
         IEnumerable<object> IServiceDefinition.GetInstances(Type requestedType)
         {
-            if (ImplementationInstance != null) {
+            if (requestedType.IsInstanceOfType(ImplementationInstance)) {
                 yield return ImplementationInstance;
             }
         }
