@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,11 +12,11 @@ namespace FactoryFactory.Resolution
     {
         private readonly IEnumerable<IResolver> _resolvers;
 
-        public SingleResolver(IEnumerable<IResolver> resolvers)
+        public SingleResolver(IEnumerable<IResolver> resolvers, Type type)
         {
             _resolvers = resolvers.OrderBy(r => r.Priority).Reverse().ToList();
             if (!_resolvers.Any()) {
-                ActualResolver = new NonResolver();
+                ActualResolver = new NonResolver(type);
             }
             else if (!_resolvers.First().Conditional) {
                 ActualResolver = _resolvers.First();
@@ -23,6 +24,8 @@ namespace FactoryFactory.Resolution
             else {
                 ActualResolver = this;
             }
+
+            Type = type;
         }
 
         public bool CanResolve => true;
@@ -31,6 +34,8 @@ namespace FactoryFactory.Resolution
 
         public int Priority => 0;
 
+        public Type Type { get; }
+
         public bool IsConditionMet(ServiceRequest request) => true;
 
         public object GetService(ServiceRequest request) =>
@@ -38,5 +43,7 @@ namespace FactoryFactory.Resolution
                 ?.GetService(request);
 
         public IResolver ActualResolver { get; }
+
+        public override string ToString() => $"SingleResolver for {Type}";
     }
 }

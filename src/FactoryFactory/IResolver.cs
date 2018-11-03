@@ -1,3 +1,5 @@
+using System;
+
 namespace FactoryFactory
 {
     /// <summary>
@@ -52,6 +54,11 @@ namespace FactoryFactory
         ///  Gets the priority code for the resolver.
         /// </summary>
         int Priority { get; }
+
+        /// <summary>
+        ///  The type of service being resolved.
+        /// </summary>
+        Type Type { get; }
 
         /// <summary>
         ///  Checks whether this resolver's precondition has been met.

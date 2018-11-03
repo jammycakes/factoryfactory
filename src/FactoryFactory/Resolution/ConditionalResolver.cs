@@ -21,8 +21,15 @@ namespace FactoryFactory.Resolution
 
         public int Priority { get; }
 
+        public Type Type => _innerResolver.Type;
+
         public bool IsConditionMet(ServiceRequest request) => _precondition(request);
 
         public object GetService(ServiceRequest request) => _innerResolver.GetService(request);
+
+        public override string ToString()
+        {
+            return $"ConditionalResolver for {Type}";
+        }
     }
 }

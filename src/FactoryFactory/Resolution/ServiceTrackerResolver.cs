@@ -22,6 +22,8 @@ namespace FactoryFactory.Resolution
 
         public int Priority => _innerResolver.Priority;
 
+        public Type Type => _innerResolver.Type;
+
         public bool IsConditionMet(ServiceRequest request) => true;
 
         public object GetService(ServiceRequest request)
@@ -30,5 +32,7 @@ namespace FactoryFactory.Resolution
             _lifecycle?.GetTracker(request)?.Track(service as IDisposable);
             return service;
         }
+
+        public override string ToString() => $"ServiceTrackerResolver for {Type}";
     }
 }

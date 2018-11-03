@@ -81,18 +81,18 @@ namespace FactoryFactory.Resolution
 
             _enumerableResolver =
                 (IResolver)Activator.CreateInstance(enumerableResolverType, _resolvers);
-            _instanceResolver = new SingleResolver(_resolvers).ActualResolver;
+            _instanceResolver = new SingleResolver(_resolvers, InstanceType).ActualResolver;
         }
 
         private IResolver CreateResolverByType(IServiceDefinition definition, Type implementationType)
         {
             var constructor = _configuration.Options.ConstructorSelector.SelectConstructor
                 (implementationType, _configuration);
-            if (constructor == null) return new NonResolver();
+            if (constructor == null) return new NonResolver(InstanceType);
             var expression =
                 _configuration.Options.Compiler.CreateExpressionFromDefaultConstructor(constructor);
             var isTracked = typeof(IDisposable).IsAssignableFrom(implementationType);
-            var resolver = new ExpressionResolver(definition, expression);
+            var resolver = new ExpressionResolver(definition, expression, InstanceType);
             return BuildUp(resolver, definition, isTracked);
         }
 
@@ -109,7 +109,7 @@ namespace FactoryFactory.Resolution
                 expression = _configuration.Options.Compiler
                     .CreateExpressionFromConstructorExpression(nex);
             }
-            var resolver = new ExpressionResolver(definition, expression);
+            var resolver = new ExpressionResolver(definition, expression, InstanceType);
             return BuildUp(resolver, definition, true);
         }
 

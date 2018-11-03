@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace FactoryFactory.Resolution
@@ -20,6 +21,8 @@ namespace FactoryFactory.Resolution
 
         public int Priority { get; }
 
+        public Type Type => _innerResolver.Type;
+
         public bool IsConditionMet(ServiceRequest request) => true;
 
         public object GetService(ServiceRequest request)
@@ -35,5 +38,7 @@ namespace FactoryFactory.Resolution
 
             return service;
         }
+
+        public override string ToString() => $"DecoratorResolver for {Type}";
     }
 }

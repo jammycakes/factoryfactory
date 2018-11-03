@@ -1,3 +1,5 @@
+using System;
+
 namespace FactoryFactory.Resolution
 {
     public class InstanceResolver : IResolver
@@ -8,6 +10,7 @@ namespace FactoryFactory.Resolution
         {
             _instance = instance;
             Priority = definition.Priority;
+            Type = instance.GetType();
         }
 
         public bool CanResolve => true;
@@ -16,8 +19,12 @@ namespace FactoryFactory.Resolution
 
         public int Priority { get; }
 
+        public Type Type { get; }
+
         public bool IsConditionMet(ServiceRequest request) => true;
 
         public object GetService(ServiceRequest request) => _instance;
+
+        public override string ToString() => $"InstanceResolver for {Type}";
     }
 }

@@ -1,3 +1,5 @@
+using System;
+
 namespace FactoryFactory.Resolution
 {
     /// <summary>
@@ -7,6 +9,11 @@ namespace FactoryFactory.Resolution
 
     public class NonResolver : IResolver
     {
+        public NonResolver(Type type)
+        {
+            Type = type;
+        }
+
         public bool CanResolve => false;
 
         public bool Conditional => false;
@@ -15,8 +22,12 @@ namespace FactoryFactory.Resolution
 
         public int Priority => 0;
 
+        public Type Type { get; }
+
         public bool IsConditionMet(ServiceRequest request) => false;
 
         public object GetService(ServiceRequest request) => null;
+
+        public override string ToString() => $"Non-resolver for {Type}";
     }
 }

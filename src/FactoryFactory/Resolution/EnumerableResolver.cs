@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,6 +22,8 @@ namespace FactoryFactory.Resolution
 
         public int Priority => 0;
 
+        public Type Type => typeof(TService);
+
         public bool IsConditionMet(ServiceRequest request) => true;
 
         public object GetService(ServiceRequest request)
@@ -30,5 +33,7 @@ namespace FactoryFactory.Resolution
                 .Select(r => r.GetService(request))
                 .Cast<TService>();
         }
+
+        public override string ToString() => $"EnumerableResolver for {Type}";
     }
 }
