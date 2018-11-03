@@ -7,6 +7,7 @@ namespace FactoryFactory.Registration
     {
         private protected Type _implementationType;
         private protected Expression<Func<ServiceRequest, object>> _implementationFactory;
+        private protected object _implementationInstance;
         private protected DefinitionOptions _options = new DefinitionOptions();
 
         public DefinitionBuilder(Module module, Type type)
@@ -19,6 +20,7 @@ namespace FactoryFactory.Registration
             return new ServiceDefinition(type,
                 implementationFactory: _implementationFactory,
                 implementationType: _implementationType,
+                implementationInstance: _implementationInstance,
                 lifecycle: _options.Lifecycle, precondition: _options.Precondition);
         }
 
@@ -46,7 +48,10 @@ namespace FactoryFactory.Registration
         public OptionsBuilder<object> As(object implementation)
         {
             _options.Lifecycle = Lifecycle.Untracked;
-            return As(req => implementation);
+            _implementationInstance = implementation;
+            _implementationFactory = null;
+            _implementationType = null;
+            return new OptionsBuilder<object>(_options);
         }
 
         /// <summary>
@@ -59,6 +64,7 @@ namespace FactoryFactory.Registration
         {
             _implementationFactory = factory;
             _implementationType = null;
+            _implementationInstance = null;
             return new OptionsBuilder<object>(_options);
         }
     }
@@ -83,6 +89,7 @@ namespace FactoryFactory.Registration
         {
             _implementationType = typeof(TImplementation);
             _implementationFactory = null;
+            _implementationInstance = null;
             return new OptionsBuilder<TService>(_options);
         }
 
@@ -95,9 +102,10 @@ namespace FactoryFactory.Registration
         /// <returns></returns>
         public OptionsBuilder<TService> As(TService implementation)
         {
-            _implementationFactory = req => implementation;
-            _implementationType = null;
             _options.Lifecycle = Lifecycle.Untracked;
+            _implementationInstance = implementation;
+            _implementationFactory = null;
+            _implementationType = null;
             return new OptionsBuilder<TService>(_options);
         }
 
@@ -115,6 +123,7 @@ namespace FactoryFactory.Registration
                 factory.Parameters
             );
             _implementationType = null;
+            _implementationInstance = null;
             return new OptionsBuilder<TService>(_options);
         }
     }
