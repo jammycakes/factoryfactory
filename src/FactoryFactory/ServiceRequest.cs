@@ -10,19 +10,16 @@ namespace FactoryFactory
     /// </summary>
     public class ServiceRequest
     {
-        private bool? _isEnumerable;
-
         /// <summary>
         ///  The <see cref="Container"/> instance to which the request was
         ///  originally made. This may or may not be the container that
-        ///  ultimately creates and manages the service.
+        ///  ultimately provides lifecycle management services: that is
+        ///  determined by the ILifecycle instances on the service definition.
         /// </summary>
         public IContainer Container { get; }
 
         /// <summary>
-        ///  The type of object that is being requested. This is not necessarily
-        ///  the required service itself; it may be a Func<T>, Lazy<T> or
-        ///  IEnumerable<T>.
+        ///  The type of object that is being requested.
         /// </summary>
         public Type RequestedType { get; }
 
@@ -32,18 +29,6 @@ namespace FactoryFactory
         /// </summary>
         public ServiceRequest Receiver { get; }
 
-        /// <summary>
-        ///  Indicates whether this is a request for an IEnumerable<T>.
-        /// </summary>
-        public bool IsEnumerable {
-            get {
-                if (!_isEnumerable.HasValue) {
-                    _isEnumerable = RequestedType.IsEnumerable();
-                }
-
-                return _isEnumerable.Value;
-            }
-        }
 
         /// <summary>
         ///  Creates a new instance of the <see cref="ServiceRequest"/> class.
@@ -51,19 +36,19 @@ namespace FactoryFactory
         /// <param name="container"></param>
         /// <param name="requestedType"></param>
         /// <param name="receiver"></param>
-        public ServiceRequest(IContainer container, Type requestedType, ServiceRequest receiver)
+        internal ServiceRequest(IContainer container, Type requestedType, ServiceRequest receiver)
         {
             Container = container;
             RequestedType = requestedType;
             Receiver = receiver;
         }
 
-        public ServiceRequest CreateDependencyRequest(Type dependencyType)
+        internal ServiceRequest CreateDependencyRequest(Type dependencyType)
         {
             return new ServiceRequest(Container, dependencyType, this);
         }
 
-        public object ResolveDependency(Type dependencyType)
+        internal object ResolveDependency(Type dependencyType)
         {
             return Container.GetService(CreateDependencyRequest(dependencyType));
         }
