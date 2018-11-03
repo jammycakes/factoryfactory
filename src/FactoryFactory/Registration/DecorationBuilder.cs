@@ -13,11 +13,9 @@ namespace FactoryFactory.Registration
         {
             module.Add(() =>
                 new ServiceDefinition(typeof(IDecorator<TService>),
-                    implementationType: _implementationType,
                     implementationFactory: _implementationFactory,
-                    lifecycle: _options.Lifecycle,
-                    precondition: _options.Precondition
-                )
+                    implementationType: _implementationType,
+                    lifecycle: _options.Lifecycle, precondition: _options.Precondition)
             );
         }
 

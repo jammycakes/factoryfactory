@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using FactoryFactory.Util;
@@ -23,13 +25,15 @@ namespace FactoryFactory
         public ServiceDefinition(Type serviceType,
             Expression<Func<ServiceRequest, object>> implementationFactory = null,
             Type implementationType = null,
+            object implementationInstance = null,
             ILifecycle lifecycle = null,
             Func<ServiceRequest, bool> precondition = null)
         {
             ServiceType = serviceType;
-            Precondition = precondition ?? (req => true);
+            Precondition = precondition;
 
             ImplementationFactory = implementationFactory;
+            ImplementationInstance = implementationInstance;
             ImplementationType = implementationType ?? (implementationFactory == null ? implementationType : null);
             Lifecycle = lifecycle ?? FactoryFactory.Lifecycle.Default;
 
@@ -65,7 +69,7 @@ namespace FactoryFactory
                     ("Invalid descriptor: neither a service nor a service factory has been set.");
             }
 
-            Precondition = precondition ?? (sr => true);
+            Precondition = precondition;
         }
 
 
@@ -86,6 +90,12 @@ namespace FactoryFactory
         ///  specific type is specified in the ServiceResolution property.
         /// </summary>
         public Expression<Func<ServiceRequest, object>> ImplementationFactory { get; }
+
+        /// <summary>
+        ///  The instance that provides the service, or null if the
+        ///  service is specified by type or factory expression.
+        /// </summary>
+        public object ImplementationInstance { get; }
 
         /// <summary>
         ///  The type that will be constructed which implements the service type
@@ -115,14 +125,19 @@ namespace FactoryFactory
                 throw new ServiceDefinitionException("No service type was specified.");
             }
 
-            // Implementation type or implementation expression must be specified.
-            if (ImplementationType == null && ImplementationFactory == null) {
+            // Implementation type or implementation expression or implementation
+            // instance must be specified, but no more than one of the above.
+            var count = new object[]
+                    {ImplementationType, ImplementationFactory, ImplementationInstance}
+                .Count(x => x != null);
+
+            if (count == 0) {
                 throw new ServiceDefinitionException
                     ($"No implementation was specified for type {ServiceType.FullName}.");
             }
 
             // Implementation type and implementation expression can not both be specified
-            if (ImplementationType != null && ImplementationFactory != null) {
+            if (count > 1) {
                 throw new ServiceDefinitionException
                     ("More than one implementation was specified for type " +
                      ServiceType.FullName);
@@ -138,6 +153,10 @@ namespace FactoryFactory
                 }
                 actualImplementationType = actualImplementationType ??
                     ImplementationFactory.Body.Type;
+            }
+
+            if (ImplementationInstance != null) {
+                actualImplementationType = ImplementationInstance.GetType();
             }
 
             // Implementation must not be a value type.
@@ -237,7 +256,7 @@ namespace FactoryFactory
                 ImplementationType.MakeGenericType(requestedType
                     .GenericTypeArguments);
             return new ServiceDefinition(newType,
-                ImplementationFactory, newImplementationType,
+                ImplementationFactory, newImplementationType, ImplementationInstance,
                 Lifecycle, Precondition)
             {
                 IsForOpenGeneric = true
@@ -250,10 +269,9 @@ namespace FactoryFactory
                 if (requestedType == ServiceType) {
                     yield return ImplementationType;
                 }
-                else if (IsForOpenGeneric && requestedType.IsGenericType &&
-                         ServiceType.IsGenericTypeDefinition) {
+                else if (requestedType.IsGenericType && ServiceType.IsGenericTypeDefinition) {
                     var openedRequest = requestedType.GetGenericTypeDefinition();
-                    if (openedRequest == requestedType) {
+                    if (openedRequest == ServiceType) {
                         yield return ImplementationType.MakeGenericType
                             (requestedType.GenericTypeArguments);
                     }
@@ -263,7 +281,9 @@ namespace FactoryFactory
 
         IEnumerable<object> IServiceDefinition.GetInstances(Type requestedType)
         {
-            yield break;
+            if (ImplementationInstance != null) {
+                yield return ImplementationInstance;
+            }
         }
 
         IEnumerable<Expression<Func<ServiceRequest, object>>> IServiceDefinition.GetExpressions(Type requestedType)
