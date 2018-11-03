@@ -86,22 +86,23 @@ namespace FactoryFactory.Resolution
                 }
             }
 
-            if (!_resolvers.Any() &&
-                !InstanceType.IsAbstract &&
-                !InstanceType.IsValueType &&
-                !InstanceType.IsGenericTypeDefinition) {
-                var definition = new ServiceDefinition(
-                    InstanceType,
-                    implementationType: InstanceType,
-                    lifecycle: Lifecycle.Default
-                );
-                var resolver = CreateResolverByType(definition, InstanceType);
-                if (resolver != null && resolver.CanResolve) {
-                    _resolvers.Add(CreateResolverByType(definition, InstanceType));
+            if (!_resolvers.Any()) {
+                if (!InstanceType.IsAbstract &&
+                    !InstanceType.IsValueType &&
+                    !InstanceType.IsGenericTypeDefinition) {
+                    var definition = new ServiceDefinition(
+                        InstanceType,
+                        implementationType: InstanceType,
+                        lifecycle: Lifecycle.Default
+                    );
+                    var resolver = CreateResolverByType(definition, InstanceType);
+                    if (resolver != null && resolver.CanResolve) {
+                        _resolvers.Add(CreateResolverByType(definition, InstanceType));
+                    }
                 }
-            }
-            else {
-                _resolvers.Add(new NonResolver(InstanceType));
+                else {
+                    _resolvers.Add(new NonResolver(InstanceType));
+                }
             }
 
             if (EnumerableType != null) {

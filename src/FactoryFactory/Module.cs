@@ -8,14 +8,13 @@ namespace FactoryFactory
 {
     public class Module
     {
-        private List<Lazy<ServiceDefinition>> _definitions = new List<Lazy<ServiceDefinition>>();
+        private List<Lazy<IServiceDefinition>> _definitions = new List<Lazy<IServiceDefinition>>();
 
         public Module(params ServiceDefinition[] serviceDefinitions)
         {
             _definitions.AddRange(
-                serviceDefinitions.Select(
-                    d => new Lazy<ServiceDefinition>(
-                        () => d)));
+                serviceDefinitions.Select(d => new Lazy<IServiceDefinition>(() => d))
+            );
         }
 
         public Module(IServiceCollection services)
@@ -24,25 +23,25 @@ namespace FactoryFactory
 
         protected Module()
         {
-            _definitions = new List<Lazy<ServiceDefinition>>();
+            _definitions = new List<Lazy<IServiceDefinition>>();
         }
 
         /* ====== Registration ====== */
 
 
-        public void Add(ServiceDefinition serviceDefinition)
+        public void Add(IServiceDefinition serviceDefinition)
         {
             Add(() => serviceDefinition);
         }
 
-        public IEnumerable<ServiceDefinition> GetServiceDefinitions()
+        public IEnumerable<IServiceDefinition> GetServiceDefinitions()
         {
             return _definitions.Select(d => d.Value);
         }
 
-        public void Add(Func<ServiceDefinition> serviceDefinition)
+        public void Add(Func<IServiceDefinition> serviceDefinition)
         {
-            _definitions.Add(new Lazy<ServiceDefinition>(serviceDefinition));
+            _definitions.Add(new Lazy<IServiceDefinition>(serviceDefinition));
         }
 
         public void Add(IServiceCollection services)

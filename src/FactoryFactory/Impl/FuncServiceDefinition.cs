@@ -1,18 +1,27 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
 namespace FactoryFactory.Impl
 {
-    internal class FuncServiceDefinition : ServiceDefinition
+    internal class FuncServiceDefinition : IServiceDefinition
     {
-        public FuncServiceDefinition()
-            : base(typeof(Func<>), implementationType: typeof(Func<>), lifecycle: FactoryFactory.Lifecycle.Untracked)
+        public IEnumerable<Type> GetTypes(Type requestedType)
         {
+            yield break;
         }
 
-        protected override ServiceDefinition Close(Type requestedType)
+        public IEnumerable<object> GetInstances(Type requestedType)
         {
+            yield break;
+        }
+
+        public IEnumerable<Expression<Func<ServiceRequest, object>>> GetExpressions(Type requestedType)
+        {
+            if (!requestedType.IsGenericType) yield break;
+            if (requestedType.GetGenericTypeDefinition() != typeof(Func<>)) yield break;
+
             var instanceType = requestedType.GetGenericArguments().Last();
             var req = Expression.Parameter(typeof(ServiceRequest), "req");
 
@@ -43,17 +52,14 @@ namespace FactoryFactory.Impl
                 getServiceExpression
             );
 
-            var factoryExpression = Expression.Lambda<Func<ServiceRequest, object>>(
+            yield return Expression.Lambda<Func<ServiceRequest, object>>(
                 requestedExpression,
                 req
             );
-
-        return new ServiceDefinition(
-                requestedType,
-                implementationFactory: factoryExpression,
-                lifecycle: this.Lifecycle,
-                precondition: this.Precondition
-            );
         }
+
+        public Func<ServiceRequest, bool> Precondition => null;
+        public ILifecycle Lifecycle => FactoryFactory.Lifecycle.Untracked;
+        public int Priority => 0;
     }
 }
