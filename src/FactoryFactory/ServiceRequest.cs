@@ -67,5 +67,7 @@ namespace FactoryFactory
         {
             return Container.GetService(CreateDependencyRequest(dependencyType));
         }
+
+        public override string ToString() => $"ServiceRequest for {RequestedType}";
     }
 }
