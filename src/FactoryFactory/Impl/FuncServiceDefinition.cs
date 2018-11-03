@@ -27,12 +27,14 @@ namespace FactoryFactory.Impl
 
             var subRequestExpression = Expression.Call(
                 req,
+                // ReSharper disable once AssignNullToNotNullAttribute
                 typeof(ServiceRequest).GetMethod(nameof(ServiceRequest.CreateDependencyRequest)),
                 Expression.Constant(instanceType)
             );
 
             var containerExpression = Expression.Property(
                 req,
+                // ReSharper disable once AssignNullToNotNullAttribute
                 typeof(ServiceRequest).GetProperty(nameof(ServiceRequest.Container))
             );
 
@@ -40,6 +42,7 @@ namespace FactoryFactory.Impl
                 Expression.Convert(
                     Expression.Call(
                         containerExpression,
+                        // ReSharper disable once AssignNullToNotNullAttribute
                         typeof(IContainer).GetMethod(nameof(IContainer.GetService),
                             new [] {typeof(ServiceRequest)}),
                         subRequestExpression
