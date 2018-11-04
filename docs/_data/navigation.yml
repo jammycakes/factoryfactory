@@ -1,9 +1,8 @@
 introduction:
-  - title: Introduction
+  - title: Getting started
     url: /
     links:
-      - title: Home
-        url: /
-
       - title: Registering services
         url: /registering-services/
+      - title: Lifecycle management
+        url: /lifecycle-management/
