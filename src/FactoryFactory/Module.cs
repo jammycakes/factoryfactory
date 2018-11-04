@@ -10,7 +10,7 @@ namespace FactoryFactory
     {
         private List<Lazy<IServiceDefinition>> _definitions = new List<Lazy<IServiceDefinition>>();
 
-        public Module(params ServiceDefinition[] serviceDefinitions)
+        public Module(params IServiceDefinition[] serviceDefinitions)
         {
             _definitions.AddRange(
                 serviceDefinitions.Select(d => new Lazy<IServiceDefinition>(() => d))
