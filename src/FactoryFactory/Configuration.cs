@@ -122,7 +122,7 @@ namespace FactoryFactory
             }
         }
 
-        internal bool CanResolveNew(Type type)
+        internal bool CanResolve(Type type)
         {
             if (_resolversBeingBuilt.Contains(type)) return true;
             if (type.IsEnumerable()) return true;

@@ -22,7 +22,7 @@ namespace FactoryFactory.Expressions
                 where parameters.All(p =>
                     p.IsOptional ||
                     p.ParameterType.IsEnumerable() ||
-                    configuration.CanResolveNew(p.ParameterType)
+                    configuration.CanResolve(p.ParameterType)
                 )
                 orderby info.Length descending, info.funcParameterCount descending
                 select info.constructor;

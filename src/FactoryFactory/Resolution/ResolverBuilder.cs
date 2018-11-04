@@ -170,7 +170,7 @@ namespace FactoryFactory.Resolution
             }
 
             var decoratorType = typeof(IDecorator<>).MakeGenericType(InstanceType);
-            if (_configuration.CanResolveNew(decoratorType)) {
+            if (_configuration.CanResolve(decoratorType)) {
                 var decoratorResolverType
                     = typeof(DecoratorResolver<>).MakeGenericType(InstanceType);
                 built = (IResolver)Activator.CreateInstance
