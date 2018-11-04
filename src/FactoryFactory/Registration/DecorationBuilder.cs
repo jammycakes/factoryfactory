@@ -7,6 +7,7 @@ namespace FactoryFactory.Registration
     {
         private Type _implementationType;
         private Expression<Func<ServiceRequest, object>> _implementationFactory;
+        private object _implementationInstance;
         private readonly DefinitionOptions _options = new DefinitionOptions();
 
         public DecorationBuilder(Module module)
@@ -15,6 +16,7 @@ namespace FactoryFactory.Registration
                 new ServiceDefinition(typeof(IDecorator<TService>),
                     implementationFactory: _implementationFactory,
                     implementationType: _implementationType,
+                    implementationInstance: _implementationInstance,
                     lifecycle: _options.Lifecycle, precondition: _options.Precondition)
             );
         }
@@ -46,8 +48,9 @@ namespace FactoryFactory.Registration
         /// <returns></returns>
         public OptionsBuilder<IDecorator<TService>> With(IDecorator<TService> implementation)
         {
-            _implementationFactory = req => implementation;
+            _implementationFactory = null;
             _implementationType = null;
+            _implementationInstance = implementation;
             _options.Lifecycle = Lifecycle.Untracked;
             return new OptionsBuilder<IDecorator<TService>>(_options);
         }
