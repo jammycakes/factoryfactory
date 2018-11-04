@@ -1,6 +1,6 @@
 using System;
 
-namespace FactoryFactory
+namespace FactoryFactory.Resolution
 {
     public interface IResolverBuilder
     {
