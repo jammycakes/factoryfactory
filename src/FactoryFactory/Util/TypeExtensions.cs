@@ -67,9 +67,8 @@ namespace FactoryFactory.Util
 
         private static Type ResolveGenericTypeDefinition(Type parent)
         {
-            var shouldUseGenericType = true;
-            if (parent.IsGenericType && parent.GetGenericTypeDefinition() != parent)
-                shouldUseGenericType = false;
+            var shouldUseGenericType =
+                !(parent.IsGenericType && parent.GetGenericTypeDefinition() != parent);
 
             if (parent.IsGenericType && shouldUseGenericType)
                 parent = parent.GetGenericTypeDefinition();

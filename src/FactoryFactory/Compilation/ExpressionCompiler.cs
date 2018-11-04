@@ -2,9 +2,8 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using FactoryFactory.Impl;
 
-namespace FactoryFactory.Compilation.Expressions
+namespace FactoryFactory.Compilation
 {
     public class ExpressionCompiler : ICompiler
     {

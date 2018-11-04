@@ -1,5 +1,4 @@
 using FactoryFactory.Compilation;
-using FactoryFactory.Compilation.Expressions;
 
 namespace FactoryFactory
 {
