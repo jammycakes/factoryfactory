@@ -17,7 +17,15 @@ namespace FactoryFactory
     public class Configuration
     {
         private readonly ISet<Type> _resolversBeingBuilt = new HashSet<Type>();
+        private IList<IServiceDefinition> _definitions = new List<IServiceDefinition>();
+        private IDictionary<Type, IResolver> _resolverCache = new Dictionary<Type, IResolver>();
 
+        /* ====== Public properties ====== */
+
+        /// <summary>
+        ///  Gets the <see cref="ConfigurationOptions"/> instance containing
+        ///  options which have been specified for this configuration.
+        /// </summary>
         public ConfigurationOptions Options { get; }
 
         /* ====== Constructors ====== */
@@ -55,84 +63,8 @@ namespace FactoryFactory
             Options = options;
         }
 
-        /* ====== Methods ====== */
 
-        private void AddServiceDefinitions(IEnumerable<IServiceDefinition> defs)
-        {
-            foreach (var def in defs) {
-                _definitions.Add(def);
-            }
-        }
-
-        private void AddModule(Module module)
-        {
-            AddServiceDefinitions(module.GetServiceDefinitions());
-        }
-
-        /// <summary>
-        ///  Creates a new <see cref="Container"/> instance.
-        /// </summary>
-        /// <returns>
-        ///  The created container.
-        /// </returns>
-        public IContainer CreateContainer()
-        {
-            return new Container(this);
-        }
-
-        /* ====== New Resolver infrastructure ====== */
-
-        private IList<IServiceDefinition> _definitions = new List<IServiceDefinition>();
-        private IDictionary<Type, IResolver> _resolverCache = new Dictionary<Type, IResolver>();
-
-        public IResolver GetResolver(Type type)
-        {
-            if (!_resolverCache.TryGetValue(type, out var resolver)) {
-                lock (_resolverCache) {
-                    resolver = EnsureResolver(type);
-                }
-            }
-
-            return resolver;
-        }
-
-
-        private IResolver EnsureResolver(Type type)
-        {
-            if (_resolverCache.TryGetValue(type, out IResolver resolver)) {
-                return resolver;
-            }
-
-            IResolverBuilder builder = new ResolverBuilder(type, _definitions, this);
-            if (_resolversBeingBuilt.Contains(builder.InstanceType)) return null;
-            _resolversBeingBuilt.Add(builder.InstanceType);
-            try {
-                var enumerable = builder.GetEnumerableResolver();
-                if (builder.EnumerableType != null) {
-                    _resolverCache[builder.EnumerableType] = enumerable;
-                }
-                var instance = builder.GetInstanceResolver();
-                if (builder.InstanceType != null) {
-                    _resolverCache[builder.InstanceType] = instance;
-                }
-                return type.IsEnumerable() ? enumerable : instance;
-            }
-            finally {
-                _resolversBeingBuilt.Remove(builder.InstanceType);
-            }
-        }
-
-        internal bool CanResolve(Type type)
-        {
-            if (_resolversBeingBuilt.Contains(type)) return true;
-            if (type.IsEnumerable()) return true;
-            if (type.IsValueType) return false;
-            var resolver = EnsureResolver(type);
-            return resolver.CanResolve;
-        }
-
-
-        /* ====== Static convenience methods ====== */
+        /* ====== Public API: static convenience methods ====== */
 
         /// <summary>
         ///  Creates a new container, initialised and configured from the
@@ -181,6 +113,88 @@ namespace FactoryFactory
             return CreateContainer(module);
         }
 
+
+        /* ====== Public API: Instance methods ====== */
+
+        /// <summary>
+        ///  Creates a new <see cref="Container"/> instance.
+        /// </summary>
+        /// <returns>
+        ///  The created container.
+        /// </returns>
+        public IContainer CreateContainer()
+        {
+            return new Container(this);
+        }
+
+        /// <summary>
+        ///  Gets an <see cref="IResolver"/> instance which can service a request
+        ///  for the specified type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public IResolver GetResolver(Type type)
+        {
+            if (!_resolverCache.TryGetValue(type, out var resolver)) {
+                lock (_resolverCache) {
+                    resolver = EnsureResolver(type);
+                }
+            }
+
+            return resolver;
+        }
+
+
+        /* ====== Internal and private methods ====== */
+
+        private void AddServiceDefinitions(IEnumerable<IServiceDefinition> defs)
+        {
+            foreach (var def in defs) {
+                _definitions.Add(def);
+            }
+        }
+
+        private void AddModule(Module module)
+        {
+            AddServiceDefinitions(module.GetServiceDefinitions());
+        }
+
+
+        private IResolver EnsureResolver(Type type)
+        {
+            if (_resolverCache.TryGetValue(type, out IResolver resolver)) {
+                return resolver;
+            }
+
+            IResolverBuilder builder = new ResolverBuilder(type, _definitions, this);
+            if (_resolversBeingBuilt.Contains(builder.InstanceType)) return null;
+            _resolversBeingBuilt.Add(builder.InstanceType);
+            try {
+                var enumerable = builder.GetEnumerableResolver();
+                if (builder.EnumerableType != null) {
+                    _resolverCache[builder.EnumerableType] = enumerable;
+                }
+                var instance = builder.GetInstanceResolver();
+                if (builder.InstanceType != null) {
+                    _resolverCache[builder.InstanceType] = instance;
+                }
+                return type.IsEnumerable() ? enumerable : instance;
+            }
+            finally {
+                _resolversBeingBuilt.Remove(builder.InstanceType);
+            }
+        }
+
+        internal bool CanResolve(Type type)
+        {
+            if (_resolversBeingBuilt.Contains(type)) return true;
+            if (type.IsEnumerable()) return true;
+            if (type.IsValueType) return false;
+            var resolver = EnsureResolver(type);
+            return resolver.CanResolve;
+        }
+
+
         /* ====== DefaultModule ====== */
 
         /// <summary>
@@ -196,6 +210,7 @@ namespace FactoryFactory
                 Define(typeof(IList<>)).As(typeof(List<>)).Untracked();
                 Define<Configuration>().As(configuration).Untracked();
                 Define<IContainer>().As(req => req.Container).Untracked();
+                Define<IServiceScope>().As(req => req.Container).Untracked();
                 Define<IServiceProvider>().As(req => req.Container).Untracked();
                 Define<IServiceScopeFactory>().As(req => req.Container).Untracked();
             }
