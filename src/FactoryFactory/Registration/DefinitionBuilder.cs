@@ -12,6 +12,7 @@ namespace FactoryFactory.Registration
 
         public DefinitionBuilder(Module module, Type type)
         {
+            _implementationType = type;
             module.Add(() => Build(type));
         }
 
@@ -33,6 +34,8 @@ namespace FactoryFactory.Registration
         /// <returns></returns>
         public OptionsBuilder<object> As(Type implementationType)
         {
+            _implementationFactory = null;
+            _implementationInstance = null;
             _implementationType = implementationType;
             return new OptionsBuilder<object>(_options);
         }
@@ -48,8 +51,8 @@ namespace FactoryFactory.Registration
         public OptionsBuilder<object> As(object implementation)
         {
             _options.Lifecycle = Lifecycle.Untracked;
-            _implementationInstance = implementation;
             _implementationFactory = null;
+            _implementationInstance = implementation;
             _implementationType = null;
             return new OptionsBuilder<object>(_options);
         }
@@ -63,8 +66,8 @@ namespace FactoryFactory.Registration
         public OptionsBuilder<object> As(Expression<Func<ServiceRequest, object>> factory)
         {
             _implementationFactory = factory;
-            _implementationType = null;
             _implementationInstance = null;
+            _implementationType = null;
             return new OptionsBuilder<object>(_options);
         }
     }
@@ -87,9 +90,9 @@ namespace FactoryFactory.Registration
         public OptionsBuilder<TService> As<TImplementation>()
             where TImplementation : TService
         {
-            _implementationType = typeof(TImplementation);
             _implementationFactory = null;
             _implementationInstance = null;
+            _implementationType = typeof(TImplementation);
             return new OptionsBuilder<TService>(_options);
         }
 
