@@ -36,19 +36,19 @@ namespace FactoryFactory
         /// <param name="container"></param>
         /// <param name="requestedType"></param>
         /// <param name="receiver"></param>
-        internal ServiceRequest(IContainer container, Type requestedType, ServiceRequest receiver)
+        public ServiceRequest(IContainer container, Type requestedType, ServiceRequest receiver)
         {
             Container = container;
             RequestedType = requestedType;
             Receiver = receiver;
         }
 
-        internal ServiceRequest CreateDependencyRequest(Type dependencyType)
+        public ServiceRequest CreateDependencyRequest(Type dependencyType)
         {
             return new ServiceRequest(Container, dependencyType, this);
         }
 
-        internal object ResolveDependency(Type dependencyType)
+        public object ResolveDependency(Type dependencyType)
         {
             return Container.GetService(CreateDependencyRequest(dependencyType));
         }
