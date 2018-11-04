@@ -7,11 +7,11 @@ namespace FactoryFactory
         public bool AutoResolve { get; }
         public IConstructorSelector ConstructorSelector { get; }
         public ILifecycle DefaultLifecycle { get; }
-        public ICompiler Compiler { get; }
+        public IExpressionBuilder ExpressionBuilder { get; }
 
         public ConfigurationOptions(
             IConstructorSelector constructorSelector = null,
-            ICompiler compiler = null,
+            IExpressionBuilder expressionBuilder = null,
             ILifecycle defaultLifecycle = null,
             bool autoResolve = true
         )
@@ -19,7 +19,7 @@ namespace FactoryFactory
             AutoResolve = autoResolve;
             ConstructorSelector = constructorSelector ?? new DefaultConstructorSelector();
             DefaultLifecycle = defaultLifecycle ?? Lifecycle.Default;
-            Compiler = compiler ?? new ExpressionCompiler();
+            ExpressionBuilder = expressionBuilder ?? new ExpressionBuilder();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
     {
         ConfigurationOptions _options = new ConfigurationOptions(
             constructorSelector: new DefaultConstructorSelector(),
-            compiler: new ExpressionCompiler()
+            expressionBuilder: new ExpressionBuilder()
         );
 
         [Fact]
@@ -29,7 +29,7 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
             var constructor =
                 _options.ConstructorSelector.SelectConstructor
                     (definition.ImplementationType, configuration);
-            var expression = _options.Compiler.CreateExpressionFromDefaultConstructor(constructor);
+            var expression = _options.ExpressionBuilder.CreateResolutionExpressionFromDefaultConstructor(constructor);
 
             var expressionBody = expression.Body;
             Assert.IsType<NewExpression>(expressionBody);

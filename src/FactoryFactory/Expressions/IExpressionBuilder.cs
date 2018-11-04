@@ -5,12 +5,12 @@ using FactoryFactory.Impl;
 
 namespace FactoryFactory.Compilation
 {
-    public interface ICompiler
+    public interface IExpressionBuilder
     {
         Expression<Func<ServiceRequest, object>>
-            CreateExpressionFromDefaultConstructor(ConstructorInfo selectedConstructor);
+            CreateResolutionExpressionFromDefaultConstructor(ConstructorInfo selectedConstructor);
 
         Expression<Func<ServiceRequest, object>>
-            CreateExpressionFromConstructorExpression(NewExpression nex);
+            CreateResolutionExpressionFromConstructorExpression(NewExpression nex);
     }
 }

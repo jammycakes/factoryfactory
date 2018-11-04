@@ -121,7 +121,7 @@ namespace FactoryFactory.Resolution
                 (implementationType, _configuration);
             if (constructor == null) return new NonResolver(InstanceType);
             var expression =
-                _configuration.Options.Compiler.CreateExpressionFromDefaultConstructor(constructor);
+                _configuration.Options.ExpressionBuilder.CreateResolutionExpressionFromDefaultConstructor(constructor);
             var isTracked = typeof(IDisposable).IsAssignableFrom(implementationType);
             var resolver = new ExpressionResolver(definition, expression, InstanceType);
             return BuildUp(resolver, definition, isTracked);
@@ -137,8 +137,8 @@ namespace FactoryFactory.Resolution
             (IServiceDefinition definition, Expression<Func<ServiceRequest, object>> expression)
         {
             if (expression.Body is NewExpression nex) {
-                expression = _configuration.Options.Compiler
-                    .CreateExpressionFromConstructorExpression(nex);
+                expression = _configuration.Options.ExpressionBuilder
+                    .CreateResolutionExpressionFromConstructorExpression(nex);
             }
             var resolver = new ExpressionResolver(definition, expression, InstanceType);
             return BuildUp(resolver, definition, true);

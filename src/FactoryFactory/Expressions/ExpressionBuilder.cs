@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace FactoryFactory.Compilation
 {
-    public class ExpressionCompiler : ICompiler
+    public class ExpressionBuilder : IExpressionBuilder
     {
         private Expression GetParameterResolutionExpression(Type type, ParameterExpression req)
         {
@@ -20,7 +20,7 @@ namespace FactoryFactory.Compilation
         }
 
         public Expression<Func<ServiceRequest, object>>
-            CreateExpressionFromDefaultConstructor(ConstructorInfo selectedConstructor)
+            CreateResolutionExpressionFromDefaultConstructor(ConstructorInfo selectedConstructor)
         {
             var req = Expression.Parameter(typeof(ServiceRequest), "serviceRequest");
 
@@ -39,7 +39,7 @@ namespace FactoryFactory.Compilation
 
 
         public Expression<Func<ServiceRequest, object>>
-            CreateExpressionFromConstructorExpression(NewExpression nex)
+            CreateResolutionExpressionFromConstructorExpression(NewExpression nex)
         {
             var req = Expression.Parameter(typeof(ServiceRequest), "serviceRequest");
             var arguments =
