@@ -9,7 +9,7 @@ namespace FactoryFactory.Tests.Registration
         [Fact]
         public void ServiceTypeMustBeSpecified()
         {
-            Assert.Throws<ServiceDefinitionException>(() => {
+            Assert.Throws<IoCException>(() => {
                 new ServiceDefinition(serviceType: null);
             });
         }
@@ -17,7 +17,7 @@ namespace FactoryFactory.Tests.Registration
         [Fact]
         public void ImplementationTypeOrImplementationExpressionMustBeSpecified()
         {
-            Assert.Throws<ServiceDefinitionException>(() => {
+            Assert.Throws<IoCException>(() => {
                 new ServiceDefinition(typeof(object));
             });
         }
@@ -25,7 +25,7 @@ namespace FactoryFactory.Tests.Registration
         [Fact]
         public void ImplementationMustNotSpecifyBothTypeAndExpression()
         {
-            Assert.Throws<ServiceDefinitionException>(() => {
+            Assert.Throws<IoCException>(() => {
                 new ServiceDefinition(typeof(object), req => "Hello world", typeof(object));
             });
         }
@@ -33,7 +33,7 @@ namespace FactoryFactory.Tests.Registration
         [Fact]
         public void ImplementationByValueMustNotBeAValueType()
         {
-            Assert.Throws<ServiceDefinitionException>(() => {
+            Assert.Throws<IoCException>(() => {
                 new ServiceDefinition(typeof(object), req => 3);
             });
         }
@@ -41,7 +41,7 @@ namespace FactoryFactory.Tests.Registration
         [Fact]
         public void ImplementationByExpressionMustNotBeAValueType()
         {
-            Assert.Throws<ServiceDefinitionException>(() => {
+            Assert.Throws<IoCException>(() => {
                 new ServiceDefinition(typeof(object), req => req.RequestedType.IsAbstract ? 3 : 0);
             });
         }
@@ -50,7 +50,7 @@ namespace FactoryFactory.Tests.Registration
         [Fact]
         public void ImplementationTypeMustNotBeAValueType()
         {
-            Assert.Throws<ServiceDefinitionException>(() => {
+            Assert.Throws<IoCException>(() => {
                 new ServiceDefinition(typeof(object), null, typeof(int));
             });
         }
@@ -58,7 +58,7 @@ namespace FactoryFactory.Tests.Registration
         [Fact]
         public void ImplementationByTypeMustNotBeAnInterface()
         {
-            Assert.Throws<ServiceDefinitionException>(() => {
+            Assert.Throws<IoCException>(() => {
                 new ServiceDefinition(typeof(IEnumerable), null, typeof(IEnumerable<string>));
             });
         }
@@ -66,7 +66,7 @@ namespace FactoryFactory.Tests.Registration
         [Fact]
         public void ImplementationByTypeMustNotBeAnAbstractClass()
         {
-            Assert.Throws<ServiceDefinitionException>(() => {
+            Assert.Throws<IoCException>(() => {
                 new ServiceDefinition(typeof(IList), null, typeof(CollectionBase));
             });
         }
@@ -74,7 +74,7 @@ namespace FactoryFactory.Tests.Registration
         [Fact]
         public void OpenGenericMustBeRegisteredByType()
         {
-            Assert.Throws<ServiceDefinitionException>(() => {
+            Assert.Throws<IoCException>(() => {
                 new ServiceDefinition(typeof(IEnumerable<>), req => new object());
             });
         }
@@ -82,7 +82,7 @@ namespace FactoryFactory.Tests.Registration
         [Fact]
         public void OpenGenericMustBeRegisteredAsOpenGeneric()
         {
-            Assert.Throws<ServiceDefinitionException>(() => {
+            Assert.Throws<IoCException>(() => {
                 new ServiceDefinition(typeof(IEnumerable<>), null, typeof(IEnumerable<string>));
             });
         }
@@ -90,7 +90,7 @@ namespace FactoryFactory.Tests.Registration
         [Fact]
         public void NonOpeGenericMustNotBeRegisteredAsOpenGeneric()
         {
-            Assert.Throws<ServiceDefinitionException>(() => {
+            Assert.Throws<IoCException>(() => {
                 new ServiceDefinition(typeof(IEnumerable<string>), null, typeof(List<>));
             });
         }
@@ -102,7 +102,7 @@ namespace FactoryFactory.Tests.Registration
         [Fact]
         public void OpenGenericImplementationsMustImplementInterfaceOrClass()
         {
-            Assert.Throws<ServiceDefinitionException>(() => {
+            Assert.Throws<IoCException>(() => {
                 new ServiceDefinition(typeof(List<>), null, typeof(NonList<>));
             });
         }

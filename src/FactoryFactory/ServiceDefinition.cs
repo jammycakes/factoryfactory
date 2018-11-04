@@ -61,7 +61,7 @@ namespace FactoryFactory
                 Lifecycle = FactoryFactory.Lifecycle.Get(descriptor.Lifetime);
             }
             else {
-                throw new ServiceDefinitionException
+                throw new IoCException
                     ("Invalid descriptor: neither a service nor a service factory has been set.");
             }
 
@@ -118,7 +118,7 @@ namespace FactoryFactory
         {
             // ServiceType must be specified.
             if (ServiceType == null) {
-                throw new ServiceDefinitionException("No service type was specified.");
+                throw new IoCException("No service type was specified.");
             }
 
             // Implementation type or implementation expression or implementation
@@ -128,13 +128,13 @@ namespace FactoryFactory
                 .Count(x => x != null);
 
             if (count == 0) {
-                throw new ServiceDefinitionException
+                throw new IoCException
                     ($"No implementation was specified for type {ServiceType.FullName}.");
             }
 
             // Implementation type and implementation expression can not both be specified
             if (count > 1) {
-                throw new ServiceDefinitionException
+                throw new IoCException
                     ("More than one implementation was specified for type " +
                      ServiceType.FullName);
             }
@@ -157,7 +157,7 @@ namespace FactoryFactory
 
             // Implementation must not be a value type.
             if (actualImplementationType.IsValueType) {
-                throw new ServiceDefinitionException
+                throw new IoCException
                     ($"Type {ServiceType.FullName} has been specified to be " +
                      $"implemented by type {actualImplementationType.FullName}, " +
                      $"which is a value type. Value types are not supported as " +
@@ -166,7 +166,7 @@ namespace FactoryFactory
 
             // Implementations by type must be concrete classes.
             if (ImplementationType != null && ImplementationType.IsAbstract) {
-                throw new ServiceDefinitionException
+                throw new IoCException
                     ($"Type {ServiceType.FullName} has been specified to be " +
                      $"implemented by type {ImplementationType.FullName}, " +
                      $"which is an interface or an abstract base class. " +
@@ -187,7 +187,7 @@ namespace FactoryFactory
 
             // Open generics must be registered by type.
             if (ImplementationType == null) {
-                throw new ServiceDefinitionException
+                throw new IoCException
                     ($"Open generic type {name} must be implemented by type, " +
                      $"not by instance or expression.");
             }
@@ -196,7 +196,7 @@ namespace FactoryFactory
             // Open generic implementations must also be open generics.
             if (!ImplementationType.IsGenericTypeDefinition
                 ) {
-                throw new ServiceDefinitionException
+                throw new IoCException
                     ($"{impl} is not a valid implementation for {name} as it " +
                      $"is not an open generic.");
             }
@@ -206,7 +206,7 @@ namespace FactoryFactory
                 return;
             }
 
-            throw new ServiceDefinitionException
+            throw new IoCException
                 ($"Implementation type {ImplementationType.FullName} does not " +
                  $"implement or derive from service type {ServiceType.FullName}.");
         }
@@ -215,7 +215,7 @@ namespace FactoryFactory
         {
             // Implementing type must be assignable from service type.
             if (!ServiceType.IsAssignableFrom(impl)) {
-                throw new ServiceDefinitionException
+                throw new IoCException
                     ($"Type {impl.FullName} can not be assigned " +
                      $"to a value of type {ServiceType.FullName}.");
             }
