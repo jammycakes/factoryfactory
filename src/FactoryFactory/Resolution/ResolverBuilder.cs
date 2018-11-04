@@ -6,7 +6,7 @@ using FactoryFactory.Util;
 
 namespace FactoryFactory.Resolution
 {
-    public class ResolverBuilder
+    public class ResolverBuilder : IResolverBuilder
     {
         private readonly IList<IServiceDefinition> _definitions;
         private readonly Configuration _configuration;

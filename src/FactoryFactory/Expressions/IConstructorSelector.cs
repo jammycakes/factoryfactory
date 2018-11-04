@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace FactoryFactory.Compilation
+namespace FactoryFactory.Expressions
 {
     public interface IConstructorSelector
     {

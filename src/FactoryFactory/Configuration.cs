@@ -103,7 +103,7 @@ namespace FactoryFactory
                 return resolver;
             }
 
-            var builder = new ResolverBuilder(type, _definitions, this);
+            IResolverBuilder builder = new ResolverBuilder(type, _definitions, this);
             if (_resolversBeingBuilt.Contains(builder.InstanceType)) return null;
             _resolversBeingBuilt.Add(builder.InstanceType);
             try {

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using FactoryFactory.Util;
 
-namespace FactoryFactory.Compilation
+namespace FactoryFactory.Expressions
 {
     public class DefaultConstructorSelector : IConstructorSelector
     {

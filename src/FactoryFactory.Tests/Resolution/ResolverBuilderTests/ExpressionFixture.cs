@@ -1,6 +1,6 @@
 using System;
 using System.Linq.Expressions;
-using FactoryFactory.Compilation;
+using FactoryFactory.Expressions;
 using FactoryFactory.Lifecycles;
 using FactoryFactory.Tests.Model;
 using Microsoft.Extensions.DependencyInjection;

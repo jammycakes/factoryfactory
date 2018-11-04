@@ -3,7 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace FactoryFactory.Compilation
+namespace FactoryFactory.Expressions
 {
     public class ExpressionBuilder : IExpressionBuilder
     {

@@ -1,9 +1,8 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using FactoryFactory.Impl;
 
-namespace FactoryFactory.Compilation
+namespace FactoryFactory.Expressions
 {
     public interface IExpressionBuilder
     {
