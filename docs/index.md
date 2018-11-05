@@ -1,6 +1,7 @@
 ---
 title: "FactoryFactory: yet another IOC container for .NET"
 sidebar: introduction
+section: Getting started
 ---
 Introduction
 ============

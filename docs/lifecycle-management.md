@@ -2,6 +2,7 @@
 title: "Lifecycle management"
 permalink: /lifecycle-management/
 sidebar: introduction
+section: Getting started
 ---
 
 Lifecycle management

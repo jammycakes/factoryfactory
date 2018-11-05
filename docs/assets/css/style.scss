@@ -1,0 +1,12 @@
+---
+---
+
+@import 'jekyll-theme-leap-day';
+
+nav {
+  li.active {
+    border-right: solid 4px #39C;
+    padding-right: 6px;
+    margin-right: -10px;
+  }
+}

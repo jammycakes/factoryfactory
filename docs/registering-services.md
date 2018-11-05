@@ -2,6 +2,7 @@
 title: "Registering services"
 permalink: /registering-services/
 sidebar: introduction
+section: Getting started
 ---
 
 Registering services

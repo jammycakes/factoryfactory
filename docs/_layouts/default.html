@@ -41,11 +41,15 @@
         <ul id="localnav"></ul>
         {% for item in site.data.navigation[page.sidebar] %}
           <h3><a href="{{site.url}}{{ item.url }}">{{ item.title }}</a></h3>
-          <ul>
-            {% for link in item.links %}
-              <li><a href="{{site.url}}{{ link.url }}">{{ link.title }}</a></li>
-            {% endfor %}
-          </ul>
+          {% if item.title==page.section %}
+            <ul>
+              {% for link in item.links %}
+                <li{%if link.url==page.url %} class="active"{% endif %}>
+                  <a href="{{site.url}}{{ link.url }}">{{ link.title }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
         {% endfor %}
       </nav>
       <section>
