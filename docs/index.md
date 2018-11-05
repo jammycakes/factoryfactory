@@ -18,19 +18,14 @@ with ASP.NET Core.
 
 Getting started
 ---------------
+
 To get started, add FactoryFactory to your application from NuGet:
 
 ```powershell
 Install-Package FactoryFactory -Pre
 ```
 
-Once you have installed FactoryFactory, you can get up and running quickly in
-two easy steps:
-
- 1. Configure and create a container.
- 2. Call `GetService()` on your container to fetch your service.
-
-You can do this simply like this:
+A basic "Hello World" application might look something like this:
 
 ```c#
 using System;
@@ -62,9 +57,19 @@ namespace ConsoleApp1
 
         public void Run()
         {
-            Console.WriteLine(_clock.UtcNow);
+            Console.WriteLine($"Hello world, the time is {_clock.UtcNow}");
             Console.ReadLine();
         }
+    }
+
+    public interface IClock
+    {
+        DateTime UtcNow { get; }
+    }
+
+    public class Clock: IClock
+    {
+        public DateTime UtcNow => DateTime.UtcNow;
     }
 }
 ```
@@ -72,41 +77,3 @@ namespace ConsoleApp1
 There are more complex approaches that involve separately creating modules and a
 `Configuration` instance, but for many scenarios, the above simple approach
 should suffice.
-
-In ASP.NET Core
----------------
-If you want to use FactoryFactory in an ASP.NET Core application, add the
-[FactoryFactory.AspNet.DependencyInjection](https://www.nuget.org/packages/FactoryFactory.AspNet.DependencyInjection/)
-to your project from NuGet:
-
-```powershell
-Install-Package FactoryFactory.AspNet.DependencyInjection -Pre
-```
-
-You can then swap out the basic container for FactoryFactory simply by adding a
-call to `.UseFactoryFactory()` to your web host builder in `Program.cs`:
-
-```c#
-using FactoryFactory.AspNet.DependencyInjection;
-
-/* snip */
-
-public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-    WebHost.CreateDefaultBuilder(args)
-        .UseFactoryFactory()
-        .UseStartup<Startup>();
-```
-
-You can then make use of the FactoryFactory-specific registration features by adding a `ConfigureContainer(Module...)` method to your `Startup.cs` file:
-
-```c#
-public void ConfigureContainer(Module module)
-{
-    module.Define<IClock>().As<Clock>().Singleton();
-}
-```
-
-Note that you can register services either in the usual
-`ConfigureServices(IServiceCollection)` method or in your new
-`ConfigureContainer(Module)` method. `ConfigureServices` will be called first,
-followed by `ConfigureContainer`.
