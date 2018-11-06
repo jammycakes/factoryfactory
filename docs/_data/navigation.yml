@@ -4,7 +4,9 @@ introduction:
     links:
       - title: Registering services
         url: /registering-services/
-      - title: Using ASP.NET Core
-        url: /in-aspnet-core/
+      - title: Resolving services
+        url: /resolving-services/
       - title: Lifecycle management
         url: /lifecycle-management/
+      - title: Using ASP.NET Core
+        url: /in-aspnet-core/

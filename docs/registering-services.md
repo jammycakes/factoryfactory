@@ -10,98 +10,110 @@ Registering services
 
 There are three basic aspects to an IOC container's functionality: service
 registration, service resolution, and lifecycle management. This is known as the
-[Register-Resolve-Release pattern](http://blog.ploeh.dk/2010/09/29/TheRegisterResolveReleasepattern/).
+[Register-Resolve-Release pattern](http://blog.ploeh.dk/2010/09/29/TheRegisterResolveReleasepattern/). This
+section concerns the first of the three.
 
-Under the hood, FactoryFactory stores service registrations as a collection of
-`IServiceDefinition` instances in one or more `Module` classes. These are then
-bundled together in a `Configuration` class, which compiles and optimises them
-for improved performance, and then allows you to create a container based on
-them. In practice, FactoryFactory gives you a number of convenience methods and
-a fluent interface to make it easier to read and follow.
+You register services in FactoryFactory by adding service definitions to a
+**module**. A `Module` is simply a collection of `IServiceDefinition` instances
+with a fluent interface to allow you to add them clearly and expressively.
+You can define services by *type*, by *instance* or by *expression*.
 
-Each service definition contains all the information needed for your container
-to resolve a service given its type. This information includes:
+This is what it looks like:
 
- * The type of the service that you are asking for (usually the `IService`
-   interface)
- * The class, instance or factory method that will provide that service
- * Information about which constructor to use and which arguments to pass into
-   it
- * Any precondition on when this definition should be used
- * The service's lifecycle: when new services should be created, when existing
-   services should be reused, and, if they implement `IDisposable`, how long
-   they hang around for before they are disposed.
-
-## Basic registration
-
-Services can be registered in one of five ways. First, by specifying a base
-class or interface, and a concrete class that implements it:
-
-```
-module.Define<IPaymentService>().As<PaymentService>();
+```c#
+// Create a new module
+var module = new Module();
+// Define a service by type.
+module.Define<IUserService>().As<UserService>();
+// Define a service by instance.
+module.Define<IClock>().As(new Clock());
+// Define a service by expression.
+module.Define<IOfferOfTheDay>().As(req =>
+    req.Container.GetService<ICalendar>().OfferOfTheDay
+);
 ```
 
-Second, by specifying an existing instance that will use this service:
+It is also possible to register open generics. As of version 0.2, these can only
+be registered by type:
 
-```
-module.Define<IClock>().As(myClock);
-```
-
-Third, by specifying a factory method that will be called to instantiate the
-service:
-
-```
-module.Define<IClock>().As(req => new Clock(DateTime.UtcNow));
-```
-
-Fourth, open generic classes can specify a generic implementation:
-
-```
+```c#
 module.Define(typeof(IRepository<>)).As(typeof(Repository<>));
 ```
 
-Fifth, if a service is a concrete class (as opposed to an abstract class or an
-interface) with a public constructor, it does not need to be explicitly
-registered at all, but will be automatically resolved when requested:
-
-```
-// Program has not been explicitly registered.
-container.GetService<Program>().Run();
-```
-
-There are one or two restrictions on what can and can not be registered. These
-are as follows:
-
- * Services must be reference types (`class` rather than `struct`).
- * Open generics can only be registered by type, not by instance or factory
-   method.
- * Services that are registered by type must have a public constructor whose
-   non-optional arguments all (recursively) meet these criteria.
-
-Finally, you can register one or more services from a .NET Core `IServiceCollection`:
-
-```
-module.Add(serviceCollection);
-```
-
-## Specifying a constructor
-
-When a service is registered by type, if its implementation has multiple public
-constructors, FactoryFactory will choose the one to use "greedily" -- i.e. the
-one with the most arguments that it knows how to resolve. This is as expected by
-the ASP.NET Core specifications. If two or more constructors have the same
-number of arguments, the result is undefined.
-
-It is possible to override this choice using expression-based registration. You
-can use `Resolve.From<T>()` to specify services that need to be resolved further
-by the IOC container, or you can specify any other values that you want to pass
-directly to the constructor. The result looks like this:
+Finally, you don't have to register every service that you need. If a service is
+a concrete class, as opposed to an interface or an abstract base class, requests
+for that specific class will be automatically resolved, even if they haven't
+yet been registered with the container:
 
 ```c#
-var passwordHasher = new BcryptHasher();
-module.Define<IUsersService>().As(req => new UsersService(
-    Resolve.From<IUsersRepository>(),
-    passwordHasher,
-    Environment.GetEnvironmentVariable("APPLICATION_SECRET_KEY")
-));
+// This will work even if Program has not been explicitly registered.
+var program = container.GetService<Program>();
 ```
+
+If you prefer, you can subclass `Module` and define your services in the
+constructor:
+
+```c#
+public class MyModule : Module
+{
+    public MyModule()
+    {
+        Define<IUserService>().As<UserService>();
+        Define<IClock>().As(new Clock());
+        Define<IOfferOfTheDay>().As(req =>
+            req.Container.GetService<ICalendar>().OfferOfTheDay
+        );
+    }
+}
+```
+
+Once you have done this, you can use the `Module` class to create a container by
+passing it into the `Configuration` class. There are several ways of doing this;
+this is the simplest:
+
+```c#
+var container = Configuration.CreateContainer(module);
+```
+
+You can provide multiple modules if you like:
+
+```c#
+var container = Configuration.CreateContainer(module1, module2);
+```
+
+Creating a container from a module
+----------------------------------
+You can create a container from a module by first passing them into a
+`Configuration` constructor, then calling `CreateContainer()` on your
+`Configuration` instance:
+
+```c#
+var configuration = new Configuration(myModule);
+var container = configuration.CreateContainer();
+```
+
+Most of the time, you won't need direct access to the `Configuration` class,
+however. Accordingly, to keep things simple, `Configuration` provides you with
+some static methods to act as shortcuts:
+
+```c#
+// From a single module
+var container = Configuration.CreateContainer(myModule);
+
+// From multiple modules
+var container = Configuration.CreateContainer(module1, module2, module3);
+
+// from an IServiceCollection
+var container = Configuration.CreateContainer(myServiceCollection);
+
+// configuring a module in the constructor call itself:
+var container = Configuration.CreateContainer(module => {
+    module.Define<IUserService>().As<UserService>();
+    module.Define<IClock>().As(new Clock());
+    module.Define<IOfferOfTheDay>().As(req =>
+        req.Container.GetService<ICalendar>().OfferOfTheDay
+    );
+});
+```
+
+
