@@ -6,26 +6,26 @@ using Xunit;
 
 namespace FactoryFactory.Tests.Interception
 {
-    public class DecoratorFixture
+    public class InterceptorFixture
     {
         [Fact]
         public void DecoratedServiceShouldBeDecorated()
         {
-            var decorator = A.Fake<IDecorator<IServiceWithoutDependencies>>();
+            var interceptor = A.Fake<IInterceptor<IServiceWithoutDependencies>>();
             IServiceWithoutDependencies original = null;
             IServiceWithoutDependencies decorated = null;
             A.CallTo(
-                () => decorator.Decorate(
+                () => interceptor.Intercept(
                     A<ServiceRequest>.Ignored,
-                    A<IServiceWithoutDependencies>.Ignored))
+                    A<Func<IServiceWithoutDependencies>>.Ignored))
                 .ReturnsLazily(
-                    (ServiceRequest req, IServiceWithoutDependencies svc) => {
-                        original = svc;
+                    (ServiceRequest req, Func<IServiceWithoutDependencies> svc) => {
+                        original = svc();
                         decorated = A.Fake<IServiceWithoutDependencies>();
                         return decorated;
                     });
             var module = new Module();
-            module.Decorate<IServiceWithoutDependencies>().With(decorator);
+            module.Intercept<IServiceWithoutDependencies>().With(interceptor);
             module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>()
                 .Singleton();
             var container = Configuration.CreateContainer(module);
@@ -37,45 +37,45 @@ namespace FactoryFactory.Tests.Interception
         [Fact]
         public void SingletonShouldBeDecoratedOnlyOnce()
         {
-            var decorator = A.Fake<IDecorator<IServiceWithoutDependencies>>();
+            var interceptor = A.Fake<IInterceptor<IServiceWithoutDependencies>>();
             A.CallTo(() =>
-                decorator.Decorate(
+                interceptor.Intercept(
                     A<ServiceRequest>.Ignored,
-                    A<IServiceWithoutDependencies>.Ignored))
-                .ReturnsLazily((ServiceRequest req, IServiceWithoutDependencies svc) => svc);
+                    A<Func<IServiceWithoutDependencies>>.Ignored))
+                .ReturnsLazily((ServiceRequest req, Func<IServiceWithoutDependencies> svc) => svc());
             var module = new Module();
-            module.Decorate<IServiceWithoutDependencies>().With(decorator);
+            module.Intercept<IServiceWithoutDependencies>().With(interceptor);
             module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>()
                 .Singleton();
             var container = Configuration.CreateContainer(module);
             var service1 = container.GetService<IServiceWithoutDependencies>();
             var service2 = container.GetService<IServiceWithoutDependencies>();
             Assert.Same(service1, service2);
-            A.CallTo(() => decorator.Decorate(
+            A.CallTo(() => interceptor.Intercept(
                 A<ServiceRequest>.Ignored,
-                A<IServiceWithoutDependencies>.Ignored)).MustHaveHappened(1, Times.Exactly);
+                A<Func<IServiceWithoutDependencies>>.Ignored)).MustHaveHappened(1, Times.Exactly);
         }
 
         [Fact]
         public void TransientShouldBeDecoratedOncePerInstance()
         {
-            var decorator = A.Fake<IDecorator<IServiceWithoutDependencies>>();
+            var interceptor = A.Fake<IInterceptor<IServiceWithoutDependencies>>();
             A.CallTo(() =>
-                    decorator.Decorate(
+                    interceptor.Intercept(
                         A<ServiceRequest>.Ignored,
-                        A<IServiceWithoutDependencies>.Ignored))
-                .ReturnsLazily((ServiceRequest req, IServiceWithoutDependencies svc) => svc);
+                        A<Func<IServiceWithoutDependencies>>.Ignored))
+                .ReturnsLazily((ServiceRequest req, Func<IServiceWithoutDependencies> svc) => svc());
             var module = new Module();
-            module.Decorate<IServiceWithoutDependencies>().With(decorator);
+            module.Intercept<IServiceWithoutDependencies>().With(interceptor);
             module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>()
                 .Transient();
             var container = Configuration.CreateContainer(module);
             var service1 = container.GetService<IServiceWithoutDependencies>();
             var service2 = container.GetService<IServiceWithoutDependencies>();
             Assert.NotSame(service1, service2);
-            A.CallTo(() => decorator.Decorate(
+            A.CallTo(() => interceptor.Intercept(
                 A<ServiceRequest>.Ignored,
-                A<IServiceWithoutDependencies>.Ignored)).MustHaveHappened(2, Times.Exactly);
+                A<Func<IServiceWithoutDependencies>>.Ignored)).MustHaveHappened(2, Times.Exactly);
         }
     }
 }

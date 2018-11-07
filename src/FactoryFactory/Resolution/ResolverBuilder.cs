@@ -162,12 +162,12 @@ namespace FactoryFactory.Resolution
 
             IResolver built = resolver;
 
-            var decoratorType = typeof(IDecorator<>).MakeGenericType(InstanceType);
-            if (_configuration.CanResolve(decoratorType)) {
-                var decoratorResolverType
-                    = typeof(DecoratorResolver<>).MakeGenericType(InstanceType);
+            var interceptorType = typeof(IInterceptor<>).MakeGenericType(InstanceType);
+            if (_configuration.CanResolve(interceptorType)) {
+                var interceptorResolverType
+                    = typeof(InterceptorResolver<>).MakeGenericType(InstanceType);
                 built = (IResolver)Activator.CreateInstance
-                    (decoratorResolverType, built, _configuration);
+                    (interceptorResolverType, built, _configuration);
             }
 
             if (isTracked && definition.Lifecycle.Tracked) {

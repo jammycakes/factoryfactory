@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace FactoryFactory.Resolution
 {
-    public class DecoratorResolver<TService> : IResolver
+    public class InterceptorResolver<TService> : IResolver
     {
         private readonly IResolver _innerResolver;
         private readonly Configuration _configuration;
 
-        public DecoratorResolver(IResolver innerResolver, Configuration configuration)
+        public InterceptorResolver(IResolver innerResolver, Configuration configuration)
         {
             _innerResolver = innerResolver;
             _configuration = configuration;
@@ -27,16 +27,17 @@ namespace FactoryFactory.Resolution
 
         public object GetService(ServiceRequest request)
         {
-            TService service = (TService)_innerResolver.GetService(request);
-            var decoratorRequest = request.CreateDependencyRequest
-                    (typeof(IEnumerable<IDecorator<TService>>));
-            var decorators = (IEnumerable<IDecorator<TService>>)
-                request.Container.GetService(decoratorRequest);
-            foreach (var decorator in decorators) {
-                service = decorator.Decorate(request, service);
+            Func<TService> service = () => (TService)_innerResolver.GetService(request);
+            var interceptorRequest = request.CreateDependencyRequest
+                    (typeof(IEnumerable<IInterceptor<TService>>));
+            var interceptors = (IEnumerable<IInterceptor<TService>>)
+                request.Container.GetService(interceptorRequest);
+            foreach (var interceptor in interceptors) {
+                var innerService = service;
+                service = () => interceptor.Intercept(request, innerService);
             }
 
-            return service;
+            return service();
         }
 
         public override string ToString() => $"DecoratorResolver for {Type}";

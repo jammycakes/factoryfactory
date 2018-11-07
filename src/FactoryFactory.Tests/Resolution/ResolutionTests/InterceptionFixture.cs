@@ -4,7 +4,7 @@ using Xunit;
 
 namespace FactoryFactory.Tests.Resolution.ResolutionTests
 {
-    public class DecorationFixture
+    public class InterceptionFixture
     {
         [Fact]
         public void DecorationCanReplaceService()
@@ -12,7 +12,7 @@ namespace FactoryFactory.Tests.Resolution.ResolutionTests
             var container = Configuration.CreateContainer(module => {
                 module.Define<IServiceWithoutDependencies>()
                     .As<ServiceWithoutDependencies>();
-                module.Decorate<IServiceWithoutDependencies>()
+                module.Intercept<IServiceWithoutDependencies>()
                     .By((req, svc) => new AlternateServiceWithoutDependencies());
             });
 
