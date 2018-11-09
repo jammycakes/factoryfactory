@@ -2,7 +2,7 @@
 title: "Resolving services"
 permalink: /resolving-services/
 sidebar: introduction
-section: Getting started
+section: Developer guide
 ---
 
 Resolving services

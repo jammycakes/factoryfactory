@@ -2,7 +2,7 @@
 title: "Registering services"
 permalink: /registering-services/
 sidebar: introduction
-section: Getting started
+section: Developer guide
 ---
 
 Registering services

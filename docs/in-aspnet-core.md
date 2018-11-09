@@ -1,7 +1,7 @@
 ---
 title: "Using FactoryFactory with ASP.NET Core"
 sidebar: introduction
-section: Getting started
+section: Developer guide
 permalink: /in-aspnet-core/
 ---
 Using FactoryFactory with ASP.NET Core

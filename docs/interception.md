@@ -2,7 +2,7 @@
 title: "Interception and decoration"
 permalink: /interception/
 sidebar: introduction
-section: Advanced topics
+section: Developer guide
 ---
 
 Interception and Decoration
