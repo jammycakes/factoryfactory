@@ -72,3 +72,23 @@ public void ConfigureContainer(Module module)
     // Add your registrations to Module here
 }
 ```
+
+## Roadmap:
+
+ * **0.1:**
+   * Fully functional drop-in replacement for the ASP.NET Core container in
+     `Microsoft.Extensions.DependencyInjection`.
+   * Preconditions (untested)
+   * Custom lifecycles
+ * **0.2:**
+   * Interceptors
+   * Documentation
+ * **0.3:**
+   * Conventions
+   * Direct registration of decorators
+ * **0.4:**
+   * Feature switches
+   * Automatic lazy resolution by dynamic proxy (separate project)
+ * **1.0:**
+   * Validation
+   * `Resolve.From<T>()` anywhere in any expression
