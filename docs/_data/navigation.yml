@@ -10,3 +10,9 @@ introduction:
         url: /lifecycle-management/
       - title: Using ASP.NET Core
         url: /in-aspnet-core/
+
+  - title: Advanced topics
+    url: /
+    links:
+      - title: Interception and decoration
+        url: /interception/
