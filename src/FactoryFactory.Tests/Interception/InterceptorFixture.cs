@@ -123,5 +123,23 @@ namespace FactoryFactory.Tests.Interception
             Assert.Equal(2, call1);
             Assert.Equal(1, call2);
         }
+
+
+        [Fact]
+        public void TypeConstraintsOnOpenGenericInterceptorsShouldBeRespected()
+        {
+            var module = new Module();
+            var blueService = A.Fake<IBlueService>();
+            var greenService = A.Fake<IGreenService>();
+
+            module.Define(typeof(IInterceptor<>)).As(typeof(InterceptorWithTypeConstraints<>));
+            module.Define<IBlueService>().As(blueService);
+            module.Define<IGreenService>().As(greenService);
+            var container = Configuration.CreateContainer(module);
+            var newBlue = container.GetService<IBlueService>();
+            var newGreen = container.GetService<IGreenService>();
+            Assert.True(newBlue.Intercepted);
+            Assert.False(newGreen.Intercepted);
+        }
     }
 }

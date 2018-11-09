@@ -230,8 +230,23 @@ namespace FactoryFactory
                 else if (requestedType.IsGenericType && ServiceType.IsGenericTypeDefinition) {
                     var openedRequest = requestedType.GetGenericTypeDefinition();
                     if (openedRequest == ServiceType) {
-                        yield return ImplementationType.MakeGenericType
-                            (requestedType.GenericTypeArguments);
+                        Type closedRequest;
+                        try {
+                            closedRequest = ImplementationType.MakeGenericType
+                                (requestedType.GenericTypeArguments);
+                        }
+                        catch {
+                            /*
+                             * Ugly Pokémon exception handling because it's the
+                             * only reasonable way to determine whether a
+                             * generic type constraint works.
+                             */
+                            closedRequest = null;
+                        }
+
+                        if (closedRequest != null) {
+                            yield return closedRequest;
+                        }
                     }
                 }
             }
