@@ -10,6 +10,8 @@ ground up to support the .NET Core abstractions out of the box, and it features
 a fluent interface, preconditions, custom lifecycles, and whatever other bits
 and pieces I see fit to introduce as I feel like it.
 
+ * [Full documentation](https://jammycakes.github.io/factoryfactory/)
+
 Usage:
 ------
 Get it from NuGet:
