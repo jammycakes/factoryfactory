@@ -1,8 +1,9 @@
 FactoryFactory: an IOC container
 ================================
 
-[![Build status](https://ci.appveyor.com/api/projects/status/rrgswl1ta25twbsh?svg=true)](https://ci.appveyor.com/project/jammycakes/factoryfactory) [![Join the chat at https://gitter.im/factoryfactory/Lobby](https://badges.gitter.im/factoryfactory/Lobby.svg)](https://gitter.im/factoryfactory/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
+[![Build status](https://ci.appveyor.com/api/projects/status/rrgswl1ta25twbsh?svg=true)](https://ci.appveyor.com/project/jammycakes/factoryfactory)
+![NuGet Pre Release](https://img.shields.io/nuget/vpre/FactoryFactory.svg?style=plastic)
+[![Join the chat at https://gitter.im/factoryfactory/Lobby](https://badges.gitter.im/factoryfactory/Lobby.svg)](https://gitter.im/factoryfactory/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 FactoryFactory is a new IOC container for .NET. It has been built from the
 ground up to support the .NET Core abstractions out of the box, and it features
