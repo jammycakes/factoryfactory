@@ -80,5 +80,110 @@ namespace FactoryFactory.Util
             var typeInfo = type.GetTypeInfo();
             return typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
+
+        /* ====== Closing an open generic type ====== */
+
+        /*
+         * Note: see the discussion at https://stackoverflow.com/q/4864496/886
+         * - note especially Jon Skeet's discussion in the comments. The
+         * approach I'm adopting here is a hybrid one: to look for the most
+         * common failure conditions and to use Pokémon exception handling,
+         * ugly as it may be, to mop up the complex cases.
+         */
+
+        /// <summary>
+        ///  Try to close an open generic type, returning false on failure.
+        ///  Throws exceptions in more complicated cases.
+        /// </summary>
+        /// <param name="openGeneric">
+        ///  The open generic type to
+        /// </param>
+        /// <param name="typeParameters"></param>
+        /// <param name="pokémon">
+        ///  true to swallow exceptions and return null in complex cases; false
+        ///  to allow the exceptions to propagate.
+        /// </param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+
+        public static bool TryMakeGenericType
+            (this Type openGeneric, Type[] typeParameters, bool pokémon, out Type result)
+        {
+            /*
+             * First, check that we are starting with an open generic
+             */
+            if (!openGeneric.IsGenericTypeDefinition) {
+                result = null;
+                return false;
+            }
+
+            /*
+             * Next, check that the number of type parameters matches
+             */
+            var genericArguments = openGeneric.GetGenericArguments();
+            if (genericArguments.Length != typeParameters.Length) {
+                result = null;
+                return false;
+            }
+
+            /*
+             * Next, check the constraints
+             */
+            for (var i = 0; i < typeParameters.Length; i++) {
+                var genericArgument = genericArguments[i];
+                var typeParameter = typeParameters[i];
+                var constraints = genericArgument.GetGenericParameterConstraints();
+                var attributes = genericArgument.GenericParameterAttributes;
+                if (attributes.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint)
+                    && typeParameter.IsValueType) {
+                    result = null;
+                    return false;
+                }
+
+                if (attributes.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint)
+                    && typeParameter.GetConstructor(Type.EmptyTypes) == null
+                    && !typeParameter.IsValueType) {
+                    result = null;
+                    return false;
+                }
+                foreach (var constraint in constraints) {
+                    if (!constraint.IsAssignableFrom(typeParameter)) {
+                        result = null;
+                        return false;
+                    }
+                }
+            }
+
+            if (pokémon)
+            {
+                try {
+                    result = openGeneric.MakeGenericType(typeParameters);
+                    return true;
+                }
+                catch {
+                    result = null;
+                    return false;
+                }
+            }
+            else {
+                result = openGeneric.MakeGenericType(typeParameters);
+                return true;
+            }
+        }
+
+        /// <summary>
+        ///  Try to close an open generic type, returning false on failure.
+        ///  Catches exceptions if it gets tripped up by more complicated cases.
+        /// </summary>
+        /// <param name="openGeneric"></param>
+        /// <param name="typeParameters"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+
+        public static bool TryMakeGenericType
+            (this Type openGeneric, Type[] typeParameters, out Type result)
+        {
+            return TryMakeGenericType(openGeneric, typeParameters, true, out result);
+        }
     }
 }

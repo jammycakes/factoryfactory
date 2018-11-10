@@ -33,18 +33,7 @@ namespace FactoryFactory.Resolution
                     EnumerableType = null;
                 }
                 else {
-                    try {
-                        EnumerableType = typeof(IEnumerable<>).MakeGenericType(type);
-                    }
-                    catch {
-                        /*
-                         * For justification for this fine example of Pokémon
-                         * exception handling, see:
-                         * https://github.com/aspnet/DependencyInjection/issues/471
-                         * https://stackoverflow.com/a/4864565/886
-                         */
-                        EnumerableType = null;
-                    }
+                    EnumerableType = typeof(IEnumerable<>).MakeGenericType(type);
                 }
             }
         }
