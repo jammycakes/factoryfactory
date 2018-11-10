@@ -9,29 +9,39 @@ Resolving services
 ==================
 
 The second responsibility of an IOC container, in the Register-Resolve-Release
-pattern, is to resolve a service. In other words:
+pattern, is to resolve a service. There are two ways of doing so:
 
- * **Given** that I have registered `AmazonCognitoUsersRepository` as the
-   implementation of the `IUsersRepository` interface that I want to use,
- * **When** I request an `IUsersRepository` from the container,
- * **Then** I should get an instance of `AmazonCognitoUsersRepository` back.
+ 1. By requesting it directly from the container.
+ 2. By having it injected into another service that the container has provided.
 
-There are two ways to request a service from a container. One is to request it
-directly. You do this using the `GetService(serviceType)` method:
+The first option is called **service location** while the second option is
+called **dependency injection**.
+
+The best practice for using IOC containers is to request only your topmost
+service from the container -- or even better still, to leave your application
+framework to do so for you -- and use dependency injection to handle the rest.
+For example, in a console application, you would only want to perform a service
+location in your program's `Main` method, while in ASP.NET Core, all that is
+handled for you behind the scenes, and any services that you register are
+injected directly into your controllers.
+
+To get your root service, call the `GetService` method:
 
 ```c#
-static int Main(string[] args) {
+static int Main(string[] args)
+{
     var myModule = CreateModule();
-    using (var container = Configuration.CreateContainer(myModule)) {
+    using (var container = Configuration.CreateContainer(myModule))
+    {
         myProgram = container.GetService<Program>();
         return myProgram.Run(args);
     }
 }
 ```
 
-The other way is by having FactoryFactory inject additional dependencies into
-your service's constructor. For example, your `Program` class might look like
-this:
+For anything else, you should just leave FactoryFactory to inject dependencies
+into your service's constructor. For example, your `Program` class might look
+like this:
 
 ```c#
 public class Program
@@ -49,11 +59,6 @@ public class Program
     }
 }
 ```
-
-This is the approach that you should take most of the time. Normally, you would
-only call FactoryFactory directly from the topmost level of your code (in this
-example, in the `Main()` method of a command line application), and allow the
-constructor injection to do the rest.
 
 What you **shouldn't** do is pepper your codebase with calls to FactoryFactory
 all over the place. For example, don't do this:
@@ -75,12 +80,8 @@ public class Program
 }
 ```
 
-This approach is called [Service Location](http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/),
-and it is generally regarded as a bad practice.
-
 Resolving collections
 ---------------------
-
 It is possible to define multiple implementations of a service:
 
 ```c#
@@ -112,5 +113,43 @@ registered. You can also request a collection of services by asking for
 `ICollection<T>`, `IReadOnlyCollection<T>`, `IList<T>` or `List<T>`.
 
 If no services have been registered for a particular type, the collection will
-be empty, even if the service requested has a public constructor and could be resolved
-automatically as a single instance.
+be empty, even if the service requested has a public constructor and could be
+resolved automatically as a single instance.
+
+Resolving services lazily
+-------------------------
+It frequently happens that you have a service which relies on serveral
+dependencies, some of which might not be used. For example, a controller action
+won't need to use any of its dependent services if a user is not logged in.
+
+In this case, you can request your services as a `Lazy<TDependency>`. For
+example:
+
+```c#
+public class AdminService
+{
+    private ISecurityContext _context;
+    private Lazy<IUserManagementRepository> _userManagementRepository;
+
+    public AdminService(ISecurityContext context,
+        Lazy<IUserManagementRepository> userManagementRepository)
+    {
+        _context = context;
+        _userManagementRepository = userManagementRepository;
+    }
+
+    public IEnumerable<User> GetAllUsers()
+    {
+        if (!_context.IsAdmin) {
+            throw new AccessDeniedException("Admins only!");
+
+            /*
+             * _userManagementRepository won't get created if the
+             * user is not an admin.
+             */
+        }
+
+        return _userManagementRepository.GetAllUsers();
+    }
+}
+```

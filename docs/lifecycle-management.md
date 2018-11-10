@@ -7,15 +7,14 @@ section: Developer guide
 
 Lifecycle management
 ====================
-
 As well as constructing services, IOC containers are responsible for managing
 their lifetimes as well, and calling `Dispose()` on any services that implement
 `IDisposable`.
 
-The .NET abstractions specify three default lifecycles: `Scoped`, `Singleton`
-and `Transient`. FactoryFactory supports all three of these out of the box,
-together with a fourth, `Untracked`. Additionally, you can create your own
-custom lifecycles if need be.
+The ASP.NET Core abstractions specify three default lifecycles: `Scoped`,
+`Singleton` and `Transient`. FactoryFactory supports all three of these out of
+the box, together with a fourth, `Untracked`. Additionally, you can create your
+own custom lifecycles if need be.
 
 Lifecycles can be specified as follows:
 
