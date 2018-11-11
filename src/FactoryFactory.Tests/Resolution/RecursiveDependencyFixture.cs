@@ -4,7 +4,7 @@ using FactoryFactory.Tests.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace FactoryFactory.Tests.Resolution.ResolutionTests
+namespace FactoryFactory.Tests.Resolution
 {
     public class RecursiveDependencyFixture
     {

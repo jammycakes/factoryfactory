@@ -3,7 +3,7 @@ using FactoryFactory.Tests.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace FactoryFactory.Tests.Resolution.LifecycleTests
+namespace FactoryFactory.Tests.LifecycleTests
 {
     public class LifecycleFixture
     {
