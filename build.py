@@ -12,7 +12,7 @@ projects = [
 ]
 
 version = '0.2.0'
-suffix = 'beta2'
+suffix = ''
 is_release = False
 
 
@@ -44,7 +44,7 @@ if pull_request_number:
 else:
     package_version = version
     if suffix and suffix != '':
-        package_version += '=' + suffix
+        package_version += '-' + suffix
 
 package_path = abspath('build')
 
