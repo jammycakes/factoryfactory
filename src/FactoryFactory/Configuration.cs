@@ -205,6 +205,7 @@ namespace FactoryFactory
             public DefaultModule(Configuration configuration)
             {
                 Add(new FuncServiceDefinition());
+                Add(new ArrayServiceDefinition());
                 Define(typeof(ICollection<>)).As(typeof(List<>)).Untracked();
                 Define(typeof(IReadOnlyCollection<>)).As(typeof(List<>)).Untracked();
                 Define(typeof(IList<>)).As(typeof(List<>)).Untracked();

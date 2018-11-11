@@ -52,5 +52,11 @@ namespace FactoryFactory.Tests.Resolution
             Assert.Equal(2, collection.Count);
         }
 
+        [Fact]
+        public void CanResolveEnumerableAsArray()
+        {
+            var collection = _container.GetService<IServiceWithoutDependencies[]>();
+            Assert.Equal(2, collection.Length);
+        }
     }
 }
