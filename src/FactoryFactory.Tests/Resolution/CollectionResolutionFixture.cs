@@ -44,5 +44,13 @@ namespace FactoryFactory.Tests.Resolution
             var collection = _container.GetService<List<IServiceWithoutDependencies>>();
             Assert.Equal(2, collection.Count);
         }
+
+        [Fact]
+        public void CanResolveEnumerableAsSet()
+        {
+            var collection = _container.GetService<ISet<IServiceWithoutDependencies>>();
+            Assert.Equal(2, collection.Count);
+        }
+
     }
 }
