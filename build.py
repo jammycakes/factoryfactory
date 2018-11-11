@@ -11,8 +11,8 @@ projects = [
     'FactoryFactory.AspNet.DependencyInjection'
 ]
 
-version = '0.2.0'
-suffix = ''
+version = '0.3.0'
+suffix = 'alpha'
 is_release = False
 
 
