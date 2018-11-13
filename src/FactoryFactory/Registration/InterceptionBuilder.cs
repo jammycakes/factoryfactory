@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using FactoryFactory.Registration.Fluent;
 
 namespace FactoryFactory.Registration
 {
@@ -30,7 +31,7 @@ namespace FactoryFactory.Registration
         ///  this service.
         /// </typeparam>
         /// <returns></returns>
-        public OptionsBuilder With<TImplementation>()
+        public IOptionsClause With<TImplementation>()
             where TImplementation : IInterceptor<TService>
         {
             _implementationType = typeof(TImplementation);
@@ -46,7 +47,7 @@ namespace FactoryFactory.Registration
         ///  The object that will decorate this service.
         /// </param>
         /// <returns></returns>
-        public OptionsBuilder With(IInterceptor<TService> implementation)
+        public IOptionsClause With(IInterceptor<TService> implementation)
         {
             _implementationFactory = null;
             _implementationType = null;
@@ -64,7 +65,7 @@ namespace FactoryFactory.Registration
         ///  A factory method that creates the requested service.
         /// </param>
         /// <returns></returns>
-        public OptionsBuilder With(Expression<Func<ServiceRequest, IInterceptor<TService>>> factory)
+        public IOptionsClause With(Expression<Func<ServiceRequest, IInterceptor<TService>>> factory)
         {
             _implementationFactory = Expression.Lambda<Func<ServiceRequest, object>>(
                 factory.Body,
@@ -79,7 +80,7 @@ namespace FactoryFactory.Registration
         ///  decorator function provided.
         /// </summary>
         /// <param name="decoratorFunc"></param>
-        public OptionsBuilder By(Func<ServiceRequest, Func<TService>, TService> decoratorFunc)
+        public IOptionsClause By(Func<ServiceRequest, Func<TService>, TService> decoratorFunc)
         {
             return With(new Interceptor<TService>(decoratorFunc)).Untracked();
         }
@@ -90,7 +91,7 @@ namespace FactoryFactory.Registration
         /// </summary>
         /// <param name="decoratorFunc"></param>
         /// <returns></returns>
-        public OptionsBuilder By(Func<Func<TService>, TService> decoratorFunc)
+        public IOptionsClause By(Func<Func<TService>, TService> decoratorFunc)
         {
             return With(new Interceptor<TService>((req, svc) => decoratorFunc(svc))).Untracked();
         }

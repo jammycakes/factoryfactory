@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using FactoryFactory.Registration.Fluent;
 
 namespace FactoryFactory.Registration
 {
@@ -32,7 +33,7 @@ namespace FactoryFactory.Registration
         ///  The concrete type to implement this service.
         /// </param>
         /// <returns></returns>
-        public OptionsBuilder As(Type implementationType)
+        public IOptionsClause As(Type implementationType)
         {
             _implementationFactory = null;
             _implementationInstance = null;
@@ -48,7 +49,7 @@ namespace FactoryFactory.Registration
         ///  The object that implements this service.
         /// </param>
         /// <returns></returns>
-        public OptionsBuilder As(object implementation)
+        public IOptionsClause As(object implementation)
         {
             _options.Lifecycle = Lifecycle.Untracked;
             _implementationFactory = null;
@@ -63,7 +64,7 @@ namespace FactoryFactory.Registration
         /// <returns>
         ///  A factory method that creates the requested service.
         /// </returns>
-        public OptionsBuilder As(Expression<Func<ServiceRequest, object>> factory)
+        public IOptionsClause As(Expression<Func<ServiceRequest, object>> factory)
         {
             _implementationFactory = factory;
             _implementationInstance = null;
@@ -87,7 +88,7 @@ namespace FactoryFactory.Registration
         ///  The concrete type to implement this service.
         /// </typeparam>
         /// <returns></returns>
-        public OptionsBuilder As<TImplementation>()
+        public IOptionsClause As<TImplementation>()
             where TImplementation : TService
         {
             _implementationFactory = null;
@@ -103,7 +104,7 @@ namespace FactoryFactory.Registration
         ///  The object that implements this service.
         /// </param>
         /// <returns></returns>
-        public OptionsBuilder As(TService implementation)
+        public IOptionsClause As(TService implementation)
         {
             _options.Lifecycle = Lifecycle.Untracked;
             _implementationInstance = implementation;
@@ -119,7 +120,7 @@ namespace FactoryFactory.Registration
         ///  A factory method that creates the requested service.
         /// </param>
         /// <returns></returns>
-        public OptionsBuilder As(Expression<Func<ServiceRequest, TService>> factory)
+        public IOptionsClause As(Expression<Func<ServiceRequest, TService>> factory)
         {
             _implementationFactory = Expression.Lambda<Func<ServiceRequest, object>>(
                 factory.Body,

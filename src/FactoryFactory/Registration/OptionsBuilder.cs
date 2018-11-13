@@ -1,8 +1,9 @@
 using System;
+using FactoryFactory.Registration.Fluent;
 
 namespace FactoryFactory.Registration
 {
-    public class OptionsBuilder
+    public class OptionsBuilder : IOptionsClause
     {
         private readonly DefinitionOptions _options;
 
@@ -16,7 +17,7 @@ namespace FactoryFactory.Registration
         /// </summary>
         /// <param name="lifecycle"></param>
         /// <returns></returns>
-        public OptionsBuilder Lifecycle(ILifecycle lifecycle)
+        public IOptionsClause Lifecycle(ILifecycle lifecycle)
         {
             _options.Lifecycle = lifecycle;
             return this;
@@ -27,36 +28,10 @@ namespace FactoryFactory.Registration
         /// </summary>
         /// <param name="precondition"></param>
         /// <returns></returns>
-        public OptionsBuilder Precondition(Func<ServiceRequest, bool> precondition)
+        public IOptionsClause Precondition(Func<ServiceRequest, bool> precondition)
         {
             _options.Precondition = precondition;
             return this;
         }
-
-        /// <summary>
-        ///  Configures the service as a singleton.
-        /// </summary>
-        /// <returns></returns>
-        public OptionsBuilder Singleton() => Lifecycle(FactoryFactory.Lifecycle.Singleton);
-
-        /// <summary>
-        ///  Configures the service as a transient.
-        /// </summary>
-        /// <returns></returns>
-        public OptionsBuilder Transient() => Lifecycle(FactoryFactory.Lifecycle.Transient);
-
-        /// <summary>
-        ///  Configures the service as a scoped service.
-        /// </summary>
-        /// <returns></returns>
-        public OptionsBuilder Scoped() => Lifecycle(FactoryFactory.Lifecycle.Scoped);
-
-        /// <summary>
-        ///  Configures the service as an untracked service.
-        ///  IDisposable.Dispose() will not be called when the container is
-        ///  disposed.
-        /// </summary>
-        /// <returns></returns>
-        public OptionsBuilder Untracked() => Lifecycle(FactoryFactory.Lifecycle.Untracked);
     }
 }
