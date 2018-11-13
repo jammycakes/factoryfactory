@@ -32,12 +32,12 @@ namespace FactoryFactory.Registration
         ///  The concrete type to implement this service.
         /// </param>
         /// <returns></returns>
-        public OptionsBuilder<object> As(Type implementationType)
+        public OptionsBuilder As(Type implementationType)
         {
             _implementationFactory = null;
             _implementationInstance = null;
             _implementationType = implementationType;
-            return new OptionsBuilder<object>(_options);
+            return new OptionsBuilder(_options);
         }
 
         /// <summary>
@@ -48,13 +48,13 @@ namespace FactoryFactory.Registration
         ///  The object that implements this service.
         /// </param>
         /// <returns></returns>
-        public OptionsBuilder<object> As(object implementation)
+        public OptionsBuilder As(object implementation)
         {
             _options.Lifecycle = Lifecycle.Untracked;
             _implementationFactory = null;
             _implementationInstance = implementation;
             _implementationType = null;
-            return new OptionsBuilder<object>(_options);
+            return new OptionsBuilder(_options);
         }
 
         /// <summary>
@@ -63,12 +63,12 @@ namespace FactoryFactory.Registration
         /// <returns>
         ///  A factory method that creates the requested service.
         /// </returns>
-        public OptionsBuilder<object> As(Expression<Func<ServiceRequest, object>> factory)
+        public OptionsBuilder As(Expression<Func<ServiceRequest, object>> factory)
         {
             _implementationFactory = factory;
             _implementationInstance = null;
             _implementationType = null;
-            return new OptionsBuilder<object>(_options);
+            return new OptionsBuilder(_options);
         }
     }
 
@@ -87,13 +87,13 @@ namespace FactoryFactory.Registration
         ///  The concrete type to implement this service.
         /// </typeparam>
         /// <returns></returns>
-        public OptionsBuilder<TService> As<TImplementation>()
+        public OptionsBuilder As<TImplementation>()
             where TImplementation : TService
         {
             _implementationFactory = null;
             _implementationInstance = null;
             _implementationType = typeof(TImplementation);
-            return new OptionsBuilder<TService>(_options);
+            return new OptionsBuilder(_options);
         }
 
         /// <summary>
@@ -103,13 +103,13 @@ namespace FactoryFactory.Registration
         ///  The object that implements this service.
         /// </param>
         /// <returns></returns>
-        public OptionsBuilder<TService> As(TService implementation)
+        public OptionsBuilder As(TService implementation)
         {
             _options.Lifecycle = Lifecycle.Untracked;
             _implementationInstance = implementation;
             _implementationFactory = null;
             _implementationType = null;
-            return new OptionsBuilder<TService>(_options);
+            return new OptionsBuilder(_options);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace FactoryFactory.Registration
         ///  A factory method that creates the requested service.
         /// </param>
         /// <returns></returns>
-        public OptionsBuilder<TService> As(Expression<Func<ServiceRequest, TService>> factory)
+        public OptionsBuilder As(Expression<Func<ServiceRequest, TService>> factory)
         {
             _implementationFactory = Expression.Lambda<Func<ServiceRequest, object>>(
                 factory.Body,
@@ -127,7 +127,7 @@ namespace FactoryFactory.Registration
             );
             _implementationType = null;
             _implementationInstance = null;
-            return new OptionsBuilder<TService>(_options);
+            return new OptionsBuilder(_options);
         }
     }
 }

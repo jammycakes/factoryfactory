@@ -2,7 +2,7 @@ using System;
 
 namespace FactoryFactory.Registration
 {
-    public class OptionsBuilder<TService> where TService: class
+    public class OptionsBuilder
     {
         private readonly DefinitionOptions _options;
 
@@ -16,7 +16,7 @@ namespace FactoryFactory.Registration
         /// </summary>
         /// <param name="lifecycle"></param>
         /// <returns></returns>
-        public OptionsBuilder<TService> Lifecycle(ILifecycle lifecycle)
+        public OptionsBuilder Lifecycle(ILifecycle lifecycle)
         {
             _options.Lifecycle = lifecycle;
             return this;
@@ -27,7 +27,7 @@ namespace FactoryFactory.Registration
         /// </summary>
         /// <param name="precondition"></param>
         /// <returns></returns>
-        public OptionsBuilder<TService> Precondition(Func<ServiceRequest, bool> precondition)
+        public OptionsBuilder Precondition(Func<ServiceRequest, bool> precondition)
         {
             _options.Precondition = precondition;
             return this;
@@ -37,19 +37,19 @@ namespace FactoryFactory.Registration
         ///  Configures the service as a singleton.
         /// </summary>
         /// <returns></returns>
-        public OptionsBuilder<TService> Singleton() => Lifecycle(FactoryFactory.Lifecycle.Singleton);
+        public OptionsBuilder Singleton() => Lifecycle(FactoryFactory.Lifecycle.Singleton);
 
         /// <summary>
         ///  Configures the service as a transient.
         /// </summary>
         /// <returns></returns>
-        public OptionsBuilder<TService> Transient() => Lifecycle(FactoryFactory.Lifecycle.Transient);
+        public OptionsBuilder Transient() => Lifecycle(FactoryFactory.Lifecycle.Transient);
 
         /// <summary>
         ///  Configures the service as a scoped service.
         /// </summary>
         /// <returns></returns>
-        public OptionsBuilder<TService> Scoped() => Lifecycle(FactoryFactory.Lifecycle.Scoped);
+        public OptionsBuilder Scoped() => Lifecycle(FactoryFactory.Lifecycle.Scoped);
 
         /// <summary>
         ///  Configures the service as an untracked service.
@@ -57,6 +57,6 @@ namespace FactoryFactory.Registration
         ///  disposed.
         /// </summary>
         /// <returns></returns>
-        public OptionsBuilder<TService> Untracked() => Lifecycle(FactoryFactory.Lifecycle.Untracked);
+        public OptionsBuilder Untracked() => Lifecycle(FactoryFactory.Lifecycle.Untracked);
     }
 }

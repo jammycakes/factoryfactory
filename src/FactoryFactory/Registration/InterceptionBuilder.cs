@@ -30,12 +30,12 @@ namespace FactoryFactory.Registration
         ///  this service.
         /// </typeparam>
         /// <returns></returns>
-        public OptionsBuilder<IInterceptor<TService>> With<TImplementation>()
+        public OptionsBuilder With<TImplementation>()
             where TImplementation : IInterceptor<TService>
         {
             _implementationType = typeof(TImplementation);
             _implementationFactory = null;
-            return new OptionsBuilder<IInterceptor<TService>>(_options);
+            return new OptionsBuilder(_options);
         }
 
         /// <summary>
@@ -46,13 +46,13 @@ namespace FactoryFactory.Registration
         ///  The object that will decorate this service.
         /// </param>
         /// <returns></returns>
-        public OptionsBuilder<IInterceptor<TService>> With(IInterceptor<TService> implementation)
+        public OptionsBuilder With(IInterceptor<TService> implementation)
         {
             _implementationFactory = null;
             _implementationType = null;
             _implementationInstance = implementation;
             _options.Lifecycle = Lifecycle.Untracked;
-            return new OptionsBuilder<IInterceptor<TService>>(_options);
+            return new OptionsBuilder(_options);
         }
 
         /// <summary>
@@ -64,14 +64,14 @@ namespace FactoryFactory.Registration
         ///  A factory method that creates the requested service.
         /// </param>
         /// <returns></returns>
-        public OptionsBuilder<IInterceptor<TService>> With(Expression<Func<ServiceRequest, IInterceptor<TService>>> factory)
+        public OptionsBuilder With(Expression<Func<ServiceRequest, IInterceptor<TService>>> factory)
         {
             _implementationFactory = Expression.Lambda<Func<ServiceRequest, object>>(
                 factory.Body,
                 factory.Parameters
             );
             _implementationType = null;
-            return new OptionsBuilder<IInterceptor<TService>>(_options);
+            return new OptionsBuilder(_options);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace FactoryFactory.Registration
         ///  decorator function provided.
         /// </summary>
         /// <param name="decoratorFunc"></param>
-        public OptionsBuilder<IInterceptor<TService>> By(Func<ServiceRequest, Func<TService>, TService> decoratorFunc)
+        public OptionsBuilder By(Func<ServiceRequest, Func<TService>, TService> decoratorFunc)
         {
             return With(new Interceptor<TService>(decoratorFunc)).Untracked();
         }
@@ -90,7 +90,7 @@ namespace FactoryFactory.Registration
         /// </summary>
         /// <param name="decoratorFunc"></param>
         /// <returns></returns>
-        public OptionsBuilder<IInterceptor<TService>> By(Func<Func<TService>, TService> decoratorFunc)
+        public OptionsBuilder By(Func<Func<TService>, TService> decoratorFunc)
         {
             return With(new Interceptor<TService>((req, svc) => decoratorFunc(svc))).Untracked();
         }
