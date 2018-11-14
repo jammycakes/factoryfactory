@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using FactoryFactory.Util;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FactoryFactory
+namespace FactoryFactory.Registration
 {
     public class ServiceDefinition : IServiceDefinition
     {

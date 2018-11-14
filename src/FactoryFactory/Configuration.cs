@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using FactoryFactory.Impl;
+using FactoryFactory.Registration;
 using FactoryFactory.Resolution;
 using FactoryFactory.Util;
 using Microsoft.Extensions.DependencyInjection;

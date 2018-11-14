@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using FactoryFactory.Registration;
 using Xunit;
 
 namespace FactoryFactory.Tests.Registration
