@@ -5,7 +5,7 @@ namespace FactoryFactory.Registration
 {
     public class ConventionBuilder : IConventionClause, IOptionsClause
     {
-        private IConventionPredicates _predicates = new ConventionPredicates();
+        private ConventionPredicates _predicates = new ConventionPredicates();
         private ILifecycle _lifecycle = null;
         private Func<ServiceRequest, bool> _precondition = null;
         private ITypeFinderBuilder _typeFinderBuilder = null;
@@ -26,7 +26,10 @@ namespace FactoryFactory.Registration
 
         IOptionsClause IConventionClause.From(Action<IConventionByScan> buildScanConvention)
         {
-            throw new NotImplementedException();
+            var byScan = new ConventionByScanBuilder();
+            buildScanConvention(byScan);
+            _typeFinderBuilder = byScan;
+            return this;
         }
 
         IOptionsClause IOptionsClause.Lifecycle(ILifecycle lifecycle)
@@ -43,7 +46,9 @@ namespace FactoryFactory.Registration
 
         private IServiceDefinition BuildConvention()
         {
-            throw new NotImplementedException();
+            var predicate = _predicates.ToPredicate();
+            var typeFinder = _typeFinderBuilder.ToTypeFinder();
+            return new ConventionServiceDefinition(predicate, typeFinder, _lifecycle, _precondition);
         }
     }
 }
