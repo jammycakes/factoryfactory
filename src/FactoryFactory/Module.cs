@@ -65,7 +65,7 @@ namespace FactoryFactory
             return new DefinitionBuilder<TService>(this);
         }
 
-        public IConventionClause Define(Action<IConventionPredicate> types)
+        public IConventionClause Define(Action<IConventionPredicates> types)
         {
             return new ConventionBuilder(this, types);
         }
