@@ -3,10 +3,7 @@ using System.Reflection;
 
 namespace FactoryFactory.Registration.Fluent
 {
-    public interface IConventionByScan
+    public interface IConventionByScan : IConventionDefinition<IConventionByScan>
     {
-        IConventionByScan FromAssembly(Func<Type, Assembly> assemblyFinder);
-        IConventionByScan FromNamespace(Func<Type, string> namespaceFinder);
-        IConventionByScan Where(Func<Type, Type, bool> filter);
     }
 }

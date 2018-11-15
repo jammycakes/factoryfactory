@@ -8,6 +8,7 @@ namespace FactoryFactory.Registration
         private IConventionPredicates _predicates = new ConventionPredicates();
         private ILifecycle _lifecycle = null;
         private Func<ServiceRequest, bool> _precondition = null;
+        private ITypeFinderBuilder _typeFinderBuilder = null;
 
         public ConventionBuilder(Module module, Action<IConventionPredicates> buildPredicates)
         {
@@ -17,7 +18,10 @@ namespace FactoryFactory.Registration
 
         IOptionsClause IConventionClause.As(Action<IConventionByName> buildNameConvention)
         {
-            throw new NotImplementedException();
+            var byName = new ConventionByNameBuilder();
+            buildNameConvention(byName);
+            _typeFinderBuilder = byName;
+            return this;
         }
 
         IOptionsClause IConventionClause.From(Action<IConventionByScan> buildScanConvention)
