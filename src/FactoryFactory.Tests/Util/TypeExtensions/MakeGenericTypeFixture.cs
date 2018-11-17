@@ -1,4 +1,3 @@
-using System.Xml.Schema;
 using Xunit;
 using FactoryFactory.Util;
 using FactoryFactory.Tests.Model;

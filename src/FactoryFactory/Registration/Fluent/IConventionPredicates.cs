@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 
 namespace FactoryFactory.Registration.Fluent
 {

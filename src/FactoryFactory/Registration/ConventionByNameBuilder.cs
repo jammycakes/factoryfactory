@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using FactoryFactory.Registration.Fluent;
@@ -54,6 +53,7 @@ namespace FactoryFactory.Registration
                     from name in names
                     let foundType = assembly.GetType(ns + "." + name, false, true)
                     where foundType != null
+                          && foundType.IsClass && !foundType.IsAbstract
                           && foundType.InheritsOrImplements(requestedType)
                           && _filters.All(f => f(requestedType, foundType))
                     select foundType;
