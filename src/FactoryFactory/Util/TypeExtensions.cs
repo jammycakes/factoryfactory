@@ -193,8 +193,15 @@ namespace FactoryFactory.Util
         ///  The namespace pattern to match.
         /// </param>
         /// <returns></returns>
-        public static bool MatchesNamespace(this Type type, string namespacePattern)
+        public static bool MatchesNamespace(this Type type, string namespacePattern, bool ignoreCase)
         {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (namespacePattern == null) throw new ArgumentNullException(nameof(namespacePattern));
+
+            StringComparison comparison = ignoreCase
+                ? StringComparison.OrdinalIgnoreCase
+                : StringComparison.Ordinal;
+
             string exactMatch = namespacePattern;
             string startMatch = null;
 
@@ -207,11 +214,9 @@ namespace FactoryFactory.Util
             }
 
             return
-                exactMatch != null && type.Namespace.Equals
-                    (exactMatch, StringComparison.InvariantCultureIgnoreCase)
+                exactMatch != null && type.Namespace.Equals(exactMatch, comparison)
                 ||
-                startMatch != null && type.Namespace.StartsWith
-                    (startMatch, StringComparison.InvariantCultureIgnoreCase);
+                startMatch != null && type.Namespace.StartsWith(startMatch, comparison);
         }
     }
 }

@@ -45,7 +45,7 @@ namespace FactoryFactory.Registration
                     where foundType != null
                           && foundType.IsClass && !foundType.IsAbstract
                           && foundType.InheritsOrImplements(requestedType)
-                          && namespaces.Any(nf => foundType.MatchesNamespace(nf))
+                          && namespaces.Any(nf => foundType.MatchesNamespace(nf, false))
                           && _filters.All(f => f(requestedType, foundType))
                     select foundType;
             };
