@@ -34,7 +34,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace FactoryFactory.Util
+namespace FactoryFactory.Util.FastExpressions
 {
     /// <summary>Compiles expression to delegate ~20 times faster than Expression.Compile.
     /// Partial to extend with your things when used as source file.</summary>

@@ -1,6 +1,7 @@
 using System;
 using System.Linq.Expressions;
 using FactoryFactory.Util;
+using FactoryFactory.Util.FastExpressions;
 
 namespace FactoryFactory.Resolution
 {
