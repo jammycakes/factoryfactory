@@ -63,5 +63,25 @@ namespace FactoryFactory.Tests.Registration
             Assert.Single(service);
             Assert.IsType<Foo>(service[0]);
         }
+
+        [Fact]
+        public void ConventionsByNameWillResolveFromSpecifiedAssembly()
+        {
+            var container = Configuration.CreateContainer(module => {
+                module
+                    .Define(types =>
+                        types.Where(t => t.IsInterface).Where(t => t.Name.StartsWith("I")))
+                    .As(types => types
+                        .Named(t => t.Name.Substring(1))
+                        .Named(t => "Other" + t.Name.Substring(1))
+                        .FromNamespace(t => typeof(Foo).Namespace)
+                        .FromAssembly(t => t.Assembly)
+                    );
+            });
+            var service = container.GetService<IFoo[]>();
+            Assert.Equal(2, service.Length);
+            Assert.IsType<Foo>(service[0]);
+            Assert.IsType<OtherFoo>(service[1]);
+        }
     }
 }
