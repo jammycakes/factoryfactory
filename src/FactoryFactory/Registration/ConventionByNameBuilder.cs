@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using FactoryFactory.Registration.Fluent;
+using FactoryFactory.Util;
 
 namespace FactoryFactory.Registration
 {
@@ -38,7 +41,23 @@ namespace FactoryFactory.Registration
 
         Func<Type, IEnumerable<Type>> ITypeFinderBuilder.ToTypeFinder()
         {
-            throw new NotImplementedException();
+            return requestedType => {
+                var assemblies = _assemblyFinders.Select(af => af(requestedType));
+                if (!assemblies.Any()) assemblies = new[] {requestedType.Assembly};
+                var namespaces = _namespaceFinders.Select(nf => nf(requestedType));
+                if (!namespaces.Any()) namespaces = new[] {requestedType.Namespace};
+                var names = _namings.Select(n => n(requestedType));
+
+                return
+                    from assembly in assemblies
+                    from ns in namespaces
+                    from name in names
+                    let foundType = assembly.GetType(ns + "." + name, false, true)
+                    where foundType != null
+                          && foundType.InheritsOrImplements(requestedType)
+                          && _filters.All(f => f(requestedType, foundType))
+                    select foundType;
+            };
         }
     }
 }

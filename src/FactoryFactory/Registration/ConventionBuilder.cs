@@ -48,7 +48,8 @@ namespace FactoryFactory.Registration
         {
             var predicate = _predicates.ToPredicate();
             var typeFinder = _typeFinderBuilder.ToTypeFinder();
-            return new ConventionServiceDefinition(predicate, typeFinder, _lifecycle, _precondition);
+            return new ConventionServiceDefinition
+                (predicate, typeFinder, _lifecycle ?? Lifecycle.Default, _precondition);
         }
     }
 }
