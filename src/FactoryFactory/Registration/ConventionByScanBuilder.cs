@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using FactoryFactory.Registration.Fluent;
+using FactoryFactory.Util;
 
 namespace FactoryFactory.Registration
 {
@@ -31,7 +33,22 @@ namespace FactoryFactory.Registration
 
         public Func<Type, IEnumerable<Type>> ToTypeFinder()
         {
-            throw new NotImplementedException();
+            return requestedType => {
+                var assemblies = _assemblyFinders.Select(af => af(requestedType));
+                if (!assemblies.Any()) assemblies = new[] {requestedType.Assembly};
+                var namespaces = _namespaceFinders.Select(nf => nf(requestedType));
+                if (!namespaces.Any()) namespaces = new[] {"*"};
+
+                return
+                    from assembly in assemblies
+                    from foundType in AssemblyScan.Instance.GetTypes(assembly)
+                    where foundType != null
+                          && foundType.IsClass && !foundType.IsAbstract
+                          && foundType.InheritsOrImplements(requestedType)
+                          && namespaces.Any(nf => foundType.MatchesNamespace(nf))
+                          && _filters.All(f => f(requestedType, foundType))
+                    select foundType;
+            };
         }
     }
 }

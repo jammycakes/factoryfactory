@@ -6,6 +6,6 @@ namespace FactoryFactory.Registration.Fluent
     {
         IOptionsClause As(Action<IConventionByName> byName);
 
-        IOptionsClause From(Action<IConventionByScan> byScan);
+        IOptionsClause Scanning(Action<IConventionByScan> byScan);
     }
 }

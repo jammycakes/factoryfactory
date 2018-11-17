@@ -24,7 +24,7 @@ namespace FactoryFactory.Registration
             return this;
         }
 
-        IOptionsClause IConventionClause.From(Action<IConventionByScan> buildScanConvention)
+        IOptionsClause IConventionClause.Scanning(Action<IConventionByScan> buildScanConvention)
         {
             var byScan = new ConventionByScanBuilder();
             buildScanConvention(byScan);

@@ -179,11 +179,39 @@ namespace FactoryFactory.Util
         /// <param name="typeParameters"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-
         public static bool TryMakeGenericType
             (this Type openGeneric, Type[] typeParameters, out Type result)
         {
             return TryMakeGenericType(openGeneric, typeParameters, true, out result);
+        }
+
+        /// <summary>
+        ///  Checks to see if a type matches a given namespace pattern.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="namespacePattern">
+        ///  The namespace pattern to match.
+        /// </param>
+        /// <returns></returns>
+        public static bool MatchesNamespace(this Type type, string namespacePattern)
+        {
+            string exactMatch = namespacePattern;
+            string startMatch = null;
+
+            if (namespacePattern.EndsWith("*")) {
+                exactMatch = null;
+                startMatch = namespacePattern.Substring(0, namespacePattern.Length - 1);
+                if (startMatch.EndsWith(".")) {
+                    exactMatch = startMatch.Substring(0, startMatch.Length - 1);
+                }
+            }
+
+            return
+                exactMatch != null && type.Namespace.Equals
+                    (exactMatch, StringComparison.InvariantCultureIgnoreCase)
+                ||
+                startMatch != null && type.Namespace.StartsWith
+                    (startMatch, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }
