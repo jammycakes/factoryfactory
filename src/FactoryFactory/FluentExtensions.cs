@@ -3,6 +3,7 @@ using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using FactoryFactory.Registration.Fluent;
 using FactoryFactory.Util;
@@ -133,7 +134,7 @@ namespace FactoryFactory
         /// <returns></returns>
         public static IConventionPredicates WithAttribute<T>(this IConventionPredicates conv)
             where T : Attribute
-            => conv.Where(type => type.GetCustomAttribute<T>() != null);
+            => conv.Where(type => type.GetCustomAttributes<T>().Any());
 
         /// <summary>
         ///  Configures a convention to apply only to requests for interfaces.
@@ -222,5 +223,172 @@ namespace FactoryFactory
         public static IConventionPredicates WithFullNameMatching
             (this IConventionPredicates conv, string re, RegexOptions options = RegexOptions.None)
             => conv.WithFullNameMatching(new Regex(re, options));
+
+
+        /* ====== Conventions ====== */
+
+        /// <summary>
+        ///  Specifies an assembly to look for candidate implementations.
+        /// </summary>
+        /// <param name="def"></param>
+        /// <param name="assembly">
+        ///  The assembly containing candidate implementations.
+        /// </param>
+        /// <typeparam name="TDef"></typeparam>
+        /// <returns></returns>
+        public static TDef FromAssembly<TDef>(this TDef def, Assembly assembly)
+            where TDef : IConventionDefinition<TDef>
+            => def.FromAssembly(t => assembly);
+
+        /// <summary>
+        ///  Specifies an assembly to look for candidate implementations by
+        ///  one of the types that it contains.
+        /// </summary>
+        /// <param name="conv"></param>
+        /// <typeparam name="T">
+        ///  A type in the assembly containing candidate implementations.
+        /// </typeparam>
+        /// <returns></returns>
+        public static IConventionByName FromAssemblyContaining<T>(this IConventionByName conv)
+            => conv.FromAssembly(typeof(T).Assembly);
+
+        /// <summary>
+        ///  Specifies an assembly to look for candidate implementations by
+        ///  one of the types that it contains.
+        /// </summary>
+        /// <param name="conv"></param>
+        /// <typeparam name="T">
+        ///  A type in the assembly containing candidate implementations.
+        /// </typeparam>
+        /// <returns></returns>
+        public static IConventionByScan FromAssemblyContaining<T>(this IConventionByScan conv)
+            => conv.FromAssembly(typeof(T).Assembly);
+
+        /// <summary>
+        ///  Specifies a namespace to look for candidate implementations.
+        /// </summary>
+        /// <param name="def"></param>
+        /// <param name="ns">
+        ///  The namespace containing candidate implementations.
+        /// </param>
+        /// <typeparam name="TDef"></typeparam>
+        /// <returns></returns>
+        public static TDef FromNamespace<TDef>(this TDef def, string ns)
+            where TDef : IConventionDefinition<TDef>
+            => def.FromNamespace(t => ns);
+
+        /// <summary>
+        ///  Specifies a namespace to look for candidate implementations by
+        ///  one of the types that it contains.
+        /// </summary>
+        /// <param name="conv"></param>
+        /// <param name="includeChildren">
+        ///  true to include child namespaces, otherwise false.
+        /// </param>
+        /// <typeparam name="T">
+        ///  A type in the namespace containing candidate implementations.
+        /// </typeparam>
+        /// <returns></returns>
+        public static IConventionByName FromNamespaceOf<T>(this IConventionByName conv, bool includeChildren = false)
+            => conv.FromNamespace(typeof(T).Namespace + (includeChildren ? ".*" : ""));
+
+        /// <summary>
+        ///  Specifies a namespace to look for candidate implementations by
+        ///  one of the types that it contains.
+        /// </summary>
+        /// <param name="conv"></param>
+        /// <param name="includeChildren">
+        ///  true to include child namespaces, otherwise false.
+        /// </param>
+        /// <typeparam name="T">
+        ///  A type in the assembly containing candidate implementations.
+        /// </typeparam>
+        /// <returns></returns>
+        public static IConventionByScan FromNamespaceOf<T>(this IConventionByScan conv, bool includeChildren = false)
+            => conv.FromNamespace(typeof(T).Namespace + (includeChildren ? ".*" : ""));
+
+        /// <summary>
+        ///  Specifies that candidate implementations must be decorated with
+        ///  the given attribute.
+        /// </summary>
+        /// <param name="conv"></param>
+        /// <typeparam name="T">
+        ///  The attribute to check for.
+        /// </typeparam>
+        /// <returns></returns>
+        public static IConventionByName WithAttribute<T>(this IConventionByName conv)
+            where T : Attribute
+            => conv.Where((t1, t2) => t2.GetCustomAttributes<T>().Any());
+
+        /// <summary>
+        ///  Specifies that candidate implementations must be decorated with
+        ///  the given attribute.
+        /// </summary>
+        /// <param name="conv"></param>
+        /// <typeparam name="T">
+        ///  The attribute to check for.
+        /// </typeparam>
+        /// <returns></returns>
+        public static IConventionByScan WithAttribute<T>(this IConventionByScan conv)
+            where T : Attribute
+            => conv.Where((t1, t2) => t2.GetCustomAttributes<T>().Any());
+
+        /* ====== Convention by name specific ====== */
+
+        /// <summary>
+        ///  Specifies that candidate implementations should be found by
+        ///  replacing the given search string in the service name by another.
+        /// </summary>
+        /// <param name="conv"></param>
+        /// <param name="search">
+        ///  The string to search for in the name of the requested service.
+        /// </param>
+        /// <param name="replace">
+        ///  The string to replace it with in the name of the candidate
+        ///  implementation.
+        /// </param>
+        /// <returns></returns>
+        public static IConventionByName Replace
+            (this IConventionByName conv, string search, string replace)
+            => conv.Named(t => t.Name.Replace(search, replace));
+
+        /// <summary>
+        ///  Specifies that the candidate implementation should be found by
+        ///  replacing the given regular expression in the service name with
+        ///  the given replacement pattern.
+        /// </summary>
+        /// <param name="conv"></param>
+        /// <param name="search">
+        ///  The regular expression to search for in the name of the requested
+        ///  service.
+        /// </param>
+        /// <param name="replace">
+        ///  The string or replacement pattern to replace it with in the name
+        ///  of the candidate implementation.
+        /// </param>
+        /// <returns></returns>
+        public static IConventionByName Replace
+            (this IConventionByName conv, Regex search, string replace)
+            => conv.Named(t => search.Replace(t.Name, replace));
+
+        /// <summary>
+        ///  Specifies that the candidate implementation should be found by
+        ///  replacing the given regular expression in the service name with
+        ///  the value computed by the specified <see cref="MatchEvaluator"/>
+        ///  instance.
+        /// </summary>
+        /// <param name="conv"></param>
+        /// <param name="search">
+        ///  The regular expression to search for in the name of the requested
+        ///  service.
+        /// </param>
+        /// <param name="replace">
+        ///  A <see cref="MatchEvaluator"/> function that computes the string
+        ///  to replace it with in the name of the candidate implementation.
+        /// </param>
+        /// <returns></returns>
+        public static IConventionByName Replace
+            (this IConventionByName conv, Regex search, MatchEvaluator replace)
+            => conv.Named(t => search.Replace(t.Name, replace));
     }
 }
