@@ -18,7 +18,8 @@ namespace FactoryFactory.Tests.Registration
                     .Define(types => types
                         .Where(t => t.IsInterface)
                         .Where(t => t.Name.StartsWith("I")))
-                    .As(types => types.Named(t => t.Name.Substring(1)));
+                    .As(types => types
+                        .Named(t => t.Name.Substring(1)));
             });
             var service = container.GetService<IServiceWithDependencies>();
             // These should have been registered by the convention.

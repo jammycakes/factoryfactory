@@ -49,34 +49,6 @@ namespace FactoryFactory
 
         /// <summary>
         ///  Configures a convention to apply to requests for services defined
-        ///  in the given assembly.
-        /// </summary>
-        /// <param name="conv"></param>
-        /// <param name="assembly">
-        ///  The assembly containing the services to be defined by this
-        ///  convention.
-        /// </param>
-        /// <returns></returns>
-        public static IConventionPredicates FromAssembly
-            (this IConventionPredicates conv, Assembly assembly)
-            => conv.Where(type => type.Assembly == assembly);
-
-        /// <summary>
-        ///  Configures a convention to apply to requests for services defined
-        ///  in the given assemblies.
-        /// </summary>
-        /// <param name="conv"></param>
-        /// <param name="assemblies">
-        ///  The assemblies containing the services to be defined by this
-        ///  convention.
-        /// </param>
-        /// <returns></returns>
-        public static IConventionPredicates FromAssemblies
-            (this IConventionPredicates conv, params Assembly[] assemblies)
-            => conv.Where(type => assemblies.Contains(type.Assembly));
-
-        /// <summary>
-        ///  Configures a convention to apply to requests for services defined
         ///  in the assembly containing the given type.
         /// </summary>
         /// <param name="conv"></param>
@@ -87,20 +59,7 @@ namespace FactoryFactory
         /// <returns></returns>
         public static IConventionPredicates FromAssemblyContaining<T>
             (this IConventionPredicates conv)
-            => conv.Where(type => type.Assembly == typeof(T).Assembly);
-
-        /// <summary>
-        ///  Configures a convention to apply to requests for services defined
-        ///  in the given namespace.
-        /// </summary>
-        /// <param name="conv"></param>
-        /// <param name="namespacePattern">
-        ///  The namespace to match. Wildcards may be used.
-        /// </param>
-        /// <returns></returns>
-        public static IConventionPredicates FromNamespace
-            (this IConventionPredicates conv, string namespacePattern, bool ignoreCase = false)
-            => conv.Where(type => type.MatchesNamespace(namespacePattern, ignoreCase));
+            => conv.FromAssembly(typeof(T).Assembly);
 
         /// <summary>
         ///  Configures a convention to apply to requests for services defined
@@ -118,10 +77,9 @@ namespace FactoryFactory
         /// <returns></returns>
         public static IConventionPredicates FromNamespaceOf<T>
             (this IConventionPredicates conv, bool includeChildren = false, bool ignoreCase = false)
-            => conv.Where(type =>
-                type.MatchesNamespace(
-                    typeof(T).Namespace + (includeChildren ? ".*" : ""),
-                    ignoreCase));
+            => conv.FromNamespace(
+                typeof(T).Namespace + (includeChildren ? ".*" : ""),
+                ignoreCase);
 
         /// <summary>
         ///  Configures a convention to apply only to requests decorated with
@@ -228,7 +186,7 @@ namespace FactoryFactory
         /* ====== Conventions ====== */
 
         /// <summary>
-        ///  Specifies an assembly to look for candidate implementations.
+        ///  Specifies an assembly in which to look for candidate implementations.
         /// </summary>
         /// <param name="def"></param>
         /// <param name="assembly">
@@ -241,8 +199,8 @@ namespace FactoryFactory
             => def.FromAssembly(t => assembly);
 
         /// <summary>
-        ///  Specifies an assembly to look for candidate implementations by
-        ///  one of the types that it contains.
+        ///  Specifies an assembly in which to look for candidate implementations
+        ///  by one of the types that it contains.
         /// </summary>
         /// <param name="conv"></param>
         /// <typeparam name="T">
@@ -253,8 +211,8 @@ namespace FactoryFactory
             => conv.FromAssembly(typeof(T).Assembly);
 
         /// <summary>
-        ///  Specifies an assembly to look for candidate implementations by
-        ///  one of the types that it contains.
+        ///  Specifies an assembly in which to look for candidate implementations
+        ///  by one of the types that it contains.
         /// </summary>
         /// <param name="conv"></param>
         /// <typeparam name="T">
@@ -265,7 +223,7 @@ namespace FactoryFactory
             => conv.FromAssembly(typeof(T).Assembly);
 
         /// <summary>
-        ///  Specifies a namespace to look for candidate implementations.
+        ///  Specifies a namespace in which to look for candidate implementations.
         /// </summary>
         /// <param name="def"></param>
         /// <param name="ns">
@@ -278,8 +236,8 @@ namespace FactoryFactory
             => def.FromNamespace(t => ns);
 
         /// <summary>
-        ///  Specifies a namespace to look for candidate implementations by
-        ///  one of the types that it contains.
+        ///  Specifies a namespace in which to look for candidate implementations
+        ///  by one of the types that it contains.
         /// </summary>
         /// <param name="conv"></param>
         /// <param name="includeChildren">
@@ -289,12 +247,13 @@ namespace FactoryFactory
         ///  A type in the namespace containing candidate implementations.
         /// </typeparam>
         /// <returns></returns>
-        public static IConventionByName FromNamespaceOf<T>(this IConventionByName conv, bool includeChildren = false)
+        public static IConventionByName FromNamespaceOf<T>
+            (this IConventionByName conv, bool includeChildren = false)
             => conv.FromNamespace(typeof(T).Namespace + (includeChildren ? ".*" : ""));
 
         /// <summary>
-        ///  Specifies a namespace to look for candidate implementations by
-        ///  one of the types that it contains.
+        ///  Specifies a namespace in which to look for candidate implementations
+        ///  by one of the types that it contains.
         /// </summary>
         /// <param name="conv"></param>
         /// <param name="includeChildren">
@@ -304,7 +263,8 @@ namespace FactoryFactory
         ///  A type in the assembly containing candidate implementations.
         /// </typeparam>
         /// <returns></returns>
-        public static IConventionByScan FromNamespaceOf<T>(this IConventionByScan conv, bool includeChildren = false)
+        public static IConventionByScan FromNamespaceOf<T>
+            (this IConventionByScan conv, bool includeChildren = false)
             => conv.FromNamespace(typeof(T).Namespace + (includeChildren ? ".*" : ""));
 
         /// <summary>
