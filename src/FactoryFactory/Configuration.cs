@@ -206,10 +206,13 @@ namespace FactoryFactory
             {
                 Add(new FuncServiceDefinition());
                 Add(new ArrayServiceDefinition());
+                Define(typeof(Lazy<>)).As(typeof(Lazy<>)).Untracked();
                 Define(typeof(ICollection<>)).As(typeof(List<>)).Untracked();
                 Define(typeof(IReadOnlyCollection<>)).As(typeof(List<>)).Untracked();
                 Define(typeof(IList<>)).As(typeof(List<>)).Untracked();
+                Define(typeof(List<>)).As(typeof(List<>)).Untracked();
                 Define(typeof(ISet<>)).As(typeof(HashSet<>)).Untracked();
+                Define(typeof(HashSet<>)).As(typeof(HashSet<>)).Untracked();
                 Define<Configuration>().As(configuration).Untracked();
                 Define<IContainer>().As(req => req.Container).Untracked();
                 Define<IServiceScope>().As(req => req.Container).Untracked();

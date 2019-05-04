@@ -105,8 +105,8 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
             var module = new Module();
             module.Define<IServiceWithDependencies>().As<ServiceWithLazyDependencies>().Lifecycle(lifecycle);
             module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>().Lifecycle(lifecycle);
-            var service = Configuration.CreateContainer(module)
-                .GetService<IServiceWithDependencies>();
+            var container = Configuration.CreateContainer(module);
+            var service = container.GetService<IServiceWithDependencies>();
             Assert.IsType<ServiceWithoutDependencies>(service.Dependency);
         }
     }

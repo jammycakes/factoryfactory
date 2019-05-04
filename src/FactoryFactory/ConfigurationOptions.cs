@@ -44,13 +44,13 @@ namespace FactoryFactory
         ///  The default lifecycle to apply to unregistered types.
         /// </param>
         /// <param name="autoResolve">
-        ///  The class used to create expressions to resolve dependencies.
+        ///  true if we are to auto-resolve unregistered types, otherwise false.
         /// </param>
         public ConfigurationOptions(
             IConstructorSelector constructorSelector = null,
             IExpressionBuilder expressionBuilder = null,
             ILifecycle defaultLifecycle = null,
-            bool autoResolve = true
+            bool autoResolve = false
         )
         {
             AutoResolve = autoResolve;

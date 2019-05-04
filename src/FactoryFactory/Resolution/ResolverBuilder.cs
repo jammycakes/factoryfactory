@@ -84,7 +84,7 @@ namespace FactoryFactory.Resolution
                     var definition = new ServiceDefinition(
                         InstanceType,
                         implementationType: InstanceType,
-                        lifecycle: Lifecycle.Default
+                        lifecycle: _configuration.Options.DefaultLifecycle
                     );
                     var resolver = CreateResolverByType(definition, InstanceType);
                     if (resolver != null && resolver.CanResolve) {
