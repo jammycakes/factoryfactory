@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FactoryFactory.Registration;
+using FactoryFactory.Registration.ServiceDefinitions;
 using Xunit;
 
 namespace FactoryFactory.Tests.Registration

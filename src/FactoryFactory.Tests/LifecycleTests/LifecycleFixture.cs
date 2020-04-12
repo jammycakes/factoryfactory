@@ -22,14 +22,12 @@ namespace FactoryFactory.Tests.LifecycleTests
             Assert.False(svc.Disposed);
         }
 
-        private class ServiceCollection: List<ServiceDescriptor>, IServiceCollection {}
-
         [Fact]
         public void ServicesRegisteredByInstanceFromServiceCollectionShouldBeUntracked()
         {
             var svc = new DisposableService();
 
-            var services = new ServiceCollection();
+            var services = new Registry();
             services.AddSingleton(svc);
 
             using (var container = Configuration.CreateContainer(services)) {

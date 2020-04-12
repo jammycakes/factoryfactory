@@ -23,7 +23,7 @@ namespace FactoryFactory
 
         public static IContainer CreateFactoryFactory(this IServiceCollection collection)
         {
-            return new Configuration(new Module(collection)).CreateContainer();
+            return new Configuration(new Registry(collection)).CreateContainer();
         }
     }
 }

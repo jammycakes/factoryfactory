@@ -84,21 +84,6 @@ namespace FactoryFactory
         }
 
         /// <summary>
-        ///  Creates a new container, initialised and configured from the
-        ///  provided <see cref="IServiceCollection"/>.
-        /// </summary>
-        /// <param name="services">
-        ///  The services being registered.
-        /// </param>
-        /// <returns>
-        ///  The configured container.
-        /// </returns>
-        public static IContainer CreateContainer(IServiceCollection services)
-        {
-            return CreateContainer(new Module(services));
-        }
-
-        /// <summary>
         ///  Creates a new container from a new module, initialised and
         ///  configured by the supplied action.
         /// </summary>

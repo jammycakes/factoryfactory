@@ -14,7 +14,9 @@ namespace FactoryFactory.Tests
     {
         protected override IServiceProvider CreateServiceProvider(IServiceCollection serviceCollection)
         {
-            return Configuration.CreateContainer(serviceCollection);
+            var registry = new Registry();
+            registry.AddRange(serviceCollection);
+            return Configuration.CreateContainer(registry);
         }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq;
 using FactoryFactory.Registration;
+using FactoryFactory.Registration.ServiceDefinitions;
 using FakeItEasy;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
