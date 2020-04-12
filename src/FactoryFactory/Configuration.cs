@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using FactoryFactory.Impl;
 using FactoryFactory.Registration;
 using FactoryFactory.Resolution;
@@ -40,7 +41,7 @@ namespace FactoryFactory
         public Configuration(params IRegistry[] modules)
         {
             Options = new ConfigurationOptions();
-            AddModule(new DefaultModule(this));
+            AddModule(new DefaultDefinitions(this));
             foreach (var module in modules) {
                 AddModule(module);
             }
@@ -195,29 +196,51 @@ namespace FactoryFactory
         }
 
 
-        /* ====== DefaultModule ====== */
+        /* ====== DefaultDefinitions ====== */
 
         /// <summary>
         ///  Contains core default definitions registered by the IOC container.
         /// </summary>
-        private class DefaultModule : Module
+        private class DefaultDefinitions : IRegistry
         {
-            public DefaultModule(Configuration configuration)
+            private readonly Configuration _configuration;
+
+            private ServiceDefinition CreateDefinition(Type serviceType, Type implementationType)
+                => new ServiceDefinition
+                    (serviceType, implementationType: implementationType, lifecycle: Lifecycle.Untracked);
+
+            private ServiceDefinition CreateDefinition(Type serviceType, object instance)
+                => new ServiceDefinition
+                    (serviceType, implementationInstance: instance, lifecycle: Lifecycle.Untracked);
+
+            private ServiceDefinition CreateDefinition
+                (Type serviceType, Expression<Func<ServiceRequest, object>> func)
+                => new ServiceDefinition
+                    (serviceType, implementationFactory: func, lifecycle: Lifecycle.Untracked);
+
+            public IEnumerable<IServiceDefinition> GetServiceDefinitions()
             {
-                Add(new FuncServiceDefinition());
-                Add(new ArrayServiceDefinition());
-                Define(typeof(Lazy<>)).As(typeof(Lazy<>)).Untracked();
-                Define(typeof(ICollection<>)).As(typeof(List<>)).Untracked();
-                Define(typeof(IReadOnlyCollection<>)).As(typeof(List<>)).Untracked();
-                Define(typeof(IList<>)).As(typeof(List<>)).Untracked();
-                Define(typeof(List<>)).As(typeof(List<>)).Untracked();
-                Define(typeof(ISet<>)).As(typeof(HashSet<>)).Untracked();
-                Define(typeof(HashSet<>)).As(typeof(HashSet<>)).Untracked();
-                Define<Configuration>().As(configuration).Untracked();
-                Define<IContainer>().As(req => req.Container).Untracked();
-                Define<IServiceScope>().As(req => req.Container).Untracked();
-                Define<IServiceProvider>().As(req => req.Container).Untracked();
-                Define<IServiceScopeFactory>().As(req => req.Container).Untracked();
+                return new IServiceDefinition[] {
+                    new FuncServiceDefinition(),
+                    new ArrayServiceDefinition(),
+                    CreateDefinition(typeof(Lazy<>), typeof(Lazy<>)),
+                    CreateDefinition(typeof(ICollection<>), typeof(List<>)),
+                    CreateDefinition(typeof(IReadOnlyCollection<>), typeof(List<>)),
+                    CreateDefinition(typeof(IList<>), typeof(List<>)),
+                    CreateDefinition(typeof(List<>), typeof(List<>)),
+                    CreateDefinition(typeof(ISet<>), typeof(HashSet<>)),
+                    CreateDefinition(typeof(HashSet<>), typeof(HashSet<>)),
+                    CreateDefinition(typeof(Configuration), _configuration),
+                    CreateDefinition(typeof(IContainer), req => req.Container),
+                    CreateDefinition(typeof(IServiceScope), req => req.Container),
+                    CreateDefinition(typeof(IServiceProvider), req => req.Container),
+                    CreateDefinition(typeof(IServiceScopeFactory), req => req.Container)
+                };
+            }
+
+            public DefaultDefinitions(Configuration configuration)
+            {
+                _configuration = configuration;
             }
         }
     }
