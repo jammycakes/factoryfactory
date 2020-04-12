@@ -1,7 +1,7 @@
 using System;
 using FactoryFactory.Registration.Fluent;
 
-namespace FactoryFactory.Registration
+namespace FactoryFactory.Registration.Impl
 {
     public class OptionsBuilder : IOptionsClause
     {

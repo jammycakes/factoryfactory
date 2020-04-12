@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FactoryFactory.Registration
+namespace FactoryFactory.Registration.Impl
 {
     public interface ITypeFinderBuilder
     {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using FactoryFactory.Registration;
+using FactoryFactory.Registration.ServiceDefinitions;
 using FactoryFactory.Util;
 
 namespace FactoryFactory.Resolution

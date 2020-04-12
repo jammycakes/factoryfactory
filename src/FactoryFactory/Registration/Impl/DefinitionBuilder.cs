@@ -1,8 +1,9 @@
 using System;
 using System.Linq.Expressions;
 using FactoryFactory.Registration.Fluent;
+using FactoryFactory.Registration.ServiceDefinitions;
 
-namespace FactoryFactory.Registration
+namespace FactoryFactory.Registration.Impl
 {
     public class DefinitionBuilder
     {

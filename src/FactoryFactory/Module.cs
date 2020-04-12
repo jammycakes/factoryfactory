@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using FactoryFactory.Registration;
 using FactoryFactory.Registration.Fluent;
+using FactoryFactory.Registration.Impl;
+using FactoryFactory.Registration.ServiceDefinitions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory

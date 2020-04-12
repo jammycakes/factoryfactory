@@ -1,6 +1,6 @@
 using System;
 
-namespace FactoryFactory.Registration
+namespace FactoryFactory.Registration.Impl
 {
     public class DefinitionOptions
     {

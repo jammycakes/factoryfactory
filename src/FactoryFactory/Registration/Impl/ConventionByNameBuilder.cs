@@ -5,7 +5,7 @@ using System.Reflection;
 using FactoryFactory.Registration.Fluent;
 using FactoryFactory.Util;
 
-namespace FactoryFactory.Registration
+namespace FactoryFactory.Registration.Impl
 {
     public class ConventionByNameBuilder : IConventionByName, ITypeFinderBuilder
     {

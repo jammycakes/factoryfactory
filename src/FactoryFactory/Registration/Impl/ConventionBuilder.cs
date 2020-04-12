@@ -1,7 +1,8 @@
 using System;
 using FactoryFactory.Registration.Fluent;
+using FactoryFactory.Registration.ServiceDefinitions;
 
-namespace FactoryFactory.Registration
+namespace FactoryFactory.Registration.Impl
 {
     public class ConventionBuilder : IConventionClause, IOptionsClause
     {
