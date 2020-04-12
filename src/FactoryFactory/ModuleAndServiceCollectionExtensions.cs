@@ -9,7 +9,7 @@ namespace FactoryFactory
         /// </summary>
         /// <param name="module"></param>
         /// <returns></returns>
-        public static IContainer CreateContainer(this Module module)
+        public static IContainer CreateContainer(this IRegistry module)
         {
             return new Configuration(module).CreateContainer();
         }

@@ -7,7 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory
 {
-    public class Module
+    [Obsolete("The Module API is deprecated and will be removed in a future release. Use the Registry API instead.")]
+    public class Module : IRegistry
     {
         private List<Lazy<IServiceDefinition>> _definitions = new List<Lazy<IServiceDefinition>>();
 
