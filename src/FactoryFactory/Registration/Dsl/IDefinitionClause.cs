@@ -10,7 +10,6 @@ namespace FactoryFactory.Registration.Dsl
     }
 
     public interface IDefinitionClause<TService> :
-        IDefinitionClause,
         ILifecycleClause<TService>,
         IPreconditionClause<TService>,
         IAsClause<TService>

@@ -9,7 +9,7 @@ namespace FactoryFactory.Registration.Dsl.Decriptors
 {
     public class DefinitionServiceDescriptor : ServiceDescriptor, IServiceDefinition
     {
-        private Expression<Func<ServiceRequest, object>> _expression;
+        private Expression<Func<ServiceRequest, object>> _implementationFactory;
 
         public DefinitionServiceDescriptor(
             Type serviceType,
@@ -45,6 +45,7 @@ namespace FactoryFactory.Registration.Dsl.Decriptors
             Func<ServiceRequest, bool> precondition)
             : base(serviceType, svc => null, lifetime ?? ServiceLifetime.Transient)
         {
+            _implementationFactory = implementationFactory;
             Lifecycle = lifecycle ??
                         (lifetime.HasValue
                             ? FactoryFactory.Lifecycle.Get(lifetime.Value)
@@ -82,7 +83,7 @@ namespace FactoryFactory.Registration.Dsl.Decriptors
         public IEnumerable<Expression<Func<ServiceRequest, object>>> GetExpressions(Type requestedType)
         {
             if (ImplementationFactory != null && requestedType == ServiceType) {
-                yield return _expression;
+                yield return _implementationFactory;
             }
         }
 
