@@ -34,6 +34,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Registration\Fluent\**" />
+    <Compile Remove="Registration\Impl\**" />
+    <EmbeddedResource Remove="Registration\Fluent\**" />
+    <EmbeddedResource Remove="Registration\Impl\**" />
+    <None Remove="Registration\Fluent\**" />
+    <None Remove="Registration\Impl\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
   </ItemGroup>
 
@@ -45,6 +54,14 @@
     <Compile Include="..\.version\version.cs" Condition="Exists('..\.version\version.cs')">
       <Link>version.cs</Link>
     </Compile>
+    <Compile Include="Registration\Fluent\IConventionByName.cs" />
+    <Compile Include="Registration\Fluent\IConventionByScan.cs" />
+    <Compile Include="Registration\Fluent\IConventionDefinition.cs" />
+    <Compile Include="Registration\Fluent\IConventionPredicates.cs" />
+    <Compile Include="Registration\Impl\ConventionByNameBuilder.cs" />
+    <Compile Include="Registration\Impl\ConventionByScanBuilder.cs" />
+    <Compile Include="Registration\Impl\ConventionPredicates.cs" />
+    <Compile Include="Registration\Impl\ITypeFinderBuilder.cs" />
   </ItemGroup>
 
 </Project>
