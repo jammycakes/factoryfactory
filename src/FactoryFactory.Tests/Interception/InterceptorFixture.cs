@@ -24,14 +24,16 @@ namespace FactoryFactory.Tests.Interception
                         decorated = A.Fake<IServiceWithoutDependencies>();
                         return decorated;
                     });
-            var module = new Module();
-            module.Intercept<IServiceWithoutDependencies>().With(interceptor);
-            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>()
-                .Singleton();
-            var container = Configuration.CreateContainer(module);
-            var service = container.GetService<IServiceWithoutDependencies>();
-            Assert.Same(decorated, service);
-            Assert.IsType<ServiceWithoutDependencies>(original);
+
+            var registry = new Registry()
+                .Define<IServiceWithoutDependencies>().Singleton().As<ServiceWithoutDependencies>()
+                .Intercept<IServiceWithoutDependencies>().With(interceptor);
+
+            using (var container = registry.CreateContainer()) {
+                var service = container.GetService<IServiceWithoutDependencies>();
+                Assert.Same(decorated, service);
+                Assert.IsType<ServiceWithoutDependencies>(original);
+            }
         }
 
         [Fact]
@@ -43,17 +45,20 @@ namespace FactoryFactory.Tests.Interception
                     A<ServiceRequest>.Ignored,
                     A<Func<IServiceWithoutDependencies>>.Ignored))
                 .ReturnsLazily((ServiceRequest req, Func<IServiceWithoutDependencies> svc) => svc());
-            var module = new Module();
-            module.Intercept<IServiceWithoutDependencies>().With(interceptor);
-            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>()
-                .Singleton();
-            var container = Configuration.CreateContainer(module);
-            var service1 = container.GetService<IServiceWithoutDependencies>();
-            var service2 = container.GetService<IServiceWithoutDependencies>();
-            Assert.Same(service1, service2);
-            A.CallTo(() => interceptor.Intercept(
-                A<ServiceRequest>.Ignored,
-                A<Func<IServiceWithoutDependencies>>.Ignored)).MustHaveHappened(1, Times.Exactly);
+
+            var registry = new Registry()
+                .Define<IServiceWithoutDependencies>().Singleton().As<ServiceWithoutDependencies>()
+                .Intercept<IServiceWithoutDependencies>().With(interceptor);
+
+            using (var container = registry.CreateContainer()) {
+                var service1 = container.GetService<IServiceWithoutDependencies>();
+                var service2 = container.GetService<IServiceWithoutDependencies>();
+                Assert.Same(service1, service2);
+                A.CallTo(() => interceptor.Intercept(
+                        A<ServiceRequest>.Ignored,
+                        A<Func<IServiceWithoutDependencies>>.Ignored))
+                    .MustHaveHappened(1, Times.Exactly);
+            }
         }
 
         [Fact]
@@ -65,17 +70,20 @@ namespace FactoryFactory.Tests.Interception
                         A<ServiceRequest>.Ignored,
                         A<Func<IServiceWithoutDependencies>>.Ignored))
                 .ReturnsLazily((ServiceRequest req, Func<IServiceWithoutDependencies> svc) => svc());
-            var module = new Module();
-            module.Intercept<IServiceWithoutDependencies>().With(interceptor);
-            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>()
-                .Transient();
-            var container = Configuration.CreateContainer(module);
-            var service1 = container.GetService<IServiceWithoutDependencies>();
-            var service2 = container.GetService<IServiceWithoutDependencies>();
-            Assert.NotSame(service1, service2);
-            A.CallTo(() => interceptor.Intercept(
-                A<ServiceRequest>.Ignored,
-                A<Func<IServiceWithoutDependencies>>.Ignored)).MustHaveHappened(2, Times.Exactly);
+
+            var registry = new Registry()
+                .Define<IServiceWithoutDependencies>().Transient().As<ServiceWithoutDependencies>()
+                .Intercept<IServiceWithoutDependencies>().With(interceptor);
+
+            using (var container = registry.CreateContainer()) {
+                var service1 = container.GetService<IServiceWithoutDependencies>();
+                var service2 = container.GetService<IServiceWithoutDependencies>();
+                Assert.NotSame(service1, service2);
+                A.CallTo(() => interceptor.Intercept(
+                        A<ServiceRequest>.Ignored,
+                        A<Func<IServiceWithoutDependencies>>.Ignored))
+                    .MustHaveHappened(2, Times.Exactly);
+            }
         }
 
         [Fact]
@@ -109,19 +117,21 @@ namespace FactoryFactory.Tests.Interception
                     postCall2 = ++postCallCount;
                     return result;
                 });
-            var module = new Module();
-            module.Intercept<IServiceWithoutDependencies>().With(interceptor1);
-            module.Intercept<IServiceWithoutDependencies>().With(interceptor2);
-            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>()
-                .Transient();
-            var container = Configuration.CreateContainer(module);
-            var service1 = container.GetService<IServiceWithoutDependencies>();
 
-            Assert.Equal(1, postCall1);
-            Assert.Equal(2, postCall2);
+            var registry = new Registry()
+                .Intercept<IServiceWithoutDependencies>().With(interceptor1)
+                .Intercept<IServiceWithoutDependencies>().With(interceptor2)
+                .Define<IServiceWithoutDependencies>().Transient().As<ServiceWithoutDependencies>();
 
-            Assert.Equal(2, call1);
-            Assert.Equal(1, call2);
+            using (var container = registry.CreateContainer()) {
+                var service1 = container.GetService<IServiceWithoutDependencies>();
+
+                Assert.Equal(1, postCall1);
+                Assert.Equal(2, postCall2);
+
+                Assert.Equal(2, call1);
+                Assert.Equal(1, call2);
+            }
         }
 
 
@@ -132,14 +142,17 @@ namespace FactoryFactory.Tests.Interception
             var blueService = A.Fake<IBlueService>();
             var greenService = A.Fake<IGreenService>();
 
-            module.Define(typeof(IInterceptor<>)).As(typeof(InterceptorWithTypeConstraints<>));
-            module.Define<IBlueService>().As(blueService);
-            module.Define<IGreenService>().As(greenService);
-            var container = Configuration.CreateContainer(module);
-            var newBlue = container.GetService<IBlueService>();
-            var newGreen = container.GetService<IGreenService>();
-            Assert.True(newBlue.Intercepted);
-            Assert.False(newGreen.Intercepted);
+            var registry = new Registry()
+                .Define(typeof(IInterceptor<>)).As(typeof(InterceptorWithTypeConstraints<>))
+                .Define<IBlueService>().As(blueService)
+                .Define<IGreenService>().As(greenService);
+
+            using (var container = registry.CreateContainer()) {
+                var newBlue = container.GetService<IBlueService>();
+                var newGreen = container.GetService<IGreenService>();
+                Assert.True(newBlue.Intercepted);
+                Assert.False(newGreen.Intercepted);
+            }
         }
     }
 }

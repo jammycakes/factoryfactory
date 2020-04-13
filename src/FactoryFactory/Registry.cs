@@ -39,8 +39,9 @@ namespace FactoryFactory
         //{
         //}
 
-        //public IInterceptionDefinitionClause Intercept<TService>() where TService : class
-        //{
-        //}
+        public IInterceptionDefinitionClause<TService> Intercept<TService>() where TService : class
+        {
+            return new InterceptionDefinitionBuilder<TService>(this);
+        }
     }
 }

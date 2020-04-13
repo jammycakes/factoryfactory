@@ -9,15 +9,15 @@ namespace FactoryFactory.Tests.Interception
         [Fact]
         public void DecorationCanReplaceService()
         {
-            var container = Configuration.CreateContainer(module => {
-                module.Define<IServiceWithoutDependencies>()
-                    .As<ServiceWithoutDependencies>();
-                module.Intercept<IServiceWithoutDependencies>()
-                    .By((req, svc) => new AlternateServiceWithoutDependencies());
-            });
+            var registry = new Registry()
+                .Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>()
+                .Intercept<IServiceWithoutDependencies>()
+                .By((req, svc) => new AlternateServiceWithoutDependencies());
 
-            var service = container.GetService<IServiceWithoutDependencies>();
-            Assert.IsType<AlternateServiceWithoutDependencies>(service);
+            using (var container = registry.CreateContainer()) {
+                var service = container.GetService<IServiceWithoutDependencies>();
+                Assert.IsType<AlternateServiceWithoutDependencies>(service);
+            }
         }
     }
 }
