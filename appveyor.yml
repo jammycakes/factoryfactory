@@ -1,4 +1,4 @@
-version: 0.3.0-beta.{build}
+version: 0.4.0-beta.{build}
 image: Visual Studio 2019
 build_script:
 - cmd: C:\Python37\python build.py

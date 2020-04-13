@@ -3,7 +3,7 @@
   <PropertyGroup>
     <PackageId>FactoryFactory</PackageId>
     <Description>Yet Another IOC Container for .NET</Description>
-    <VersionPrefix>0.3.0</VersionPrefix>
+    <VersionPrefix>0.4.0</VersionPrefix>
     <VersionSuffix>beta</VersionSuffix>
     <Authors>James McKay</Authors>
     <Copyright>Copyright 2018 James McKay</Copyright>
