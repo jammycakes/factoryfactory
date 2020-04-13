@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FactoryFactory.Registration.Dsl;
+using FactoryFactory.Registration.Fluent;
 using FactoryFactory.Registration.ServiceDefinitions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -32,11 +33,10 @@ namespace FactoryFactory
             return new DefinitionBuilder<TService>(this);
         }
 
-        // TODO
-
-        //public IConventionDefinitionClause Define(Action<IConventionPredicates> types)
-        //{
-        //}
+        public IConventionDefinitionClause Define(Action<IConventionPredicates> types)
+        {
+            return new ConventionDefinitionBuilder(this, types);
+        }
 
         public IInterceptionDefinitionClause<TService> Intercept<TService>() where TService : class
         {
