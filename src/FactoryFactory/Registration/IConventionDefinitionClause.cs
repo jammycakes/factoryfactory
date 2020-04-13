@@ -1,7 +1,6 @@
 using System;
-using FactoryFactory.Registration.Fluent;
 
-namespace FactoryFactory.Registration.Dsl
+namespace FactoryFactory.Registration
 {
     public interface IConventionDefinitionClause : IOptionsClause<IConventionDefinitionClause>
     {

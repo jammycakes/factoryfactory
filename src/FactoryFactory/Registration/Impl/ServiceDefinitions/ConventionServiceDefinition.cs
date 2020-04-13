@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace FactoryFactory.Registration.ServiceDefinitions
+namespace FactoryFactory.Registration.Impl.ServiceDefinitions
 {
     public class ConventionServiceDefinition : IServiceDefinition
     {

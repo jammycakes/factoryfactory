@@ -2,9 +2,8 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using FactoryFactory.Registration.Fluent;
 
-namespace FactoryFactory
+namespace FactoryFactory.Registration
 {
     public static class FluentExtensions
     {

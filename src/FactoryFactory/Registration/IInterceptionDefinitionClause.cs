@@ -1,7 +1,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace FactoryFactory.Registration.Dsl
+namespace FactoryFactory.Registration
 {
     public interface IInterceptionDefinitionClause<TService>
         : IOptionsClause<TService, IInterceptionDefinitionClause<TService>>

@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using FactoryFactory.Util;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FactoryFactory.Registration.ServiceDefinitions
+namespace FactoryFactory.Registration.Impl.ServiceDefinitions
 {
     public class ServiceDefinition : IServiceDefinition
     {

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FactoryFactory.Registration.Dsl;
-using FactoryFactory.Registration.Fluent;
-using FactoryFactory.Registration.ServiceDefinitions;
+using FactoryFactory.Registration;
+using FactoryFactory.Registration.Impl;
+using FactoryFactory.Registration.Impl.ServiceDefinitions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory

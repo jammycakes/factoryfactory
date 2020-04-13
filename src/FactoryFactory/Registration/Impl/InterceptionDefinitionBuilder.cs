@@ -1,9 +1,9 @@
 using System;
 using System.Linq.Expressions;
-using FactoryFactory.Registration.Dsl.Descriptors;
+using FactoryFactory.Registration.Impl.Descriptors;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FactoryFactory.Registration.Dsl
+namespace FactoryFactory.Registration.Impl
 {
     public class InterceptionDefinitionBuilder<TService> : IInterceptionDefinitionClause<TService>
         where TService : class

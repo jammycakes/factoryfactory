@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace FactoryFactory.Registration.ServiceDefinitions
+namespace FactoryFactory.Registration.Impl.ServiceDefinitions
 {
     internal class FuncServiceDefinition : IServiceDefinition
     {

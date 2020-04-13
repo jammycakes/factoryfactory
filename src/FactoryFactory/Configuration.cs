@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using FactoryFactory.Expressions;
 using FactoryFactory.Impl;
-using FactoryFactory.Registration.ServiceDefinitions;
+using FactoryFactory.Registration.Impl.ServiceDefinitions;
 using FactoryFactory.Resolution;
 using FactoryFactory.Util;
 using Microsoft.Extensions.DependencyInjection;

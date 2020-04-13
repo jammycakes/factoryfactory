@@ -1,6 +1,6 @@
 using System;
 
-namespace FactoryFactory.Registration.Fluent
+namespace FactoryFactory.Registration
 {
     public interface IConventionByName : IConventionDefinition<IConventionByName>
     {

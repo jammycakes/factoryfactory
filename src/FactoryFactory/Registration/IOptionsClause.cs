@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FactoryFactory.Registration.Dsl
+namespace FactoryFactory.Registration
 {
     public interface IOptionsClause<TReturn>
     {

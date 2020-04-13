@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FactoryFactory.Registration.Dsl.Descriptors
+namespace FactoryFactory.Registration.Impl.Descriptors
 {
     public class ConventionServiceDescriptor : ServiceDescriptor, IServiceDefinition
     {

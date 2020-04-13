@@ -2,7 +2,7 @@ using System;
 using System.Linq.Expressions;
 using FactoryFactory.Expressions;
 using FactoryFactory.Lifecycles;
-using FactoryFactory.Registration.ServiceDefinitions;
+using FactoryFactory.Registration.Impl.ServiceDefinitions;
 using FactoryFactory.Tests.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;

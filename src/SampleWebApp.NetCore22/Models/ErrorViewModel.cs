@@ -1,5 +1,3 @@
-using System;
-
 namespace SampleWebApp.NetCore22.Models
 {
     public class ErrorViewModel

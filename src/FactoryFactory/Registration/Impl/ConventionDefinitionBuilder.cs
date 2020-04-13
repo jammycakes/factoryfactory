@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using FactoryFactory.Registration.Dsl.Descriptors;
-using FactoryFactory.Registration.Fluent;
-using FactoryFactory.Registration.Impl;
+using FactoryFactory.Registration.Impl.Descriptors;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FactoryFactory.Registration.Dsl
+namespace FactoryFactory.Registration.Impl
 {
     public class ConventionDefinitionBuilder : IConventionDefinitionClause
     {

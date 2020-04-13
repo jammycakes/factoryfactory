@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace FactoryFactory.Registration.Fluent
+namespace FactoryFactory.Registration
 {
     public interface IConventionDefinition<TReturn>
         where TReturn: IConventionDefinition<TReturn>
