@@ -12,22 +12,22 @@ namespace FactoryFactory
         ///  Indicates that unregistered types should be automatically resolved
         ///  where possible.
         /// </summary>
-        public bool AutoResolve { get; }
+        public bool AutoResolve { get; set; }
 
         /// <summary>
         ///  The mechanism by which constructors are selected.
         /// </summary>
-        public IConstructorSelector ConstructorSelector { get; }
+        public IConstructorSelector ConstructorSelector { get; set; }
 
         /// <summary>
         ///  The default lifecycle to apply to unregistered types.
         /// </summary>
-        public ILifecycle DefaultLifecycle { get; }
+        public ILifecycle DefaultLifecycle { get; set; }
 
         /// <summary>
         ///  The class used to create expressions to resolve dependencies.
         /// </summary>
-        public IExpressionBuilder ExpressionBuilder { get; }
+        public IExpressionBuilder ExpressionBuilder { get; set; }
 
         /// <summary>
         ///  Creates a new instance of the <see cref="ConfigurationOptions"/>

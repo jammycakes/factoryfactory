@@ -77,14 +77,14 @@ namespace FactoryFactory.Resolution
             }
 
             if (!_resolvers.Any()) {
-                if (_configuration.Options.AutoResolve &&
+                if (_configuration.AutoResolve &&
                     !InstanceType.IsAbstract &&
                     !InstanceType.IsValueType &&
                     !InstanceType.IsGenericTypeDefinition) {
                     var definition = new ServiceDefinition(
                         InstanceType,
                         implementationType: InstanceType,
-                        lifecycle: _configuration.Options.DefaultLifecycle
+                        lifecycle: _configuration.DefaultLifecycle
                     );
                     var resolver = CreateResolverByType(definition, InstanceType);
                     if (resolver != null && resolver.CanResolve) {
@@ -108,11 +108,11 @@ namespace FactoryFactory.Resolution
 
         private IResolver CreateResolverByType(IServiceDefinition definition, Type implementationType)
         {
-            var constructor = _configuration.Options.ConstructorSelector.SelectConstructor
+            var constructor = _configuration.ConstructorSelector.SelectConstructor
                 (implementationType, _configuration);
             if (constructor == null) return new NonResolver(InstanceType);
             var expression =
-                _configuration.Options.ExpressionBuilder.CreateResolutionExpressionFromDefaultConstructor(constructor);
+                _configuration.ExpressionBuilder.CreateResolutionExpressionFromDefaultConstructor(constructor);
             var isTracked = typeof(IDisposable).IsAssignableFrom(implementationType);
             var resolver = new ExpressionResolver(definition, expression, InstanceType);
             return BuildUp(resolver, definition, isTracked);
@@ -128,7 +128,7 @@ namespace FactoryFactory.Resolution
             (IServiceDefinition definition, Expression<Func<ServiceRequest, object>> expression)
         {
             if (expression.Body is NewExpression nex) {
-                expression = _configuration.Options.ExpressionBuilder
+                expression = _configuration.ExpressionBuilder
                     .CreateResolutionExpressionFromConstructorExpression(nex);
             }
             var resolver = new ExpressionResolver(definition, expression, InstanceType);

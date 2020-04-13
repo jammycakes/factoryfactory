@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using FactoryFactory.Expressions;
 using FactoryFactory.Impl;
 using FactoryFactory.Registration.ServiceDefinitions;
 using FactoryFactory.Resolution;
@@ -23,13 +24,26 @@ namespace FactoryFactory
 
         /* ====== Public properties ====== */
 
-        /// <summary>
-        ///  Gets the <see cref="ConfigurationOptions"/> instance containing
-        ///  options which have been specified for this configuration.
-        /// </summary>
-        public ConfigurationOptions Options { get; }
+        public bool AutoResolve { get; }
+
+        public IConstructorSelector ConstructorSelector { get; }
+
+        public ILifecycle DefaultLifecycle { get; }
+
+        public IExpressionBuilder ExpressionBuilder { get; }
+
 
         /* ====== Constructors ====== */
+
+        private Configuration(ConfigurationOptions options)
+        {
+            options = options ?? new ConfigurationOptions();
+            this.AutoResolve = options.AutoResolve;
+            this.ConstructorSelector = options.ConstructorSelector;
+            this.DefaultLifecycle = options.DefaultLifecycle;
+            this.ExpressionBuilder = options.ExpressionBuilder;
+        }
+
 
         /// <summary>
         ///  Creates a new <see cref="Configuration"/> instance configured with
@@ -39,12 +53,8 @@ namespace FactoryFactory
         ///  The modules containing service definitions.
         /// </param>
         public Configuration(params IRegistry[] modules)
+            : this(new ConfigurationOptions(), modules)
         {
-            Options = new ConfigurationOptions();
-            AddModule(new DefaultDefinitions(this));
-            foreach (var module in modules) {
-                AddModule(module);
-            }
         }
 
         /// <summary>
@@ -59,9 +69,12 @@ namespace FactoryFactory
         ///  One or more modules containing service definitions.
         /// </param>
         public Configuration(ConfigurationOptions options, params IRegistry[] modules)
-            : this(modules)
+            : this(options)
         {
-            Options = options;
+            AddModule(new DefaultDefinitions(this));
+            foreach (var module in modules) {
+                AddModule(module);
+            }
         }
 
 
