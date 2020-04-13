@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace FactoryFactory.Registration.Dsl
 {

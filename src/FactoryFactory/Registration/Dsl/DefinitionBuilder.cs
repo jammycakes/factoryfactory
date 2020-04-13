@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 using FactoryFactory.Registration.Dsl.Decriptors;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -39,13 +37,17 @@ namespace FactoryFactory.Registration.Dsl
             return this;
         }
 
-        IDefinitionClause IOptionsClause<IDefinitionClause>.Singleton() => Lifecycle(ServiceLifetime.Singleton);
+        IDefinitionClause IOptionsClause<IDefinitionClause>.Singleton()
+            => Lifecycle(ServiceLifetime.Singleton);
 
-        IDefinitionClause IOptionsClause<IDefinitionClause>.Scoped() => Lifecycle(ServiceLifetime.Scoped);
+        IDefinitionClause IOptionsClause<IDefinitionClause>.Scoped()
+            => Lifecycle(ServiceLifetime.Scoped);
 
-        IDefinitionClause IOptionsClause<IDefinitionClause>.Transient() => Lifecycle(ServiceLifetime.Transient);
+        IDefinitionClause IOptionsClause<IDefinitionClause>.Transient()
+            => Lifecycle(ServiceLifetime.Transient);
 
-        IDefinitionClause IOptionsClause<IDefinitionClause>.Untracked() => Lifecycle(FactoryFactory.Lifecycle.Untracked);
+        IDefinitionClause IOptionsClause<IDefinitionClause>.Untracked()
+            => Lifecycle(FactoryFactory.Lifecycle.Untracked);
 
         public IDefinitionClause Precondition(Func<ServiceRequest, bool> precondition)
         {

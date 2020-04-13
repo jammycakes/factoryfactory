@@ -1,12 +1,8 @@
 using System;
-using System.Data;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using FactoryFactory.Registration.Fluent;
-using FactoryFactory.Util;
 
 namespace FactoryFactory
 {

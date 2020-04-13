@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using FactoryFactory.Impl;
-using FactoryFactory.Registration;
 using FactoryFactory.Registration.ServiceDefinitions;
 using FactoryFactory.Resolution;
 using FactoryFactory.Util;

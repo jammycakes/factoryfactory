@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using FactoryFactory.Tests.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
