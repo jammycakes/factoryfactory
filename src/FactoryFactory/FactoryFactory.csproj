@@ -34,11 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Registration\Fluent\**" />
     <Compile Remove="Registration\Impl\**" />
-    <EmbeddedResource Remove="Registration\Fluent\**" />
     <EmbeddedResource Remove="Registration\Impl\**" />
-    <None Remove="Registration\Fluent\**" />
     <None Remove="Registration\Impl\**" />
   </ItemGroup>
 
@@ -54,14 +51,19 @@
     <Compile Include="..\.version\version.cs" Condition="Exists('..\.version\version.cs')">
       <Link>version.cs</Link>
     </Compile>
-    <Compile Include="Registration\Fluent\IConventionByName.cs" />
-    <Compile Include="Registration\Fluent\IConventionByScan.cs" />
-    <Compile Include="Registration\Fluent\IConventionDefinition.cs" />
-    <Compile Include="Registration\Fluent\IConventionPredicates.cs" />
     <Compile Include="Registration\Impl\ConventionByNameBuilder.cs" />
     <Compile Include="Registration\Impl\ConventionByScanBuilder.cs" />
+    <Compile Include="Registration\Impl\ConventionDefinitionBuilder.cs" />
     <Compile Include="Registration\Impl\ConventionPredicates.cs" />
+    <Compile Include="Registration\Impl\DefinitionBuilder.cs" />
+    <Compile Include="Registration\Impl\Descriptors\ConventionServiceDescriptor.cs" />
+    <Compile Include="Registration\Impl\Descriptors\DefinitionServiceDescriptor.cs" />
+    <Compile Include="Registration\Impl\InterceptionDefinitionBuilder.cs" />
     <Compile Include="Registration\Impl\ITypeFinderBuilder.cs" />
+    <Compile Include="Registration\Impl\ServiceDefinitions\ArrayServiceDefinition.cs" />
+    <Compile Include="Registration\Impl\ServiceDefinitions\ConventionServiceDefinition.cs" />
+    <Compile Include="Registration\Impl\ServiceDefinitions\FuncServiceDefinition.cs" />
+    <Compile Include="Registration\Impl\ServiceDefinitions\ServiceDefinition.cs" />
   </ItemGroup>
 
 </Project>
