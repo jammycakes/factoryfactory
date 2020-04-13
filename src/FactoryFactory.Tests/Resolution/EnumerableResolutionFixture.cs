@@ -15,11 +15,11 @@ namespace FactoryFactory.Tests.Resolution
              * specification fixture.
              */
 
-            var module = new Module();
-            module.Define<ServiceWithEnumerableDependencies>()
-                .As<ServiceWithEnumerableDependencies>();
-            var container = new Configuration(module).CreateContainer();
-            var service = container.GetService<ServiceWithEnumerableDependencies>();
+            var service = new Registry()
+                .Define<ServiceWithEnumerableDependencies>()
+                .As<ServiceWithEnumerableDependencies>()
+                .CreateContainer()
+                .GetService<ServiceWithEnumerableDependencies>();
             Assert.Empty(service.Dependencies);
         }
     }

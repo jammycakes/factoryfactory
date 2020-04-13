@@ -11,9 +11,9 @@ namespace FactoryFactory.Tests.LifecycleTests
         {
             var svc = new DisposableService();
 
-            using (var container = Configuration.CreateContainer
-                    (module => module.Define<DisposableService>().As(svc))
-            ) {
+            var registry = new Registry().Define<DisposableService>().As(svc);
+
+            using (var container = registry.CreateContainer()) {
                 var svc2 = container.GetService<DisposableService>();
                 Assert.Same(svc, svc2);
             }

@@ -138,7 +138,6 @@ namespace FactoryFactory.Tests.Interception
         [Fact]
         public void TypeConstraintsOnOpenGenericInterceptorsShouldBeRespected()
         {
-            var module = new Module();
             var blueService = A.Fake<IBlueService>();
             var greenService = A.Fake<IGreenService>();
 

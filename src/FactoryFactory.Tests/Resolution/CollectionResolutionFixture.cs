@@ -11,10 +11,10 @@ namespace FactoryFactory.Tests.Resolution
 
         public CollectionResolutionFixture()
         {
-            _container = Configuration.CreateContainer(mod => {
-                mod.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
-                mod.Define<IServiceWithoutDependencies>().As<AlternateServiceWithoutDependencies>();
-            });
+            _container = new Registry()
+                .Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>()
+                .Define<IServiceWithoutDependencies>().As<AlternateServiceWithoutDependencies>()
+                .CreateContainer();
         }
 
         [Fact]

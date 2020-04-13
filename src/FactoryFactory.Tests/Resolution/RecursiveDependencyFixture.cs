@@ -16,12 +16,11 @@ namespace FactoryFactory.Tests.Resolution
         public void CanResolveRecursiveLazyDependency(Type lifecycleType, bool shouldBeSame)
         {
             var lifecycle = Activator.CreateInstance(lifecycleType) as ILifecycle;
-
-            var container = Configuration.CreateContainer(module => {
-                module.Define<RecursiveServiceWithLazyDependency>()
-                    .As<RecursiveServiceWithLazyDependency>()
-                    .Lifecycle(lifecycle);
-            });
+            var container = new Registry()
+                .Define<RecursiveServiceWithLazyDependency>()
+                .Lifecycle(lifecycle)
+                .As<RecursiveServiceWithLazyDependency>()
+                .CreateContainer();
             var service = container.GetService<RecursiveServiceWithLazyDependency>();
             Assert.NotNull(service);
             if (shouldBeSame) {
@@ -40,12 +39,11 @@ namespace FactoryFactory.Tests.Resolution
         public void CanResolveRecursiveFuncDependency(Type lifecycleType, bool shouldBeSame)
         {
             var lifecycle = Activator.CreateInstance(lifecycleType) as ILifecycle;
-
-            var container = Configuration.CreateContainer(module => {
-                module.Define<RecursiveServiceWithFuncDependency>()
-                    .As<RecursiveServiceWithFuncDependency>()
-                    .Lifecycle(lifecycle);
-            });
+            var container = new Registry()
+                .Define<RecursiveServiceWithFuncDependency>()
+                .Lifecycle(lifecycle)
+                .As<RecursiveServiceWithFuncDependency>()
+                .CreateContainer();
             var service = container.GetService<RecursiveServiceWithFuncDependency>();
             Assert.NotNull(service);
             if (shouldBeSame) {

@@ -19,14 +19,15 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
         [Fact]
         public void CanCreateServiceResolutionExpressionFromDefaultConstructor()
         {
-            var module = new Module();
             var definition = new ServiceDefinition(
                 typeof(IServiceWithDependencies),
                 implementationType: typeof(ServiceWithDependencies)
             );
-            module.Add(definition);
-            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
-            var configuration = new Configuration(_options, module);
+
+            var registry = new Registry()
+                .Define<IServiceWithDependencies>().As<ServiceWithDependencies>()
+                .Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
+            var configuration = new Configuration(_options, registry);
             var constructor =
                 _options.ConstructorSelector.SelectConstructor
                     (definition.ImplementationType, configuration);
@@ -40,19 +41,14 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
         [Fact]
         public void CanCreateServiceResolutionExpressionFromConstructorExpression()
         {
-            var module = new Module();
-            var definition = new ServiceDefinition(
-                typeof(IServiceWithDependencies),
-                implementationFactory: req => new ServiceWithDependencies(
+            var container = new Registry()
+                .Define<IServiceWithDependencies>()
+                .As(req => new ServiceWithDependencies(
                     Resolve.From<IServiceWithoutDependencies>(),
                     "Hello world"
-                )
-            );
-
-            module.Add(definition);
-            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
-            var configuration = new Configuration(_options, module);
-            var container = configuration.CreateContainer();
+                ))
+                .Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>()
+                .CreateContainer();
             var service = container.GetService<IServiceWithDependencies>();
             Assert.Equal("Hello world", service.Message);
             Assert.IsType<ServiceWithoutDependencies>(service.Dependency);
@@ -61,16 +57,15 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
         [Fact]
         public void CanCreateServiceResolutionExpressionFromFluentConstructorExpression()
         {
-            var module = new Module();
-            module.Define<IServiceWithDependencies>().As(req =>
+            var registry = new Registry()
+                .Define<IServiceWithDependencies>().As(req =>
                 new ServiceWithDependencies(
                     Resolve.From<IServiceWithoutDependencies>(),
                     "Hello world"
-                )
-            );
-            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
+                ))
+                .Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>();
 
-            var configuration = new Configuration(_options, module);
+            var configuration = new Configuration(_options, registry);
             var container = configuration.CreateContainer();
             var service = container.GetService<IServiceWithDependencies>();
             Assert.Equal("Hello world", service.Message);
@@ -86,10 +81,10 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
         public void CanResolveFuncDependencies(Type lifecycleType)
         {
             var lifecycle = Activator.CreateInstance(lifecycleType) as ILifecycle;
-            var module = new Module();
-            module.Define<IServiceWithDependencies>().As<ServiceWithFuncDependencies>().Lifecycle(lifecycle);
-            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>().Lifecycle(lifecycle);
-            var service = Configuration.CreateContainer(module)
+            var service = new Registry()
+                .Define<IServiceWithDependencies>().Lifecycle(lifecycle).As<ServiceWithFuncDependencies>()
+                .Define<IServiceWithoutDependencies>().Lifecycle(lifecycle).As<ServiceWithoutDependencies>()
+                .CreateContainer()
                 .GetService<IServiceWithDependencies>();
             Assert.IsType<ServiceWithoutDependencies>(service.Dependency);
         }
@@ -102,11 +97,11 @@ namespace FactoryFactory.Tests.Resolution.ResolverBuilderTests
         public void CanResolveLazyDependencies(Type lifecycleType)
         {
             var lifecycle = Activator.CreateInstance(lifecycleType) as ILifecycle;
-            var module = new Module();
-            module.Define<IServiceWithDependencies>().As<ServiceWithLazyDependencies>().Lifecycle(lifecycle);
-            module.Define<IServiceWithoutDependencies>().As<ServiceWithoutDependencies>().Lifecycle(lifecycle);
-            var container = Configuration.CreateContainer(module);
-            var service = container.GetService<IServiceWithDependencies>();
+            var service = new Registry()
+                .Define<IServiceWithDependencies>().Lifecycle(lifecycle).As<ServiceWithLazyDependencies>()
+                .Define<IServiceWithoutDependencies>().Lifecycle(lifecycle).As<ServiceWithoutDependencies>()
+                .CreateContainer()
+                .GetService<IServiceWithDependencies>();
             Assert.IsType<ServiceWithoutDependencies>(service.Dependency);
         }
     }
