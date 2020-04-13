@@ -1,6 +1,6 @@
 using System;
 using System.Linq.Expressions;
-using FactoryFactory.Registration.Dsl.Decriptors;
+using FactoryFactory.Registration.Dsl.Descriptors;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory.Registration.Dsl

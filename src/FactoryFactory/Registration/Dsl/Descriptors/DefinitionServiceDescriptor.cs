@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using FactoryFactory.Util;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FactoryFactory.Registration.Dsl.Decriptors
+namespace FactoryFactory.Registration.Dsl.Descriptors
 {
     public class DefinitionServiceDescriptor : ServiceDescriptor, IServiceDefinition
     {
