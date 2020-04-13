@@ -39,13 +39,13 @@ namespace FactoryFactory.Registration.Dsl
             return this;
         }
 
-        IDefinitionClause ILifecycleClause.Singleton() => Lifecycle(ServiceLifetime.Singleton);
+        IDefinitionClause IOptionsClause<IDefinitionClause>.Singleton() => Lifecycle(ServiceLifetime.Singleton);
 
-        IDefinitionClause ILifecycleClause.Scoped() => Lifecycle(ServiceLifetime.Scoped);
+        IDefinitionClause IOptionsClause<IDefinitionClause>.Scoped() => Lifecycle(ServiceLifetime.Scoped);
 
-        IDefinitionClause ILifecycleClause.Transient() => Lifecycle(ServiceLifetime.Transient);
+        IDefinitionClause IOptionsClause<IDefinitionClause>.Transient() => Lifecycle(ServiceLifetime.Transient);
 
-        IDefinitionClause ILifecycleClause.Untracked() => Lifecycle(FactoryFactory.Lifecycle.Untracked);
+        IDefinitionClause IOptionsClause<IDefinitionClause>.Untracked() => Lifecycle(FactoryFactory.Lifecycle.Untracked);
 
         public IDefinitionClause Precondition(Func<ServiceRequest, bool> precondition)
         {
