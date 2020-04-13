@@ -4,12 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FactoryFactory.AspNet.DependencyInjection
 {
-    public class ServiceProviderFactory : IServiceProviderFactory<Module>, IServiceProviderFactory<IServiceCollection>
+    public class ServiceProviderFactoryOld : IServiceProviderFactory<Module>, IServiceProviderFactory<IServiceCollection>
     {
         private readonly ConfigurationOptions _options;
         private readonly Module[] _modules;
 
-        public ServiceProviderFactory(ConfigurationOptions options, params Module[] modules)
+        public ServiceProviderFactoryOld(ConfigurationOptions options, params Module[] modules)
         {
             _options = options ?? new ConfigurationOptions();
             _modules = modules;

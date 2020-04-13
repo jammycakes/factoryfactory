@@ -1,37 +1,32 @@
+using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace FactoryFactory.AspNet.DependencyInjection
 {
     public static class WebHostBuilderExtensions
     {
-        public static IWebHostBuilder UseFactoryFactory
-            (this IWebHostBuilder builder, ConfigurationOptions options, params Module[] modules)
-        {
-            return builder.ConfigureServices
-                (services => services.AddFactoryFactory(options, modules));
-        }
 
-        public static IWebHostBuilder UseFactoryFactory(this IWebHostBuilder builder, params Module[] modules)
-        {
-            return builder.ConfigureServices
-                (services => services.AddFactoryFactory(new ConfigurationOptions(), modules));
-        }
 
-        public static IServiceCollection AddFactoryFactory
-            (this IServiceCollection collection, ConfigurationOptions options, params Module[] modules)
+
+        public static IHostBuilder UseFactoryFactory
+            (this IHostBuilder hostBuilder, Action<ConfigurationOptions> configure = null)
         {
-            collection.AddSingleton<IServiceProviderFactory<Module>>
-                (sp => new ServiceProviderFactory(options, modules));
-            collection.AddSingleton<IServiceProviderFactory<IServiceCollection>>
-                (sp => new ServiceProviderFactory(options, modules));
-            return collection;
+            var options = new ConfigurationOptions();
+            configure?.Invoke(options);
+            var serviceProviderFactory = new ServiceProviderFactory(options);
+            return hostBuilder
+                .UseServiceProviderFactory<Registry>(serviceProviderFactory)
+                .UseServiceProviderFactory<IServiceCollection>(serviceProviderFactory);
         }
 
         public static IServiceCollection AddFactoryFactory
-            (this IServiceCollection collection, params Module[] modules)
+            (this IServiceCollection services, ServiceProviderFactory serviceProviderFactory)
         {
-            return collection.AddFactoryFactory(new ConfigurationOptions(), modules);
+            return services
+                .AddSingleton<IServiceProviderFactory<Registry>>(serviceProviderFactory)
+                .AddSingleton<IServiceProviderFactory<IServiceCollection>>(serviceProviderFactory);
         }
     }
 }

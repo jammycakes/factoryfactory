@@ -21,6 +21,10 @@ EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FactoryFactory.AspNet.DependencyInjection", "FactoryFactory.AspNet.DependencyInjection\FactoryFactory.AspNet.DependencyInjection.csproj", "{130BDFD8-D9D8-4F29-9760-01C087B3CF3B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{03A4A093-7DE5-4DC5-A8D9-AC2CEEC0256D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleWebApp", "SampleWebApp\SampleWebApp.csproj", "{81D406F1-697F-416A-B738-46449C8D2E74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,5 +43,12 @@ Global
 		{130BDFD8-D9D8-4F29-9760-01C087B3CF3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{130BDFD8-D9D8-4F29-9760-01C087B3CF3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{130BDFD8-D9D8-4F29-9760-01C087B3CF3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81D406F1-697F-416A-B738-46449C8D2E74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81D406F1-697F-416A-B738-46449C8D2E74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81D406F1-697F-416A-B738-46449C8D2E74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81D406F1-697F-416A-B738-46449C8D2E74}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{81D406F1-697F-416A-B738-46449C8D2E74} = {03A4A093-7DE5-4DC5-A8D9-AC2CEEC0256D}
 	EndGlobalSection
 EndGlobal
