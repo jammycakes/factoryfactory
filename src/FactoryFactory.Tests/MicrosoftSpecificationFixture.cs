@@ -16,7 +16,7 @@ namespace FactoryFactory.Tests
         {
             var registry = new Registry();
             registry.AddRange(serviceCollection);
-            return Configuration.CreateContainer(registry);
+            return registry.CreateContainer();
         }
     }
 }

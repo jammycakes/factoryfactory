@@ -29,7 +29,7 @@ namespace FactoryFactory.Tests.LifecycleTests
             var services = new Registry();
             services.AddSingleton(svc);
 
-            using (var container = Configuration.CreateContainer(services)) {
+            using (var container = services.CreateContainer()) {
                 var svc2 = container.GetService<DisposableService>();
                 Assert.Same(svc, svc2);
             }

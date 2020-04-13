@@ -9,9 +9,11 @@ namespace FactoryFactory
         /// </summary>
         /// <param name="module"></param>
         /// <returns></returns>
-        public static IContainer CreateContainer(this IRegistry module)
+        public static IContainer CreateContainer
+            (this IRegistry registry, ConfigurationOptions options = default)
         {
-            return new Configuration(module).CreateContainer();
+            options = options ?? new ConfigurationOptions();
+            return new Configuration(options, registry).CreateContainer();
         }
 
         /// <summary>
@@ -21,9 +23,11 @@ namespace FactoryFactory
         /// <param name="collection"></param>
         /// <returns></returns>
 
-        public static IContainer CreateFactoryFactory(this IServiceCollection collection)
+        public static IContainer CreateFactoryFactory
+            (this IServiceCollection collection, ConfigurationOptions options = default)
         {
-            return new Configuration(new Registry(collection)).CreateContainer();
+            IRegistry registry = collection as Registry ?? new Registry(collection);
+            return registry.CreateContainer(options);
         }
     }
 }

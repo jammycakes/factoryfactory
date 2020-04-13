@@ -65,41 +65,6 @@ namespace FactoryFactory
         }
 
 
-        /* ====== Public API: static convenience methods ====== */
-
-        /// <summary>
-        ///  Creates a new container, initialised and configured from the
-        ///  provided modules.
-        /// </summary>
-        /// <param name="modules">
-        ///  One or more modules containing service definitions.
-        /// </param>
-        /// <returns>
-        ///  The configured container.
-        /// </returns>
-        public static IContainer CreateContainer(params IRegistry[] modules)
-        {
-            return new Configuration(modules).CreateContainer();
-        }
-
-        /// <summary>
-        ///  Creates a new container from a new module, initialised and
-        ///  configured by the supplied action.
-        /// </summary>
-        /// <param name="moduleConfig">
-        ///  A lambda function that initialises the module.
-        /// </param>
-        /// <returns>
-        ///  The configured container.
-        /// </returns>
-        public static IContainer CreateContainer(Action<Module> moduleConfig)
-        {
-            var module = new Module();
-            moduleConfig(module);
-            return CreateContainer(module);
-        }
-
-
         /* ====== Public API: Instance methods ====== */
 
         /// <summary>
