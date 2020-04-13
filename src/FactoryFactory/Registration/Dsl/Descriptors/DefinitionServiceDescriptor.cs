@@ -32,7 +32,7 @@ namespace FactoryFactory.Registration.Dsl.Descriptors
             : base(serviceType, implementation)
         {
             Precondition = precondition;
-            Lifecycle = FactoryFactory.Lifecycle.Singleton;
+            Lifecycle = FactoryFactory.Lifecycle.Untracked;
         }
 
 

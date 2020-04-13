@@ -37,16 +37,16 @@ namespace FactoryFactory.Registration.Dsl
             return this;
         }
 
-        IDefinitionClause IOptionsClause<IDefinitionClause>.Singleton()
+        public IDefinitionClause Singleton()
             => Lifecycle(ServiceLifetime.Singleton);
 
-        IDefinitionClause IOptionsClause<IDefinitionClause>.Scoped()
+        public IDefinitionClause Scoped()
             => Lifecycle(ServiceLifetime.Scoped);
 
-        IDefinitionClause IOptionsClause<IDefinitionClause>.Transient()
+        public IDefinitionClause Transient()
             => Lifecycle(ServiceLifetime.Transient);
 
-        IDefinitionClause IOptionsClause<IDefinitionClause>.Untracked()
+        public IDefinitionClause Untracked()
             => Lifecycle(FactoryFactory.Lifecycle.Untracked);
 
         public IDefinitionClause Precondition(Func<ServiceRequest, bool> precondition)
@@ -69,6 +69,7 @@ namespace FactoryFactory.Registration.Dsl
             _implementationInstance = instance;
             _implementationFactory = null;
             _implementationType = null;
+            Untracked();
             _registry.Add(Build());
             return _registry;
         }
@@ -142,13 +143,13 @@ namespace FactoryFactory.Registration.Dsl
             return this;
         }
 
-        public IDefinitionClause<TService> Singleton() => Lifecycle(ServiceLifetime.Singleton);
+        public new IDefinitionClause<TService> Singleton() => Lifecycle(ServiceLifetime.Singleton);
 
-        public IDefinitionClause<TService> Scoped() => Lifecycle(ServiceLifetime.Scoped);
+        public new IDefinitionClause<TService> Scoped() => Lifecycle(ServiceLifetime.Scoped);
 
-        public IDefinitionClause<TService> Transient() => Lifecycle(ServiceLifetime.Transient);
+        public new IDefinitionClause<TService> Transient() => Lifecycle(ServiceLifetime.Transient);
 
-        public IDefinitionClause<TService> Untracked() =>
+        public new IDefinitionClause<TService> Untracked() =>
             Lifecycle(FactoryFactory.Lifecycle.Untracked);
 
         public new IDefinitionClause<TService> Precondition(Func<ServiceRequest, bool> precondition)
