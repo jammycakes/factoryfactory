@@ -31,3 +31,7 @@ csharp_prefer_braces = true:warning
 
 [*.xml]
 indent_style = space
+
+[*.csproj]
+indent_size = 2
+tab_width = 2

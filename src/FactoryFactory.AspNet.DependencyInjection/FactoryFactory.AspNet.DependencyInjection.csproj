@@ -1,43 +1,47 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <PackageId>FactoryFactory.AspNet.DependencyInjection</PackageId>
-        <Description>Yet Another IOC Container for .NET</Description>
-        <VersionPrefix>0.3.0</VersionPrefix>
-        <VersionSuffix>beta</VersionSuffix>
-        <Authors>James McKay</Authors>
-        <Copyright>Copyright 2018 James McKay</Copyright>
+  <PropertyGroup>
+    <PackageId>FactoryFactory.AspNet.DependencyInjection</PackageId>
+    <Description>Yet Another IOC Container for .NET</Description>
+    <VersionPrefix>0.3.0</VersionPrefix>
+    <VersionSuffix>beta</VersionSuffix>
+    <Authors>James McKay</Authors>
+    <Copyright>Copyright 2018 James McKay</Copyright>
 
-        <PackageProjectUrl>https://github.com/jammycakes/factoryfactory</PackageProjectUrl>
-        <PackageTags>IoC,DI,dependencyinjection,FactoryFactory</PackageTags>
-        <PackageLicenseUrl>https://github.com/jammycakes/factoryfactory/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/jammycakes/factoryfactory</PackageProjectUrl>
+    <PackageTags>IoC,DI,dependencyinjection,FactoryFactory</PackageTags>
+    <PackageLicenseUrl>https://github.com/jammycakes/factoryfactory/blob/master/LICENSE</PackageLicenseUrl>
 
-        <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-        <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-        <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
 
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <EmbedUntrackedSources>true</EmbedUntrackedSources>
-        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-    </PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\FactoryFactory\FactoryFactory.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FactoryFactory\FactoryFactory.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
-    </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="[2.1.0,4.0)" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-    </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="[2.1.0,4.0)" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <Compile Include="..\.version\version.cs">
-        <Link>version.cs</Link>
-      </Compile>
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\.version\version.cs">
+      <Link>version.cs</Link>
+    </Compile>
+  </ItemGroup>
 
 </Project>

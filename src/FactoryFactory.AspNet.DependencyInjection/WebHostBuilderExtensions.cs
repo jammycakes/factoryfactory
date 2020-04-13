@@ -7,9 +7,6 @@ namespace FactoryFactory.AspNet.DependencyInjection
 {
     public static class WebHostBuilderExtensions
     {
-
-
-
         public static IHostBuilder UseFactoryFactory
             (this IHostBuilder hostBuilder, Action<ConfigurationOptions> configure = null)
         {
@@ -21,12 +18,17 @@ namespace FactoryFactory.AspNet.DependencyInjection
                 .UseServiceProviderFactory<IServiceCollection>(serviceProviderFactory);
         }
 
-        public static IServiceCollection AddFactoryFactory
-            (this IServiceCollection services, ServiceProviderFactory serviceProviderFactory)
+        public static IWebHostBuilder UseFactoryFactory
+            (this IWebHostBuilder webHostBuilder, Action<ConfigurationOptions> configure = null)
         {
-            return services
-                .AddSingleton<IServiceProviderFactory<Registry>>(serviceProviderFactory)
-                .AddSingleton<IServiceProviderFactory<IServiceCollection>>(serviceProviderFactory);
+            var options = new ConfigurationOptions();
+            configure?.Invoke(options);
+            var serviceProviderFactory = new ServiceProviderFactory(options);
+            return webHostBuilder.ConfigureServices(services => 
+                services
+                    .AddSingleton<IServiceProviderFactory<Registry>>(serviceProviderFactory)
+                    .AddSingleton<IServiceProviderFactory<IServiceCollection>>(serviceProviderFactory)
+            );
         }
     }
 }

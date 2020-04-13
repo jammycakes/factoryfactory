@@ -1,29 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FactoryFactory", "FactoryFactory\FactoryFactory.csproj", "{20A191E5-8ADE-4921-B0B5-C596446822F4}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FactoryFactory", "FactoryFactory\FactoryFactory.csproj", "{20A191E5-8ADE-4921-B0B5-C596446822F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FactoryFactory.Tests", "FactoryFactory.Tests\FactoryFactory.Tests.csproj", "{892F72CD-2822-48E1-98D6-707FF5C2D929}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FactoryFactory.Tests", "FactoryFactory.Tests\FactoryFactory.Tests.csproj", "{892F72CD-2822-48E1-98D6-707FF5C2D929}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{6084FE0E-6CF5-4D9C-AE1A-9E5706F99250}"
-ProjectSection(SolutionItems) = preProject
-	..\.editorconfig = ..\.editorconfig
-	..\.gitattributes = ..\.gitattributes
-	..\.gitignore = ..\.gitignore
-	..\README.md = ..\README.md
-	..\LICENSE = ..\LICENSE
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
+		..\.gitattributes = ..\.gitattributes
+		..\.gitignore = ..\.gitignore
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{3133739A-EEC6-46AD-9DF7-8DB115BF85F0}"
-ProjectSection(SolutionItems) = preProject
-	..\build.py = ..\build.py
-	..\appveyor.yml = ..\appveyor.yml
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		..\appveyor.yml = ..\appveyor.yml
+		..\build.py = ..\build.py
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FactoryFactory.AspNet.DependencyInjection", "FactoryFactory.AspNet.DependencyInjection\FactoryFactory.AspNet.DependencyInjection.csproj", "{130BDFD8-D9D8-4F29-9760-01C087B3CF3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FactoryFactory.AspNet.DependencyInjection", "FactoryFactory.AspNet.DependencyInjection\FactoryFactory.AspNet.DependencyInjection.csproj", "{130BDFD8-D9D8-4F29-9760-01C087B3CF3B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{03A4A093-7DE5-4DC5-A8D9-AC2CEEC0256D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleWebApp", "SampleWebApp\SampleWebApp.csproj", "{81D406F1-697F-416A-B738-46449C8D2E74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleWebApp", "SampleWebApp\SampleWebApp.csproj", "{81D406F1-697F-416A-B738-46449C8D2E74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleWebApp.NetCore22", "SampleWebApp.NetCore22\SampleWebApp.NetCore22.csproj", "{B1FBFAB7-A55E-49D6-9C10-D39C46A86002}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,8 +52,19 @@ Global
 		{81D406F1-697F-416A-B738-46449C8D2E74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81D406F1-697F-416A-B738-46449C8D2E74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81D406F1-697F-416A-B738-46449C8D2E74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1FBFAB7-A55E-49D6-9C10-D39C46A86002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1FBFAB7-A55E-49D6-9C10-D39C46A86002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1FBFAB7-A55E-49D6-9C10-D39C46A86002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1FBFAB7-A55E-49D6-9C10-D39C46A86002}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{81D406F1-697F-416A-B738-46449C8D2E74} = {03A4A093-7DE5-4DC5-A8D9-AC2CEEC0256D}
+		{B1FBFAB7-A55E-49D6-9C10-D39C46A86002} = {03A4A093-7DE5-4DC5-A8D9-AC2CEEC0256D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EA8A1184-081A-4BD2-9A66-1FBB21978094}
 	EndGlobalSection
 EndGlobal
